@@ -30,22 +30,22 @@ export default function Home() {
         <div className="list-grid1">
           <div className="list bg-black up">
             <figure className="icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
-            <h4 className="kazari">動画編集に<span className="color-check">時間がかかりすぎて</span>投稿が追いつかない…</h4>
-            <p>毎日投稿したいけど、編集作業だけで何時間もかかってしまう。他の作業に時間を使いたいのに編集で一日が終わってしまう。</p>
+            <h4 className="kazari">切り抜きチームを<span className="color-check">内製したいけど人材</span>がいない…</h4>
+            <p>動画編集ができるスタッフを採用したいが、スキルのある人材が見つからない。外注費を抑えるために内製化したいけど、教育コストも心配。</p>
             <span className="num">01</span>
           </div>
 
           <div className="list bg-black up">
             <figure className="icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
-            <h4 className="kazari"><span className="color-check">バズる切り抜き</span>のコツが分からない…</h4>
-            <p>どの部分を切り抜けば再生数が伸びるのか分からない。サムネイルやタイトルも含めて、視聴者に刺さるポイントが掴めない。</p>
+            <h4 className="kazari">外部に委託したが<span className="color-check">品質や納期が不安</span>…</h4>
+            <p>フリーランスに依頼したものの、品質にばらつきがあったり納期が遅れたりで安定しない。継続的に高品質な動画を制作してもらえる業者を探している。</p>
             <span className="num">02</span>
           </div>
 
           <div className="list bg-black up">
             <figure className="icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
-            <h4 className="kazari">編集ソフトが<span className="color-check">難しくて挫折</span>してしまう…</h4>
-            <p>高機能な編集ソフトを買ったけど操作が複雑すぎて使いこなせない。簡単な編集でも時間がかかってしまい、モチベーションが下がる。</p>
+            <h4 className="kazari">大量に切り抜き動画を<span className="color-check">作成したいけど難しい</span>…</h4>
+            <p>チャンネル登録者を増やすために毎日複数本投稿したいが、一人では限界がある。大量制作するための効率的な仕組みや体制作りが分からない。</p>
             <span className="num">03</span>
           </div>
         </div>
