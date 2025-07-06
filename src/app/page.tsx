@@ -11,9 +11,9 @@ export default function Home() {
       <div id="mainimg">
         <div>
           <div className="text">
-            <p>バズる切り抜き動画を<br />
-            <span className="highlight">最短24時間</span>で<br />
-            格安制作いたします</p>
+            <p>AIを活用した<br />
+            <span className="highlight">高速・高品質</span>な<br />
+            切り抜き動画制作サービス</p>
           </div>
 
           <div className="btn">
@@ -63,22 +63,22 @@ export default function Home() {
         <div className="list-grid1">
           <div className="list up">
             <figure className="icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
-            <h4><span className="marker">最短24時間で高品質な切り抜き動画</span></h4>
-            <p>プロの動画編集者が、あなたの代わりに魅力的な切り抜き動画を制作。テロップ、効果音、カット編集まで全て込みで最短24時間でお届けします。</p>
+            <h4><span className="marker">AI活用で従来の3倍速い制作スピード</span></h4>
+            <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、最短12時間で高品質な切り抜き動画をお届けします。</p>
             <span className="num">01</span>
           </div>
 
           <div className="list up">
             <figure className="icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
-            <h4><span className="marker">バズるポイントを熟知した編集</span></h4>
-            <p>1000本以上の切り抜き動画制作実績から、再生数が伸びるポイントを分析。視聴者が最後まで見たくなる構成とサムネイル制作をご提供します。</p>
+            <h4><span className="marker">AIデータ分析による確実にバズる編集</span></h4>
+            <p>10,000本以上の動画データをAIが分析し、再生数・エンゲージメント率の高いパターンを特定。人間の感覚だけでは見つけられない「バズる法則」を動画に反映します。</p>
             <span className="num">02</span>
           </div>
 
           <div className="list up">
             <figure className="icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
-            <h4><span className="marker">月額制で安心の料金体系</span></h4>
-            <p>1本あたり3,000円〜の明確な料金設定。月額プランなら更にお得に。追加料金なしで修正対応も可能で、安心してご利用いただけます。</p>
+            <h4><span className="marker">AI効率化により実現した圧倒的コスパ</span></h4>
+            <p>AI技術による作業効率化で、従来の半額以下を実現。1本あたり1,500円〜の業界最安値でありながら、品質は従来の手作業を上回る高水準を保証します。</p>
             <span className="num">03</span>
           </div>
         </div>
@@ -92,8 +92,8 @@ export default function Home() {
           <div className="list up">
             <figure><Image src="/images/photo1.jpg" alt="" width={200} height={200} /></figure>
             <div className="text">
-              <h4>チャンネル登録者数が3ヶ月で10倍に！</h4>
-              <p>切り抜き動画の制作をお願いしてから、チャンネルの成長が劇的に変わりました。プロの編集技術で視聴者が最後まで見てくれる動画になり、登録者数が3ヶ月で1,000人から10,000人に！毎日投稿できるようになったのも大きいです。</p>
+              <h4>AI分析のおかげで再生数が5倍に！</h4>
+              <p>AIが過去の成功動画を分析して最適な編集パターンを提案してくれるので、確実にバズる動画が作れるようになりました。制作スピードも従来の3倍速くなり、登録者数が3ヶ月で1,000人から10,000人に急成長！</p>
               <p className="name">YouTuber Aさん（ゲーム実況）</p>
             </div>
           </div>
@@ -101,8 +101,8 @@ export default function Home() {
           <div className="list up reverse">
             <figure><Image src="/images/photo2.jpg" alt="" width={200} height={200} /></figure>
             <div className="text">
-              <h4>編集時間が1/10になって本業に集中できる</h4>
-              <p>以前は1本の動画編集に8時間かかっていましたが、キリヌキプロさんにお任せしてからは企画と撮影だけに集中できるように。浮いた時間で新しいコンテンツ作りに取り組めて、チャンネル全体のクオリティが向上しました。</p>
+              <h4>AI活用で編集時間が1/10、品質は2倍に！</h4>
+              <p>AIが自動で最適なカット点を見つけてくれるので、以前8時間かかっていた編集が今では30分程度で完了。しかも品質は手作業の時より格段に向上しています。浮いた時間で企画に集中できるようになりました。</p>
               <p className="name">ビジネス系YouTuber Bさん</p>
             </div>
           </div>
@@ -110,8 +110,8 @@ export default function Home() {
           <div className="list up">
             <figure><Image src="/images/photo3.jpg" alt="" width={200} height={200} /></figure>
             <div className="text">
-              <h4>バズる切り抜きのコツを教えてもらえた</h4>
-              <p>ただ編集してもらうだけでなく、どの部分が視聴者に刺さるかアドバイスもいただけます。サムネイルのデザインやタイトルの付け方まで相談できて、再生数が平均3倍になりました。まさにプロの技術です！</p>
+              <h4>AIの精密分析で確実にバズる動画に</h4>
+              <p>AIが視聴者の行動パターンを分析して、どの瞬間で離脱するか、どこで興味を持つかを正確に予測。その結果、再生数が平均5倍、視聴完了率も80%以上を達成できました。データに基づいた確実な成果です！</p>
               <p className="name">エンタメ系YouTuber Cさん</p>
             </div>
           </div>
@@ -157,9 +157,9 @@ export default function Home() {
             <thead>
               <tr>
                 <th>&nbsp;</th>
-                <th><i className="fa-solid fa-video"></i>ライトプラン<span><span className="small">￥</span>3,000<span className="small">/本</span></span></th>
-                <th><i className="fa-solid fa-video"></i>スタンダードプラン<span><span className="small">￥</span>15,000<span className="small">/月</span></span><span className="osusume">おすすめ</span></th>
-                <th><i className="fa-solid fa-video"></i>プロプラン<span><span className="small">￥</span>30,000<span className="small">/月</span></span></th>
+                <th><i className="fa-solid fa-video"></i>ライトプラン<span><span className="small">￥</span>1,500<span className="small">/本</span></span></th>
+                <th><i className="fa-solid fa-video"></i>スタンダードプラン<span><span className="small">￥</span>12,000<span className="small">/月</span></span><span className="osusume">おすすめ</span></th>
+                <th><i className="fa-solid fa-video"></i>プロプラン<span><span className="small">￥</span>25,000<span className="small">/月</span></span></th>
               </tr>
             </thead>
             <tbody>
@@ -171,9 +171,9 @@ export default function Home() {
               </tr>
               <tr>
                 <td>納期</td>
-                <td>3営業日</td>
                 <td>24時間以内</td>
                 <td>12時間以内</td>
+                <td>6時間以内</td>
               </tr>
               <tr>
                 <td>修正回数</td>
@@ -189,9 +189,9 @@ export default function Home() {
               </tr>
               <tr>
                 <td>テロップ・効果音</td>
-                <td>基本のみ</td>
-                <td>高品質対応</td>
-                <td>プレミアム対応</td>
+                <td>AI自動生成</td>
+                <td>AI+手動調整</td>
+                <td>AI+プロ仕上げ</td>
               </tr>
               <tr>
                 <td>専属担当者</td>
@@ -216,8 +216,8 @@ export default function Home() {
               <dt className="openclose">どのような動画でも切り抜き対応可能ですか？</dt>
               <dd>ゲーム実況、トーク配信、教育コンテンツ、ライブ配信など、ほぼ全てのジャンルに対応しています。著作権に問題がない動画であれば、どのような内容でも承ります。</dd>
 
-              <dt className="openclose">納期はどのくらいかかりますか？</dt>
-              <dd>プランによって異なりますが、スタンダードプランなら24時間以内、プロプランなら12時間以内にお届けします。ライトプランは3営業日となります。急ぎの場合はご相談ください。</dd>
+              <dt className="openclose">なぜそんなに早く高品質な動画が作れるのですか？</dt>
+              <dd>最新のAI技術を活用して動画解析から編集まで自動化しているためです。AIが最適なカット点やテロップ位置を瞬時に判断し、従来の手作業では不可能な高速処理を実現。プロプランなら最短6時間でお届けできます。</dd>
 
               <dt className="openclose">修正は何回まで対応してもらえますか？</dt>
               <dd>ライトプランは1回まで、スタンダードプランは3回まで、プロプランは無制限で修正対応いたします。お客様にご満足いただけるまで調整させていただきます。</dd>
@@ -248,8 +248,8 @@ export default function Home() {
 
           <div className="list up">
             <div className="text">
-              <h4><i className="fa-solid fa-scissors"></i>プロによる編集作業</h4>
-              <p>経験豊富な動画編集者が、視聴者が最後まで見たくなる構成で切り抜き編集を行います。テロップ挿入、効果音追加、カット編集など、バズる要素を盛り込んだ高品質な動画に仕上げます。サムネイル制作も同時に進行いたします。</p>
+              <h4><i className="fa-solid fa-scissors"></i>AI×プロによる超高速編集</h4>
+              <p>AIが動画を自動解析し、最適なカット点・テロップ位置・効果音タイミングを瞬時に特定。その後、経験豊富な編集者が最終調整を行い、従来の3倍速で高品質な動画を完成させます。AIの精密さと人間の感性を融合した最高品質をお届けします。</p>
             </div>
           </div>
 
@@ -293,7 +293,7 @@ export default function Home() {
               <tbody>
                 <tr>
                   <th>サービス名</th>
-                  <td>キリヌキプロ - プロが作る切り抜き動画制作サービス</td>
+                  <td>キリヌキプロ - AI活用による高速・高品質切り抜き動画制作サービス</td>
                 </tr>
                 <tr>
                   <th>対応ジャンル</th>
@@ -301,7 +301,7 @@ export default function Home() {
                 </tr>
                 <tr>
                   <th>納期</th>
-                  <td>最短12時間〜3営業日（プランにより異なります）</td>
+                  <td>最短6時間〜24時間（AI技術により従来の3倍速を実現）</td>
                 </tr>
                 <tr>
                   <th>対応時間</th>
