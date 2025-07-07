@@ -1,0 +1,429 @@
+'use client';
+
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { OrderFormData, VideoInfo, OrderEstimate } from '@/types/order';
+import { formatDuration } from '@/lib/youtube';
+import { formatPrice, getPricingBreakdown } from '@/lib/pricing';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+interface OrderFormProps {
+  onSuccess?: () => void;
+}
+
+export default function OrderForm({ onSuccess }: OrderFormProps) {
+  return (
+    <Elements stripe={stripePromise}>
+      <OrderFormContent onSuccess={onSuccess} />
+    </Elements>
+  );
+}
+
+function OrderFormContent({ onSuccess }: OrderFormProps) {
+  const [step, setStep] = useState<'form' | 'payment' | 'processing'>('form');
+  const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
+  const [estimate, setEstimate] = useState<OrderEstimate | null>(null);
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<OrderFormData>();
+
+  const watchedVideoUrl = watch('videoUrl');
+  const watchedFormat = watch('format');
+
+  // 動画情報を取得
+  const fetchVideoInfo = async (videoUrl: string) => {
+    if (!videoUrl) return;
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/video-info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videoUrl }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      setVideoInfo(data.videoInfo);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '動画情報の取得に失敗しました');
+      setVideoInfo(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 見積もりを作成
+  const createEstimate = async (formData: OrderFormData) => {
+    if (!videoInfo) return;
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          videoDuration: videoInfo.duration,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      setEstimate(data.estimate);
+      setClientSecret(data.clientSecret);
+      setStep('payment');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '見積もりの作成に失敗しました');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 決済処理
+  const handlePayment = async () => {
+    if (!stripe || !elements || !clientSecret) return;
+
+    setIsLoading(true);
+    setError('');
+
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) return;
+
+    try {
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (paymentIntent?.status === 'succeeded') {
+        setStep('processing');
+        onSuccess?.();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '決済に失敗しました');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (step === 'processing') {
+    return (
+      <div className="text-center py-16">
+        <div className="max-w-md mx-auto">
+          <div className="w-24 h-24 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-green-600 mb-6">ご注文ありがとうございます！</h2>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+            <p className="text-green-800 text-lg leading-relaxed">
+              決済が完了しました。<br />
+              制作完了次第、メールにてお届けいたします。
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'payment' && estimate && videoInfo) {
+    const breakdown = getPricingBreakdown(estimate, watchedFormat === 'with_subtitles');
+
+    return (
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">お支払い</h2>
+          <p className="text-gray-600">注文内容をご確認の上、お支払いください</p>
+        </div>
+        
+        {/* 注文内容確認 */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 md:p-8 mb-8">
+          <h3 className="text-xl font-bold text-blue-900 mb-6">注文内容</h3>
+          <div className="space-y-4">
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+              <div className="flex-1">
+                <span className="font-semibold text-blue-900 block mb-1">動画:</span>
+                <span className="text-blue-800 leading-relaxed">{videoInfo.title}</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <span className="font-semibold text-blue-900 block mb-1">長さ:</span>
+                <span className="text-blue-800">{formatDuration(videoInfo.duration)}</span>
+              </div>
+              <div>
+                <span className="font-semibold text-blue-900 block mb-1">フォーマット:</span>
+                <span className="text-blue-800">{watchedFormat === 'with_subtitles' ? '字幕あり' : '字幕なし'}</span>
+              </div>
+              <div>
+                <span className="font-semibold text-blue-900 block mb-1">納期:</span>
+                <span className="text-blue-800">約{estimate.estimatedDeliveryDays}営業日</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 料金詳細 */}
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-6 md:p-8 mb-8">
+          <h3 className="text-xl font-bold text-orange-900 mb-6">料金詳細</h3>
+          <div className="space-y-3">
+            {breakdown.breakdown.map((item, index) => (
+              <div key={index} className={`flex justify-between items-center ${item.isTotal ? 'font-bold text-xl border-t border-orange-300 pt-4 mt-4 text-orange-900' : 'text-orange-800'}`}>
+                <span>{item.label}</span>
+                <span className={item.isTotal ? 'text-2xl' : ''}>{formatPrice(item.amount)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* カード情報入力 */}
+        <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 mb-8">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">カード情報</h3>
+          <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
+            <CardElement
+              options={{
+                style: {
+                  base: {
+                    fontSize: '18px',
+                    color: '#374151',
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    '::placeholder': {
+                      color: '#9CA3AF',
+                    },
+                  },
+                },
+              }}
+            />
+          </div>
+          <p className="text-sm text-gray-500 mt-3">SSL暗号化により安全に処理されます</p>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl mb-6">
+            <p className="font-semibold">エラーが発生しました</p>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            type="button"
+            onClick={() => setStep('form')}
+            className="flex-1 px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all"
+            disabled={isLoading}
+          >
+            戻る
+          </button>
+          <button
+            onClick={handlePayment}
+            disabled={!stripe || isLoading}
+            className="flex-1 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 transition-all"
+          >
+            {isLoading ? '処理中...' : `${formatPrice(estimate.totalPrice)}を支払う`}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div id="order-form">
+      <form onSubmit={handleSubmit(createEstimate)} className="max-w-3xl mx-auto space-y-8">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">切り抜き動画制作のご注文</h2>
+          <p className="text-gray-600">必要な情報を入力してください</p>
+        </div>
+
+        {/* 動画URL入力 */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 md:p-8">
+          <label className="block text-lg font-bold text-blue-900 mb-4">
+            YouTube動画URL *
+          </label>
+          <input
+            type="url"
+            {...register('videoUrl', { required: '動画URLは必須です' })}
+            className="w-full px-6 py-4 border-2 border-blue-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all text-lg bg-white"
+            placeholder="https://www.youtube.com/watch?v=..."
+            onBlur={(e) => fetchVideoInfo(e.target.value)}
+          />
+          {errors.videoUrl && (
+            <p className="text-red-600 font-medium mt-2">{errors.videoUrl.message}</p>
+          )}
+        </div>
+
+        {/* 動画情報表示 */}
+        {videoInfo && (
+          <div className="bg-white border-2 border-green-200 rounded-2xl p-6 md:p-8 shadow-lg">
+            <h3 className="text-lg font-bold text-green-800 mb-4">動画情報を取得しました</h3>
+            <div className="flex flex-col lg:flex-row gap-6">
+              <img
+                src={videoInfo.thumbnailUrl}
+                alt={videoInfo.title}
+                className="w-full lg:w-48 h-36 object-cover rounded-xl shadow-md"
+              />
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 text-lg mb-2 leading-tight">{videoInfo.title}</h4>
+                <p className="text-gray-600 mb-2">{videoInfo.channelTitle}</p>
+                <p className="text-gray-600">長さ: {formatDuration(videoInfo.duration)}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* フォーマット選択 */}
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-6 md:p-8">
+          <label className="block text-lg font-bold text-orange-900 mb-6">
+            フォーマット選択 *
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label className="flex items-start p-6 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-orange-300 transition-all bg-white/50">
+              <input
+                type="radio"
+                value="without_subtitles"
+                {...register('format', { required: 'フォーマットを選択してください' })}
+                className="mt-1 mr-4 text-orange-500 w-5 h-5"
+              />
+              <div className="flex-1">
+                <div className="font-bold text-gray-900 text-lg mb-2">字幕なし</div>
+                <div className="text-orange-600 font-bold text-xl mb-2">500円/分</div>
+                <div className="text-sm text-gray-600">シンプルで素早い制作</div>
+              </div>
+            </label>
+            <label className="flex items-start p-6 border-2 border-orange-300 rounded-xl cursor-pointer hover:border-orange-400 transition-all bg-white">
+              <input
+                type="radio"
+                value="with_subtitles"
+                {...register('format', { required: 'フォーマットを選択してください' })}
+                className="mt-1 mr-4 text-orange-500 w-5 h-5"
+              />
+              <div className="flex-1">
+                <div className="flex items-center mb-2">
+                  <span className="font-bold text-gray-900 text-lg mr-2">字幕あり</span>
+                  <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">おすすめ</span>
+                </div>
+                <div className="text-orange-600 font-bold text-xl mb-2">700円/分</div>
+                <div className="text-sm text-gray-600">視聴者に優しい字幕付き</div>
+              </div>
+            </label>
+          </div>
+          {errors.format && (
+            <p className="text-red-600 font-medium mt-3">{errors.format.message}</p>
+          )}
+        </div>
+
+        {/* お客様情報 */}
+        <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">お客様情報</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                お名前 *
+              </label>
+              <input
+                type="text"
+                {...register('customerName', { required: 'お名前は必須です' })}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
+                placeholder="山田太郎"
+              />
+              {errors.customerName && (
+                <p className="text-red-600 text-sm mt-1">{errors.customerName.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                メールアドレス *
+              </label>
+              <input
+                type="email"
+                {...register('customerEmail', {
+                  required: 'メールアドレスは必須です',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: '有効なメールアドレスを入力してください'
+                  }
+                })}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
+                placeholder="example@email.com"
+              />
+              {errors.customerEmail && (
+                <p className="text-red-600 text-sm mt-1">{errors.customerEmail.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              電話番号
+            </label>
+            <input
+              type="tel"
+              {...register('customerPhone')}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
+              placeholder="090-1234-5678"
+            />
+          </div>
+
+          <div className="mt-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              特別なご要望
+            </label>
+            <textarea
+              {...register('specialRequests')}
+              rows={4}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all resize-vertical"
+              placeholder="切り抜きの内容や特別なご要望があればお書きください"
+            />
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl">
+            <p className="font-semibold">エラーが発生しました</p>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={!videoInfo || isLoading}
+          className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:hover:scale-100 shadow-lg"
+        >
+          {isLoading ? '処理中...' : '見積もりを確認する'}
+        </button>
+      </form>
+    </div>
+  );
+}

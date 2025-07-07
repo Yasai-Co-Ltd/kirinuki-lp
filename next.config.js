@@ -5,7 +5,8 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-  output: 'export',
+  // 開発中は静的エクスポートを無効化
+  // output: 'export',
 }
 
 module.exports = nextConfig

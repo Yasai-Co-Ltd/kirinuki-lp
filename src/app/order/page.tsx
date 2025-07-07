@@ -1,0 +1,230 @@
+import OrderForm from '@/components/features/OrderForm';
+import Layout from '@/components/layout/Layout';
+
+export default function OrderPage() {
+  return (
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+        {/* ヒーローセクション */}
+        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-16">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                切り抜き動画制作
+              </h1>
+              <p className="text-xl md:text-2xl font-light opacity-90 mb-2">
+                プロが作る高品質な切り抜き動画
+              </p>
+              <p className="text-lg opacity-80">
+                YouTube動画から魅力的な切り抜き動画を制作いたします
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 max-w-6xl py-12">
+          {/* 注文フォーム */}
+          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10 mb-12 border border-gray-100">
+            <OrderForm />
+          </div>
+
+          {/* 料金プランセクション */}
+          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10 mb-12 border border-gray-100">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">料金プラン</h2>
+              <p className="text-lg text-gray-600">明確で分かりやすい料金体系</p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {/* 基本プラン */}
+              <div className="relative bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:border-gray-300">
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">基本プラン</h3>
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold text-gray-900">500円</span>
+                    <span className="text-lg text-gray-600">/分</span>
+                  </div>
+                  <div className="space-y-4 text-left">
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">字幕なし</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">最低料金: 3,000円</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">納期: 3-5営業日</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">高品質な編集</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 字幕付きプラン（推奨） */}
+              <div className="relative bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-400 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full text-sm font-bold">
+                    おすすめ
+                  </span>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-orange-600 mb-2">字幕付きプラン</h3>
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold text-orange-600">700円</span>
+                    <span className="text-lg text-gray-600">/分</span>
+                  </div>
+                  <div className="space-y-4 text-left">
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-orange-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">字幕あり（+200円/分）</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-orange-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">最低料金: 3,000円</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-orange-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">納期: 5-7営業日</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-orange-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-700">視聴者に優しい字幕</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* 注意事項 */}
+            <div className="mt-12 max-w-4xl mx-auto">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+                <div className="flex items-start">
+                  <svg className="w-6 h-6 text-amber-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <h4 className="font-bold text-amber-800 mb-3">ご注意事項</h4>
+                    <ul className="text-sm text-amber-700 space-y-2">
+                      <li className="flex items-start">
+                        <span className="w-2 h-2 bg-amber-400 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                        10分以下の動画でも最低料金3,000円が適用されます
+                      </li>
+                      <li className="flex items-start">
+                        <span className="w-2 h-2 bg-amber-400 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                        30分を超える動画は追加で2営業日の納期をいただきます
+                      </li>
+                      <li className="flex items-start">
+                        <span className="w-2 h-2 bg-amber-400 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                        著作権に問題のある動画は制作をお断りする場合があります
+                      </li>
+                      <li className="flex items-start">
+                        <span className="w-2 h-2 bg-amber-400 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                        納品はメールにて行います
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 制作の流れセクション */}
+          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10 border border-gray-100">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">制作の流れ</h2>
+              <p className="text-lg text-gray-600">簡単4ステップで完了</p>
+            </div>
+            
+            <div className="max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {[
+                  {
+                    step: 1,
+                    title: "ご注文",
+                    description: "動画URLとフォーマットを選択してご注文",
+                    icon: "📝",
+                    color: "from-blue-500 to-blue-600"
+                  },
+                  {
+                    step: 2,
+                    title: "お支払い",
+                    description: "クレジットカードで安全にお支払い",
+                    icon: "💳",
+                    color: "from-green-500 to-green-600"
+                  },
+                  {
+                    step: 3,
+                    title: "制作開始",
+                    description: "プロが丁寧に切り抜き動画を制作",
+                    icon: "🎬",
+                    color: "from-purple-500 to-purple-600"
+                  },
+                  {
+                    step: 4,
+                    title: "納品",
+                    description: "完成した動画をメールでお届け",
+                    icon: "📧",
+                    color: "from-orange-500 to-red-500"
+                  }
+                ].map((item, index) => (
+                  <div key={index} className="text-center group">
+                    <div className={`w-20 h-20 bg-gradient-to-r ${item.color} text-white rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl font-bold shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-110`}>
+                      {item.step}
+                    </div>
+                    <div className="text-4xl mb-4">{item.icon}</div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                    <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                    
+                    {/* 矢印（最後の要素以外） */}
+                    {index < 3 && (
+                      <div className="hidden lg:block absolute top-10 left-full w-8 h-8 transform translate-x-4">
+                        <svg className="w-full h-full text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA セクション */}
+            <div className="mt-16 text-center">
+              <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 text-white">
+                <h3 className="text-2xl md:text-3xl font-bold mb-4">今すぐ始めましょう！</h3>
+                <p className="text-lg opacity-90 mb-6">プロの技術で、あなたの動画を魅力的な切り抜きに変身させます</p>
+                <a 
+                  href="#order-form" 
+                  className="inline-block bg-white text-orange-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  注文フォームへ
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}
