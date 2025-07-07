@@ -1,0 +1,23 @@
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="300" height="200" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  
+  <!-- 動画フレーム -->
+  <rect x="20" y="20" width="260" height="146" fill="#1e293b" rx="4"/>
+  
+  <!-- 再生ボタン -->
+  <circle cx="150" cy="93" r="20" fill="#ffffff" opacity="0.9"/>
+  <polygon points="145,83 145,103 165,93" fill="#1e293b"/>
+  
+  <!-- 人物シルエット -->
+  <circle cx="100" cy="70" r="15" fill="#64748b" opacity="0.6"/>
+  <rect x="85" y="85" width="30" height="40" fill="#64748b" opacity="0.6" rx="15"/>
+  
+  <!-- 背景要素 -->
+  <rect x="180" y="50" width="80" height="8" fill="#64748b" opacity="0.3" rx="4"/>
+  <rect x="180" y="65" width="60" height="8" fill="#64748b" opacity="0.3" rx="4"/>
+  <rect x="180" y="80" width="70" height="8" fill="#64748b" opacity="0.3" rx="4"/>
+  
+  <!-- タイトル -->
+  <text x="150" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151">字幕なしサンプル</text>
+</svg>
