@@ -1456,6 +1456,189 @@ section > .bg-slideup:first-child {
 	margin-bottom: 2rem;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
 	position: relative;
+	border-radius: 10px;
+	transition: all 0.3s ease;
+}
+
+/*サービス詳細説明セクション専用のcontent-item*/
+.bg3.bg-pattern3 .content-blocks .content-item {
+	background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+	border-left: 5px solid var(--primary-color);
+	box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+	transform: translateX(0);
+	transition: all 0.4s ease;
+}
+
+.bg3.bg-pattern3 .content-blocks .content-item:hover {
+	transform: translateX(10px);
+	box-shadow: 0 12px 35px rgba(52, 152, 219, 0.25);
+}
+
+.bg3.bg-pattern3 .content-blocks .content-item h4 {
+	color: var(--primary-color);
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.bg3.bg-pattern3 .content-blocks .content-item h4 i {
+	background: var(--primary-color);
+	color: white;
+	padding: 0.8rem;
+	border-radius: 50%;
+	font-size: 1.2rem;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+/*料金プランセクション専用のcontent-item*/
+.bg1.bg-pattern1 .content-blocks .content-item {
+	background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+	color: white;
+	border: 2px solid var(--accent-color);
+	box-shadow: 0 10px 30px rgba(231, 76, 60, 0.2);
+	position: relative;
+	overflow: hidden;
+}
+
+.bg1.bg-pattern1 .content-blocks .content-item::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4px;
+	background: linear-gradient(90deg, var(--accent-color), #ff6b6b);
+}
+
+.bg1.bg-pattern1 .content-blocks .content-item h4 {
+	color: #ff6b6b;
+	font-weight: 800;
+	text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.bg1.bg-pattern1 .content-blocks .content-item h4 i {
+	color: var(--accent-color);
+	margin-right: 1rem;
+	font-size: 1.4rem;
+	text-shadow: none;
+}
+
+.bg1.bg-pattern1 .content-blocks .content-item:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 15px 40px rgba(231, 76, 60, 0.3);
+}
+
+/*注意事項セクション専用のcontent-item*/
+.bg2.bg-pattern2 .content-blocks .content-item {
+	background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+	border: 2px solid #f39c12;
+	color: #8b4513;
+	box-shadow: 0 8px 25px rgba(243, 156, 18, 0.2);
+	position: relative;
+}
+
+.bg2.bg-pattern2 .content-blocks .content-item::before {
+	content: '⚠️';
+	position: absolute;
+	top: -10px;
+	right: 20px;
+	font-size: 2rem;
+	background: #f39c12;
+	color: white;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.bg2.bg-pattern2 .content-blocks .content-item h4 {
+	color: #d35400;
+	font-weight: 700;
+	margin-top: 1rem;
+}
+
+.bg2.bg-pattern2 .content-blocks .content-item h4 i {
+	color: #f39c12;
+	margin-right: 1rem;
+	font-size: 1.3rem;
+}
+
+.bg2.bg-pattern2 .content-blocks .content-item:hover {
+	transform: scale(1.02);
+	box-shadow: 0 12px 35px rgba(243, 156, 18, 0.3);
+}
+
+/*制作の流れセクション専用のcontent-item*/
+.bg2.bg-pattern2 .content-blocks.process-flow .content-item {
+	background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+	border: 2px solid #4caf50;
+	color: #2e7d32;
+	position: relative;
+	overflow: hidden;
+}
+
+.bg2.bg-pattern2 .content-blocks.process-flow .content-item::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 6px;
+	height: 100%;
+	background: linear-gradient(180deg, #4caf50, #66bb6a);
+}
+
+.bg2.bg-pattern2 .content-blocks.process-flow .content-item h4 {
+	color: #1b5e20;
+	font-weight: 700;
+	padding-left: 1rem;
+}
+
+.bg2.bg-pattern2 .content-blocks.process-flow .content-item h4 i {
+	background: linear-gradient(135deg, #4caf50, #66bb6a);
+	color: white;
+	padding: 1rem;
+	border-radius: 12px;
+	margin-right: 1.5rem;
+	font-size: 1.4rem;
+	box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+	transform: rotate(0deg);
+	transition: transform 0.3s ease;
+}
+
+.bg2.bg-pattern2 .content-blocks.process-flow .content-item:hover h4 i {
+	transform: rotate(360deg);
+}
+
+.bg2.bg-pattern2 .content-blocks.process-flow .content-item p {
+	padding-left: 1rem;
+	line-height: 1.8;
+}
+
+.bg2.bg-pattern2 .content-blocks.process-flow .content-item:hover {
+	transform: translateX(10px);
+	box-shadow: 0 12px 35px rgba(76, 175, 80, 0.25);
+}
+
+/*制作の流れの矢印を緑色に変更*/
+.content-blocks.process-flow .content-item::after {
+	content: "▼";
+	position: absolute;
+	left: 50%;
+	bottom: -2rem;
+	transform: scaleX(1.5);
+	opacity: 0.7;
+	color: #4caf50;
+	font-size: 1.5rem;
+	text-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
 }
 
 	/*画面幅600px以上の追加指定*/
