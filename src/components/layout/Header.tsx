@@ -15,6 +15,7 @@ export default function Header() {
 
         <nav>
           <ul>
+            <li><Link href="/order" className="order-btn">今すぐ注文</Link></li>
             <li><Link href="/#koe">お客様の声</Link></li>
             <li>
               <Link href="/#products">制作実績</Link>
@@ -46,6 +47,7 @@ export default function Header() {
         <nav>
           <ul>
             <li><Link href="/">ホーム</Link></li>
+            <li><Link href="/order" className="order-btn">今すぐ注文</Link></li>
             <li><Link href="/#koe">お客様の声</Link></li>
             <li>
               <Link href="/#products">制作実績</Link>

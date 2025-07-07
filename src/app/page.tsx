@@ -17,7 +17,7 @@ export default function Home() {
           </div>
 
           <div className="btn">
-            <p><Link href="/contact"><i className="fa-solid fa-video"></i>今すぐ依頼する</Link></p>
+            <p><Link href="/order"><i className="fa-solid fa-video"></i>今すぐ注文する</Link></p>
             <p><Link href="#plan"><i className="fa-solid fa-yen-sign"></i>料金を見る</Link></p>
           </div>
         </div>
@@ -324,15 +324,15 @@ export default function Home() {
         <div className="list-c2">
           <div className="list image1">
             <div className="text">
-              <h4><span className="sub-text">お問い合わせ</span><span className="main-text">Contact</span></h4>
-              <p className="btn1"><Link href="/contact">お問い合わせフォーム</Link></p>
+              <h4><span className="sub-text">今すぐ注文</span><span className="main-text">Order Now</span></h4>
+              <p className="btn1"><Link href="/order">オンライン注文</Link></p>
             </div>
           </div>
 
           <div className="list image2">
             <div className="text">
-              <h4><span className="sub-text">無料見積もり</span><span className="main-text">Estimate</span></h4>
-              <p className="btn1"><Link href="/form">見積もり依頼</Link></p>
+              <h4><span className="sub-text">お問い合わせ</span><span className="main-text">Contact</span></h4>
+              <p className="btn1"><Link href="/contact">お問い合わせフォーム</Link></p>
             </div>
           </div>
         </div>
