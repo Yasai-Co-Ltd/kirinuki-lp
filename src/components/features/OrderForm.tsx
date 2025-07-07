@@ -49,6 +49,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
   const watchedVideoUrl = watch('videoUrl');
   const watchedFormat = watch('format');
+  const watchedAspectRatio = watch('aspectRatio');
 
   // 動画情報を取得
   const fetchVideoInfo = async (videoUrl: string) => {
@@ -348,34 +349,62 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           <label className="block text-lg font-bold text-orange-900 mb-6">
             フォーマット選択 *
           </label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="flex items-start p-6 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-orange-300 transition-all bg-white/50">
-              <input
-                type="radio"
-                value="without_subtitles"
-                {...register('format', { required: 'フォーマットを選択してください' })}
-                className="mt-1 mr-4 text-orange-500 w-5 h-5"
-              />
-              <div className="flex-1">
-                <div className="font-bold text-gray-900 text-lg mb-2">字幕なし</div>
-                <div className="text-orange-600 font-bold text-xl mb-2">500円/分</div>
-                <div className="text-sm text-gray-600">シンプルで素早い制作</div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedFormat === 'without_subtitles'
+                ? 'border-orange-500 bg-orange-50'
+                : 'border-gray-200 hover:border-orange-300 bg-white/50'
+            }`}>
+              <div className="flex items-start mb-4">
+                <input
+                  type="radio"
+                  value="without_subtitles"
+                  {...register('format', { required: 'フォーマットを選択してください' })}
+                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
+                />
+                <div className="flex-1">
+                  <div className="font-bold text-gray-900 text-lg mb-2">字幕なし</div>
+                  <div className="text-orange-600 font-bold text-xl mb-2">500円/分</div>
+                  <div className="text-sm text-gray-600">シンプルで素早い制作</div>
+                </div>
+              </div>
+              <div className="mt-4 border-t border-gray-200 pt-4">
+                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
+                <img
+                  src="/images/sample-without-subtitles.svg"
+                  alt="字幕なしサンプル"
+                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
+                />
               </div>
             </label>
-            <label className="flex items-start p-6 border-2 border-orange-300 rounded-xl cursor-pointer hover:border-orange-400 transition-all bg-white">
-              <input
-                type="radio"
-                value="with_subtitles"
-                {...register('format', { required: 'フォーマットを選択してください' })}
-                className="mt-1 mr-4 text-orange-500 w-5 h-5"
-              />
-              <div className="flex-1">
-                <div className="flex items-center mb-2">
-                  <span className="font-bold text-gray-900 text-lg mr-2">字幕あり</span>
-                  <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">おすすめ</span>
+            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedFormat === 'with_subtitles'
+                ? 'border-orange-500 bg-orange-50'
+                : 'border-orange-300 hover:border-orange-400 bg-white'
+            }`}>
+              <div className="flex items-start mb-4">
+                <input
+                  type="radio"
+                  value="with_subtitles"
+                  {...register('format', { required: 'フォーマットを選択してください' })}
+                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center mb-2">
+                    <span className="font-bold text-gray-900 text-lg mr-2">字幕あり</span>
+                    <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">おすすめ</span>
+                  </div>
+                  <div className="text-orange-600 font-bold text-xl mb-2">700円/分</div>
+                  <div className="text-sm text-gray-600">視聴者に優しい字幕付き</div>
                 </div>
-                <div className="text-orange-600 font-bold text-xl mb-2">700円/分</div>
-                <div className="text-sm text-gray-600">視聴者に優しい字幕付き</div>
+              </div>
+              <div className="mt-4 border-t border-gray-200 pt-4">
+                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
+                <img
+                  src="/images/sample-with-subtitles.svg"
+                  alt="字幕ありサンプル"
+                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
+                />
               </div>
             </label>
           </div>
@@ -419,21 +448,90 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
             </div>
 
             {/* アスペクト比 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-4">
                 アスペクト比
               </label>
-              <select
-                {...register('aspectRatio', { required: 'アスペクト比を選択してください' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              >
-                <option value={1}>9:16 (縦型・ショート動画)</option>
-                <option value={2}>1:1 (正方形・SNS)</option>
-                <option value={3}>4:5 (ポートレート)</option>
-                <option value={4}>16:9 (横型・標準)</option>
-              </select>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
+                  watchedAspectRatio === 1
+                    ? 'border-orange-500 bg-orange-50'
+                    : 'border-gray-200 hover:border-orange-300'
+                }`}>
+                  <input
+                    type="radio"
+                    value={1}
+                    {...register('aspectRatio', { required: 'アスペクト比を選択してください' })}
+                    className="sr-only"
+                  />
+                  <img
+                    src="/images/aspect-9-16.svg"
+                    alt="9:16 縦型"
+                    className="w-full h-16 mb-2 group-hover:scale-105 transition-transform"
+                  />
+                  <span className="text-xs font-medium text-gray-700 text-center">9:16</span>
+                  <span className="text-xs text-gray-500 text-center">縦型・ショート</span>
+                </label>
+                <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
+                  watchedAspectRatio === 2
+                    ? 'border-orange-500 bg-orange-50'
+                    : 'border-gray-200 hover:border-orange-300'
+                }`}>
+                  <input
+                    type="radio"
+                    value={2}
+                    {...register('aspectRatio', { required: 'アスペクト比を選択してください' })}
+                    className="sr-only"
+                  />
+                  <img
+                    src="/images/aspect-1-1.svg"
+                    alt="1:1 正方形"
+                    className="w-full h-16 mb-2 group-hover:scale-105 transition-transform"
+                  />
+                  <span className="text-xs font-medium text-gray-700 text-center">1:1</span>
+                  <span className="text-xs text-gray-500 text-center">正方形・SNS</span>
+                </label>
+                <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
+                  watchedAspectRatio === 3
+                    ? 'border-orange-500 bg-orange-50'
+                    : 'border-gray-200 hover:border-orange-300'
+                }`}>
+                  <input
+                    type="radio"
+                    value={3}
+                    {...register('aspectRatio', { required: 'アスペクト比を選択してください' })}
+                    className="sr-only"
+                  />
+                  <img
+                    src="/images/aspect-4-5.svg"
+                    alt="4:5 ポートレート"
+                    className="w-full h-16 mb-2 group-hover:scale-105 transition-transform"
+                  />
+                  <span className="text-xs font-medium text-gray-700 text-center">4:5</span>
+                  <span className="text-xs text-gray-500 text-center">ポートレート</span>
+                </label>
+                <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
+                  watchedAspectRatio === 4
+                    ? 'border-orange-500 bg-orange-50'
+                    : 'border-gray-200 hover:border-orange-300'
+                }`}>
+                  <input
+                    type="radio"
+                    value={4}
+                    {...register('aspectRatio', { required: 'アスペクト比を選択してください' })}
+                    className="sr-only"
+                  />
+                  <img
+                    src="/images/aspect-16-9.svg"
+                    alt="16:9 横型"
+                    className="w-full h-16 mb-2 group-hover:scale-105 transition-transform"
+                  />
+                  <span className="text-xs font-medium text-gray-700 text-center">16:9</span>
+                  <span className="text-xs text-gray-500 text-center">横型・標準</span>
+                </label>
+              </div>
               {errors.aspectRatio && (
-                <p className="text-red-600 text-sm mt-1">{errors.aspectRatio.message}</p>
+                <p className="text-red-600 text-sm mt-2">{errors.aspectRatio.message}</p>
               )}
             </div>
           </div>
