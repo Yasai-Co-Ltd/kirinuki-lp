@@ -1,0 +1,41 @@
+{
+  "packageManager": "yarn",
+  "scripts": {
+    "dev": "yarn dev",
+    "build": "yarn build",
+    "start": "yarn start",
+    "lint": "yarn lint"
+  },
+  "devCommand": "yarn dev",
+  "buildCommand": "yarn build",
+  "startCommand": "yarn start",
+  "lintCommand": "yarn lint",
+  "framework": "nextjs",
+  "typescript": true,
+  "tailwind": true,
+  "srcDirectory": "src",
+  "publicDirectory": "public",
+  "outputDirectory": ".next",
+  "preferences": {
+    "useYarn": true,
+    "autoInstall": true,
+    "hotReload": true
+  },
+  "filePatterns": {
+    "components": "src/components/**/*.{ts,tsx}",
+    "pages": "src/app/**/*.{ts,tsx}",
+    "hooks": "src/hooks/**/*.{ts,tsx}",
+    "styles": "src/styles/**/*.{css,scss}",
+    "types": "src/types/**/*.{ts,tsx}",
+    "lib": "src/lib/**/*.{ts,tsx}",
+    "api": "src/app/api/**/*.{ts,tsx}"
+  },
+  "excludePatterns": [
+    "node_modules",
+    ".next",
+    ".git",
+    "dist",
+    "build",
+    "*.log"
+  ]
+}
