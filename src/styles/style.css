@@ -392,6 +392,15 @@ a.ddmenu::before {
 
 	}/*追加指定ここまで*/
 
+	/*画面幅900px以上ではハンバーガーメニューボタンを非表示*/
+	@media screen and (min-width:900px) {
+
+	#menubar_hdr {
+		display: none;
+	}
+
+	}/*追加指定ここまで*/
+
 
 /*バー１本あたりの設定*/
 #menubar_hdr span {
@@ -446,7 +455,7 @@ a.ddmenu::before {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(52, 152, 219, 0.1);
+	background: rgba(255, 255, 255, 0.7);
 	z-index: -1;
 }
 

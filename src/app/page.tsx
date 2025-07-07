@@ -12,7 +12,7 @@ export default function Home() {
         <div>
           <div className="hero-text">
             <p>切り抜きは丸投げ！<br />
-            <span className="highlight">格安・高速</span>な<br />
+            <span className="highlight">格安・最短当日納品</span>の<br />
             動画切り抜きサービス</p>
           </div>
 
