@@ -148,32 +148,157 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 制作実績 */}
+      {/* 制作サンプル */}
       <section id="products">
         <h2 className="bg-slideup">
           <div className="image">
-            <div className="en-text">Video Production Portfolio</div>
-            <div className="jp-text">制作実績</div>
+            <div className="en-text">Production Samples</div>
+            <div className="jp-text">制作サンプル</div>
           </div>
         </h2>
 
-        <div className="portfolio-grid">
-          {[1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6].map((num, index) => (
-            <div key={index} className="portfolio-item">
-              <figure><Image src={`/images/thumb${num}.jpg`} alt="" width={200} height={150} /></figure>
-              <h4 className="c">{
-                index % 6 === 0 ? 'ゲーム実況動画' :
-                index % 6 === 1 ? 'ビジネス系解説動画' :
-                index % 6 === 2 ? 'エンタメ・バラエティ' :
-                index % 6 === 3 ? 'ライブ配信動画' :
-                index % 6 === 4 ? '教育・学習コンテンツ' :
-                'トーク・対談動画'
-              }</h4>
-            </div>
-          ))}
+        <div className="sample-intro">
+          <p className="c">元のYouTube動画から、このような魅力的な切り抜き動画を制作いたします</p>
         </div>
 
-        <p className="action-btn"><Link href="#">もっと見る</Link></p>
+        <div className="production-samples">
+          {/* サンプル1: ゲーム実況 */}
+          <div className="sample-item up">
+            <div className="sample-header">
+              <h3><i className="fa-solid fa-gamepad"></i>ゲーム実況動画の制作例</h3>
+            </div>
+            <div className="before-after-container">
+              <div className="before-section">
+                <h4>Before（元動画）</h4>
+                <div className="video-placeholder">
+                  <Image src="/images/thumb1.jpg" alt="元動画サムネイル" width={300} height={200} />
+                  <div className="video-info">
+                    <p><i className="fa-solid fa-clock"></i>2時間30分の配信動画</p>
+                    <p><i className="fa-solid fa-eye"></i>視聴者の離脱が多い長時間配信</p>
+                  </div>
+                </div>
+              </div>
+              <div className="arrow-section">
+                <i className="fa-solid fa-arrow-right"></i>
+                <span>AI分析・編集</span>
+              </div>
+              <div className="after-section">
+                <h4>After（切り抜き動画）</h4>
+                <div className="clips-grid">
+                  <div className="clip-item">
+                    <Image src="/images/thumb2.jpg" alt="切り抜き1" width={150} height={100} />
+                    <p>神プレイシーン<br />90秒</p>
+                  </div>
+                  <div className="clip-item">
+                    <Image src="/images/thumb3.jpg" alt="切り抜き2" width={150} height={100} />
+                    <p>面白リアクション<br />60秒</p>
+                  </div>
+                  <div className="clip-item">
+                    <Image src="/images/thumb4.jpg" alt="切り抜き3" width={150} height={100} />
+                    <p>攻略解説<br />120秒</p>
+                  </div>
+                </div>
+                <div className="result-stats">
+                  <p><i className="fa-solid fa-chart-line"></i>再生数 5倍アップ</p>
+                  <p><i className="fa-solid fa-heart"></i>エンゲージメント率 300%向上</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* サンプル2: ビジネス系 */}
+          <div className="sample-item up">
+            <div className="sample-header">
+              <h3><i className="fa-solid fa-briefcase"></i>ビジネス系解説動画の制作例</h3>
+            </div>
+            <div className="before-after-container">
+              <div className="before-section">
+                <h4>Before（元動画）</h4>
+                <div className="video-placeholder">
+                  <Image src="/images/thumb5.jpg" alt="元動画サムネイル" width={300} height={200} />
+                  <div className="video-info">
+                    <p><i className="fa-solid fa-clock"></i>1時間のセミナー動画</p>
+                    <p><i className="fa-solid fa-eye"></i>重要ポイントが埋もれがち</p>
+                  </div>
+                </div>
+              </div>
+              <div className="arrow-section">
+                <i className="fa-solid fa-arrow-right"></i>
+                <span>AI分析・編集</span>
+              </div>
+              <div className="after-section">
+                <h4>After（切り抜き動画）</h4>
+                <div className="clips-grid">
+                  <div className="clip-item">
+                    <Image src="/images/thumb6.jpg" alt="切り抜き1" width={150} height={100} />
+                    <p>核心ポイント<br />75秒</p>
+                  </div>
+                  <div className="clip-item">
+                    <Image src="/images/thumb1.jpg" alt="切り抜き2" width={150} height={100} />
+                    <p>実践テクニック<br />90秒</p>
+                  </div>
+                  <div className="clip-item">
+                    <Image src="/images/thumb2.jpg" alt="切り抜き3" width={150} height={100} />
+                    <p>Q&Aハイライト<br />60秒</p>
+                  </div>
+                </div>
+                <div className="result-stats">
+                  <p><i className="fa-solid fa-chart-line"></i>視聴完了率 80%達成</p>
+                  <p><i className="fa-solid fa-share"></i>シェア数 10倍増加</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* サンプル3: エンタメ系 */}
+          <div className="sample-item up">
+            <div className="sample-header">
+              <h3><i className="fa-solid fa-star"></i>エンタメ・バラエティの制作例</h3>
+            </div>
+            <div className="before-after-container">
+              <div className="before-section">
+                <h4>Before（元動画）</h4>
+                <div className="video-placeholder">
+                  <Image src="/images/thumb3.jpg" alt="元動画サムネイル" width={300} height={200} />
+                  <div className="video-info">
+                    <p><i className="fa-solid fa-clock"></i>3時間のライブ配信</p>
+                    <p><i className="fa-solid fa-eye"></i>面白シーンが点在</p>
+                  </div>
+                </div>
+              </div>
+              <div className="arrow-section">
+                <i className="fa-solid fa-arrow-right"></i>
+                <span>AI分析・編集</span>
+              </div>
+              <div className="after-section">
+                <h4>After（切り抜き動画）</h4>
+                <div className="clips-grid">
+                  <div className="clip-item">
+                    <Image src="/images/thumb4.jpg" alt="切り抜き1" width={150} height={100} />
+                    <p>爆笑シーン<br />45秒</p>
+                  </div>
+                  <div className="clip-item">
+                    <Image src="/images/thumb5.jpg" alt="切り抜き2" width={150} height={100} />
+                    <p>感動の瞬間<br />80秒</p>
+                  </div>
+                  <div className="clip-item">
+                    <Image src="/images/thumb6.jpg" alt="切り抜き3" width={150} height={100} />
+                    <p>神回まとめ<br />120秒</p>
+                  </div>
+                </div>
+                <div className="result-stats">
+                  <p><i className="fa-solid fa-chart-line"></i>バズ率 400%向上</p>
+                  <p><i className="fa-solid fa-users"></i>新規フォロワー 2000人獲得</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="sample-cta">
+          <p className="sample-note">※上記は制作サンプルです。実際の動画や画像は仮のものを使用しています。</p>
+          <p className="action-btn"><Link href="/order">あなたの動画も切り抜いてみる</Link></p>
+        </div>
       </section>
 
       {/* 料金プラン */}
