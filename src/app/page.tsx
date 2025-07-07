@@ -11,9 +11,9 @@ export default function Home() {
       <div id="hero-section">
         <div>
           <div className="hero-text">
-            <p>AIを活用した<br />
-            <span className="highlight">高速・高品質</span>な<br />
-            動画編集サービス</p>
+            <p>切り抜きは丸投げ！<br />
+            <span className="highlight">格安・高速</span>な<br />
+            動画切り抜きサービス</p>
           </div>
 
           <div className="hero-buttons">
@@ -84,8 +84,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* お客様の声 */}
-      <section className="bg3 bg-pattern3" id="koe">
+      {/* お客様の声 - 一時的に非表示 */}
+      {/* <section className="bg3 bg-pattern3" id="koe">
         <h2 className="c">お客様の声<span>Customer Testimonials</span></h2>
 
         <div className="content-blocks">
@@ -118,6 +118,34 @@ export default function Home() {
         </div>
 
         <div className="r"><p className="action-btn"><Link href="#" className="inline-block">もっと見る</Link></p></div>
+      </section> */}
+
+      {/* サービス詳細説明 */}
+      <section className="bg3 bg-pattern3">
+        <h2 className="c">サービス詳細<span>Service Details</span></h2>
+
+        <div className="content-blocks">
+          <div className="content-item up">
+            <div className="text">
+              <h4><i className="fa-solid fa-scissors"></i>1本の長編動画から複数の切り抜き動画を制作</h4>
+              <p>お客様の長時間配信やセミナー動画から、AIが自動で面白いシーンやハイライト部分を抽出。1本の元動画から5〜10本の魅力的な切り抜き動画を制作します。各切り抜きは独立したコンテンツとして最適化され、より多くの視聴者にリーチできます。</p>
+            </div>
+          </div>
+
+          <div className="content-item up">
+            <div className="text">
+              <h4><i className="fa-solid fa-clock"></i>動画の長さに応じた柔軟な料金設定</h4>
+              <p>元動画の長さに応じて最適な料金プランをご提案。30分以下の短時間動画から、3時間を超える長時間配信まで対応可能です。長時間の動画ほど多くの切り抜きが作成でき、1本あたりの単価がお得になる仕組みです。</p>
+            </div>
+          </div>
+
+          <div className="content-item up">
+            <div className="text">
+              <h4><i className="fa-solid fa-chart-line"></i>AIによる最適なシーン抽出</h4>
+              <p>10,000本以上の動画データを学習したAIが、視聴者の興味を引くシーンを自動判定。感情の変化、音声の盛り上がり、視覚的なインパクトなど、複数の要素を総合的に分析して、バズりやすいシーンを確実に抽出します。</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* 制作実績 */}
@@ -151,41 +179,62 @@ export default function Home() {
       {/* 料金プラン */}
       <section className="bg1 bg-pattern1" id="plan">
         <h2 className="c">料金プラン<span>Rate Plans</span></h2>
+        
+        <div className="content-blocks">
+          <div className="content-item up">
+            <div className="text">
+              <h4><i className="fa-solid fa-info-circle"></i>動画の長さに応じた料金設定</h4>
+              <p>元動画の長さによって最適な料金プランをご提案いたします。長時間の動画ほど多くの切り抜きが作成でき、1本あたりの単価がお得になります。</p>
+            </div>
+          </div>
+        </div>
 
         <div className="scroll">
-          <table className="ta1 plan blur">
+          <table className="ta1 plan">
             <thead>
               <tr>
                 <th>&nbsp;</th>
-                <th><i className="fa-solid fa-video"></i>ライトプラン<span><span className="small">￥</span>1,500<span className="small">/本</span></span></th>
-                <th><i className="fa-solid fa-video"></i>スタンダードプラン<span><span className="small">￥</span>12,000<span className="small">/月</span></span><span className="osusume">おすすめ</span></th>
-                <th><i className="fa-solid fa-video"></i>プロプラン<span><span className="small">￥</span>25,000<span className="small">/月</span></span></th>
+                <th><i className="fa-solid fa-clock"></i>ショートプラン<span>30分以下<br /><span className="small">￥</span>8,000<span className="small">〜</span></span></th>
+                <th><i className="fa-solid fa-clock"></i>スタンダードプラン<span>1時間以下<br /><span className="small">￥</span>15,000<span className="small">〜</span></span><span className="osusume">おすすめ</span></th>
+                <th><i className="fa-solid fa-clock"></i>ロングプラン<span>3時間以下<br /><span className="small">￥</span>25,000<span className="small">〜</span></span></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>動画本数</td>
-                <td>1本から対応</td>
-                <td>月6本まで</td>
-                <td>月12本まで</td>
+                <td>元動画の長さ</td>
+                <td>30分以下</td>
+                <td>30分〜1時間</td>
+                <td>1時間〜3時間</td>
+              </tr>
+              <tr>
+                <td>切り抜き動画数</td>
+                <td>3〜5本</td>
+                <td>5〜8本</td>
+                <td>8〜12本</td>
+              </tr>
+              <tr>
+                <td>1本あたり単価</td>
+                <td>約1,600円〜</td>
+                <td>約1,875円〜</td>
+                <td>約2,083円〜</td>
               </tr>
               <tr>
                 <td>納期</td>
                 <td>24時間以内</td>
-                <td>12時間以内</td>
-                <td>6時間以内</td>
+                <td>48時間以内</td>
+                <td>72時間以内</td>
               </tr>
               <tr>
                 <td>修正回数</td>
-                <td>1回まで</td>
+                <td>2回まで</td>
                 <td>3回まで</td>
-                <td>無制限</td>
+                <td>5回まで</td>
               </tr>
               <tr>
                 <td>サムネイル制作</td>
-                <td>別途料金</td>
-                <td>込み</td>
-                <td>込み（3案提示）</td>
+                <td>各動画1案</td>
+                <td>各動画2案</td>
+                <td>各動画3案</td>
               </tr>
               <tr>
                 <td>テロップ・効果音</td>
@@ -201,6 +250,15 @@ export default function Home() {
               </tr>
             </tbody>
           </table>
+        </div>
+        
+        <div className="content-blocks">
+          <div className="content-item up">
+            <div className="text">
+              <h4><i className="fa-solid fa-plus-circle"></i>3時間を超える長時間動画も対応可能</h4>
+              <p>3時間を超える長時間配信やセミナー動画も承ります。動画の長さや内容に応じて個別にお見積もりいたします。お気軽にお問い合わせください。</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -272,12 +330,12 @@ export default function Home() {
       {/* テキストスライドショー */}
       <div className="text-slide-wrapper">
         <div className="text-slide">
-          <span>VIDEO PRO</span>
+          <span>AIKATA</span>
         </div>
       </div>
 
       {/* 会社概要 */}
-      <section id="company">
+      {/* <section id="company">
         <div className="bg-slideup mb-space-large">
           <div className="image"></div>
         </div>
@@ -315,7 +373,7 @@ export default function Home() {
             </table>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* 問い合わせ＆見積もり依頼 */}
       <section className="padding0">
@@ -339,7 +397,7 @@ export default function Home() {
       </section>
 
       {/* 新着情報 */}
-      <section>
+      {/* <section>
         <div className="c2">
           <div className="title">
             <h2>新着情報<span>News</span></h2>
@@ -358,10 +416,10 @@ export default function Home() {
             </dl>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* サムネイルスライドショー */}
-      <section className="padding-lr0">
+      {/* <section className="padding-lr0">
         <div className="slide-thumbnail1">
           <div className="img rtl">
             {[1, 2, 3, 4, 5, 6].map((num) => (
@@ -377,7 +435,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ローディング */}
       <div id="startup-loader">

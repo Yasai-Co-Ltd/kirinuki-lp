@@ -1798,7 +1798,7 @@ section + section::before {
 }
 
 .content-blocks .content-item {
-	animation: float 3s ease-in-out infinite;
+	/* animation: float 3s ease-in-out infinite; */
 }
 
 .content-blocks .content-item:nth-child(2) {
