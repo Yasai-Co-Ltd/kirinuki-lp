@@ -23,13 +23,13 @@
 ---------------------------------------------------------------------------*/
 :root {
 	--base-color: #fff;					/*テンプレートの土台となる色（主に背景カラー）*/
-	--base-inverse-color: #323232;		/*上のbase-colorの対となる色（主にテキストカラー）*/
+	--base-inverse-color: #2c3e50;		/*上のbase-colorの対となる色（主にテキストカラー）*/
 
-	--primary-color: #ff6b35;			/*切り抜き動画らしいオレンジ系のメインカラー*/
+	--primary-color: #3498db;			/*メインカラー（青系）*/
 	--primary-inverse-color: #fff;		/*上のprimary-colorの対となる色*/
-	--accent-color: #4ecdc4;			/*アクセントカラー（青緑）*/
-	--gradient-start: #ff6b35;			/*グラデーション開始色*/
-	--gradient-end: #f7931e;			/*グラデーション終了色*/
+	--accent-color: #e74c3c;			/*アクセントカラー（赤系）*/
+	--gradient-start: #3498db;			/*グラデーション開始色*/
+	--gradient-end: #2980b9;			/*グラデーション終了色*/
 
 	--space-large: 8vw;			/*主に余白の一括管理用。画面幅100%＝100vwです。*/
 }
@@ -141,13 +141,13 @@ a:hover {
 }
 
 /*ロゴ画像*/
-#loading img {
+#startup-loader img {
 	width: 300px;	/*画像の幅*/
 	margin-bottom: 20px;	/*ローディングバーとの間のスペース調整*/
 }
 
 /*ローディングブロック*/
-#loading {
+#startup-loader {
     position: fixed;
     top: 0;
     left: 0;
@@ -163,7 +163,7 @@ a:hover {
 }
 
 /*プログレスバーの土台*/
-.progress-container {
+.loader-progress-container {
     width: 200px;		/*幅。お好みで。*/
     height: 4px;		/*高さ。お好みで。*/
     border-radius: 2px;	/*角をほんの少し丸くする*/
@@ -172,11 +172,11 @@ a:hover {
 }
 
 /*プログレスバー*/
-.progress-bar {
+.loader-progress-bar {
     width: 100%;
     height: 100%;
     background: #000;	/*進行中のバーの色*/
-    animation: progress 2s linear;  /*#loadingのanimation時間に合わせて2秒に設定*/
+    animation: progress 2s linear;  /*#startup-loaderのanimation時間に合わせて2秒に設定*/
     transform-origin: left;
 }
 
@@ -430,7 +430,7 @@ a.ddmenu::before {
 /*メイン画像
 ---------------------------------------------------------------------------*/
 /*ブロック全体*/
-#mainimg {
+#hero-section {
 	background: var(--base-color) url("/images/hero-bg.png") no-repeat center center / cover;
 	width: 100%;
 	padding-top: 150%;	/*アスペクト比2:3（3÷2=1.5）*/
@@ -439,28 +439,28 @@ a.ddmenu::before {
 	z-index: 0;
 }
 
-#mainimg::before {
+#hero-section::before {
 	content: '';
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(255,255,255,0.7);
+	background: rgba(52, 152, 219, 0.1);
 	z-index: -1;
 }
 
 	/*画面420px以上の追加指定*/
 	@media screen and (min-width:420px) {
 
-	#mainimg {
+	#hero-section {
 		background: var(--base-color) url("/images/hero-bg.png") no-repeat center center / cover;
 		padding-top: 56.25%;	/*アスペクト比16:9（9÷16=0.5624）*/
 	}
 
 	}/*追加指定ここまで*/
 
-#mainimg > div {
+#hero-section > div {
 	position: absolute;
 	top: 60px;	/*header分を確保*/
 	left: 0;
@@ -474,7 +474,7 @@ a.ddmenu::before {
 	/*画面420px以上の追加指定*/
 	@media screen and (min-width:420px) {
 
-	#mainimg > div {
+	#hero-section > div {
 		left: var(--space-large);
 		align-items: flex-start;
 		justify-content: center;
@@ -483,8 +483,8 @@ a.ddmenu::before {
 	}/*追加指定ここまで*/
 
 /*テキストのブロック*/
-#mainimg p {margin: 0;}
-#mainimg .text {
+#hero-section p {margin: 0;}
+#hero-section .hero-text {
 	font-size: 28px;	/*文字サイズ。*/
 	font-weight: 800;	/*太字に*/
 	line-height: 1.8;	/*行間*/
@@ -494,7 +494,7 @@ a.ddmenu::before {
 	/*画面420px以上の追加指定*/
 	@media screen and (min-width:420px) {
 
-	#mainimg .text {
+	#hero-section .hero-text {
 		text-align: left;	/*テキストを左寄せ*/
 		font-size: 3.6vw;	/*文字サイズ。*/
 	}
@@ -503,21 +503,21 @@ a.ddmenu::before {
 
 
 /*ボタン*/
-#mainimg .btn {
+#hero-section .hero-buttons {
 	font-size: 1rem;	/*文字サイズ*/
 	font-weight: 600;	/*少し太字に*/
 	margin-top: 3vw;	/*上のテキストとボタンの間のスペース。*/
 	display: flex;
 	gap: 1rem;	/*ボタン同士の余白*/
 }
-#mainimg .btn a {
+#hero-section .hero-buttons a {
 	display: block;text-decoration: none;
 	padding: 0.8rem 2rem;	/*ボタン内の余白。上下、左右へ。1rem=1文字分です。*/
 	margin-bottom: 10px;	/*ボタン同士の隙間*/
 }
 
 /*マウスオン時*/
-#mainimg .btn a:hover {
+#hero-section .hero-buttons a:hover {
 	opacity: 1;
 	transform: scale(1.05);	/*105%に拡大*/
 }
@@ -526,11 +526,11 @@ a.ddmenu::before {
 	@media screen and (min-width:420px) {
 
 	/*ボタン*/
-	#mainimg .btn {
+	#hero-section .hero-buttons {
 		font-size: 1.4vw;	/*文字サイズ*/
 	}
 	
-	#mainimg .btn a {
+	#hero-section .hero-buttons a {
 		margin: 0;
 		padding: 0.6rem 3rem;	/*ボタン内の余白。上下、左右へ。1rem=1文字分です。*/
 	}
@@ -539,33 +539,33 @@ a.ddmenu::before {
 
 
 /*1つ目のボタン（お問い合わせ）の追加設定*/
-#mainimg .btn p:nth-of-type(1) a {
+#hero-section .hero-buttons p:nth-of-type(1) a {
 	background: var(--primary-color);		/*背景色。冒頭のprimary-colorを読み込みます。*/
 	color: var(--primary-inverse-color);	/*文字色。冒頭のprimary-inverse-colorを読み込みます。*/
 }
 
 /*2つ目のボタン（資料請求）への追加設定*/
-#mainimg .btn p:nth-of-type(2) a {
+#hero-section .hero-buttons p:nth-of-type(2) a {
 	background: var(--base-inverse-color);	/*背景色。冒頭のbase-inverse-colorを読み込みます。*/
 	color: var(--base-color);				/*文字色。冒頭のbase-colorを読み込みます。*/
 	letter-spacing: 0.1em;					/*文字間隔を少しだけ広く*/
 }
 
 /*ボタン内のアイコン*/
-#mainimg .btn i {
+#hero-section .hero-buttons i {
 	transform: scale(1.4);	/*140%に拡大*/
 	padding-right: 0.8rem;	/*アイコンとテキストとの間の余白*/
 }
 
 /*メインビジュアルのハイライト効果*/
-#mainimg .text .highlight {
+#hero-section .hero-text .highlight {
 	background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 	font-weight: 900;
 	/* text-shadow: 2px 2px 4px rgba(0,0,0,0.3); */
-	animation: pulse 2s ease-in-out infinite alternate;
+	/* animation: pulse 2s ease-in-out infinite alternate; */
 }
 
 /*パルスアニメーション*/
@@ -581,13 +581,13 @@ a.ddmenu::before {
 }
 
 /*ボタンのホバーアニメーション強化*/
-#mainimg .btn a {
+#hero-section .hero-buttons a {
 	position: relative;
 	overflow: hidden;
 	transition: all 0.3s ease;
 }
 
-#mainimg .btn a::before {
+#hero-section .hero-buttons a::before {
 	content: '';
 	position: absolute;
 	top: 0;
@@ -598,7 +598,7 @@ a.ddmenu::before {
 	transition: left 0.5s;
 }
 
-#mainimg .btn a:hover::before {
+#hero-section .hero-buttons a:hover::before {
 	left: 100%;
 }
 
@@ -937,9 +937,9 @@ footer small {
 }
 
 
-/*btn1（ボタン）
+/*action-btn（ボタン）
 ---------------------------------------------------------------------------*/
-.btn1 a {
+.action-btn a {
 	text-shadow: none;display: block;text-decoration: none;
 	background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));		/*グラデーション背景*/
 	color: var(--primary-inverse-color);	/*文字色。冒頭のprimary-inverse-colorを読み込みます。*/
@@ -950,26 +950,26 @@ footer small {
 	position: relative;
 	overflow: hidden;
 	transition: all 0.3s ease;
-	box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+	box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
 /*bg-primary-colorの上で使う場合*/
-.bg-primary-color .btn1 a {
+.bg-primary-color .action-btn a {
 	background: var(--primary-inverse-color);		/*背景色。冒頭のprimary-inverse-colorを読み込みます。*/
 	color: var(--primary-color);	/*文字色。冒頭のprimary-colorを読み込みます。*/
 }
 
 /*マウスオン時*/
-.btn1 a:hover {
+.action-btn a:hover {
 	opacity: 1;
 	transform: translateY(-3px) scale(1.05);	/*上に移動して105%に拡大*/
 	background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));	/*逆グラデーション*/
 	color: var(--primary-inverse-color);
-	box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+	box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
 }
 
 /*ボタンのシャイン効果*/
-.btn1 a::before {
+.action-btn a::before {
 	content: '';
 	position: absolute;
 	top: 0;
@@ -980,18 +980,18 @@ footer small {
 	transition: left 0.5s;
 }
 
-.btn1 a:hover::before {
+.action-btn a:hover::before {
 	left: 100%;
 }
 
 /*bg-primary-colorの上で使う場合*/
-.bg-primary-color .btn1 a:hover {
+.bg-primary-color .action-btn a:hover {
 	background: #fff;	/*背景色*/
 	color: #333;		/*文字色*/
 }
 
 /*矢印アイコン*/
-.btn1 a::after {
+.action-btn a::after {
 	font-family: "Font Awesome 6 Free";	/*Font Awesomeを使う指示*/
 	content: "\f0a9";		/*使いたいアイコン名（Font Awesome）をここで指定*/
 	font-weight: bold;		/*この手の設定がないとアイコンが出ない場合があります*/
@@ -1081,28 +1081,29 @@ footer small {
 .arrow + section {
 	padding-top: calc(var(--space-large) + 150px);
 	margin-top: -150px;
+	z-index: -1;
 }
 
 
-/*list-grid-simple（制作実績ブロック）
+/*portfolio-grid（制作実績ブロック）
 ---------------------------------------------------------------------------*/
-.list-grid-simple .list * {margin: 0;padding: 0;}
+.portfolio-grid .portfolio-item * {margin: 0;padding: 0;}
 
 /*listブロック全体を囲むブロック*/
-.list-grid-simple {
+.portfolio-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);	/*2列にする指定。4列にしたければrepeat(4, 1fr)とする。*/
     gap: 3rem;	/*ブロックの間に空けるマージン的な指定*/
 }
 
 /*ボックス１個あたり*/
-.list-grid-simple .list {
+.portfolio-grid .portfolio-item {
     display: grid;
 	position: relative;
 }
 
 /*h4見出し*/
-.list-grid-simple .list h4 {
+.portfolio-grid .portfolio-item h4 {
 	margin-top: 0.5rem;		/*上に0.5文字分のスペースを空ける*/
 	font-weight: normal;	/*太さを標準に*/
 }
@@ -1111,22 +1112,22 @@ footer small {
 	@media screen and (min-width:800px) {
 
 	/*listブロック全体を囲むブロック*/
-	.list-grid-simple {
+	.portfolio-grid {
 		grid-template-columns: repeat(3, 1fr);	/*3列にする指定。4列にしたければrepeat(4, 1fr)とする。*/
 	}
 
 	}/*追加指定ここまで*/
 
 
-/*list-grid1（３カラムボックス）
+/*feature-cards（３カラムボックス）
 ---------------------------------------------------------------------------*/
-.list-grid1 .list * {margin: 0;padding: 0;}
+.feature-cards .feature-card * {margin: 0;padding: 0;}
 
 	/*画面幅800px以上の追加指定*/
 	@media screen and (min-width:800px) {
 
 	/*listブロック全体を囲むブロック*/
-	.list-grid1 {
+	.feature-cards {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);	/*3列にする指定。4列にしたければrepeat(4, 1fr)とする。*/
 		gap: 3vw;	/*ブロックの間に空けるマージン的な指定*/
@@ -1136,7 +1137,7 @@ footer small {
 
 
 /*ボックス１個あたり*/
-.list-grid1 .list {
+.feature-cards .feature-card {
     display: grid;
 	margin-bottom: 3rem;	/*ボックスの下に空けるスペース*/
 	position: relative;
@@ -1150,13 +1151,13 @@ footer small {
 }
 
 /*ホバー時のアニメーション*/
-.list-grid1 .list:hover {
+.feature-cards .feature-card:hover {
 	transform: translateY(-10px);
 	box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 /*カードの上部にグラデーションライン*/
-.list-grid1 .list::before {
+.feature-cards .feature-card::before {
 	content: '';
 	position: absolute;
 	top: 0;
@@ -1171,21 +1172,21 @@ footer small {
 	@media screen and (min-width:800px) {
 
 	/*ボックス１個あたり*/
-	.list-grid1 .list {
+	.feature-cards .feature-card {
 		margin-bottom: 0;	/*下に空けるスペースをなくす*/
 	}
 
 	}/*追加指定ここまで*/
 
 
-/*bg-black内のボックスへの追加設定*/
-.list-grid1 .list.bg-black {
+/*bg-dark内のボックスへの追加設定*/
+.feature-cards .feature-card.bg-dark {
 	background: #111;	/*背景色*/
 	color: #fff;		/*文字色*/
 }
 
 /*ナンバー（01〜03の飾り番号）*/
-.list-grid1 .list .num {
+.feature-cards .feature-card .card-number {
 	position: absolute;
 	left: -20px;		/*左からの配置場所。マイナスがつくので本来とは逆向きに移動。*/
 	top: -30px;			/*上からの配置場所。マイナスがつくので本来とは逆向きに移動。*/
@@ -1195,9 +1196,9 @@ footer small {
 	opacity: 0.2;	/*透明度。色を20%出す。*/
 }
 
-/*引用符（“）の装飾*/
-.list-grid1 .list h4.kazari::before {
-	content: "“";	/*わかりづらいですが、中央にあるのが引用符でこの文字を出力しています。*/
+/*引用符（"）の装飾*/
+.feature-cards .feature-card h4.decorated::before {
+	content: "\201C";	/*引用符の文字コード*/
 	position: absolute;
 	left: -1rem;	/*左からの配置場所。マイナスがつくので本来とは逆向きに移動。*/
 	top: -40px;		/*上からの配置場所。マイナスがつくので本来とは逆向きに移動。*/
@@ -1207,7 +1208,7 @@ footer small {
 }
 
 /*ボックス内のh4見出し*/
-.list-grid1 .list h4 {
+.feature-cards .feature-card h4 {
 	font-size: 1.4rem;	/*文字サイズを140%に*/
 	line-height: 1.6;	/*行間*/
 	margin-bottom: 1rem;	/*下に１文字分のスペースを空ける*/
@@ -1215,26 +1216,26 @@ footer small {
 }
 
 /*ボックス内のp要素*/
-.list-grid1 .list p {
+.feature-cards .feature-card p {
 	font-size: 0.9rem;	/*文字サイズを90%に*/
 	line-height: 1.6;	/*行間*/
 	font-weight: normal;
 }
 
-/*bg-black内のp要素への追加設定*/
-.list-grid1 .list.bg-black p {
+/*bg-dark内のp要素への追加設定*/
+.feature-cards .feature-card.bg-dark p {
 	color: #999;	/*文字色*/
 }
 
 /*ボックス内のfigure画像*/
-.list-grid1 .list figure.icon {
+.feature-cards .feature-card figure.card-icon {
 	margin: 0 auto;
 	width: 100px;		/*画像サイズ*/
 	margin-top: -40px;	/*本来の場所より上にずらす*/
 }
 
 /*bg1内のfigureへの追加設定*/
-.bg1 .list-grid1 .list figure.icon {
+.bg1 .feature-cards .feature-card figure.card-icon {
 	filter: grayscale(100%) brightness(90%);	/*画像をグレースケールにし、明るさも少し暗くする。そのままの画像色を出したければこの１行を削除。*/
 	margin-bottom: 1rem;	/*下に１文字分のスペースを空ける*/
 }
@@ -1243,7 +1244,7 @@ footer small {
 	@media screen and (min-width:800px) {
 
 	/*ボックス内のfigure画像*/
-	.list-grid1 .list figure.icon {
+	.feature-cards .feature-card figure.card-icon {
 		width: 150px;		/*画像サイズ*/
 		margin-top: -50px;	/*本来の場所より上にずらす*/
 	}
@@ -1252,9 +1253,9 @@ footer small {
 
 
 
-/*list-c2（お問い合わせ、資料請求）
+/*cta-section（お問い合わせ、資料請求）
 ---------------------------------------------------------------------------*/
-.list-c2 > a {
+.cta-section > a {
     text-decoration: none;
     display: block;
 }
@@ -1263,7 +1264,7 @@ footer small {
 	@media screen and (min-width:600px) {
 	
 	/*２つのボックスを囲むボックス*/
-	.list-c2 {
+	.cta-section {
 		display: flex;	/*横並びにする*/
 		gap: 2vw;		/*ブロックの間に空けるマージン的な指定*/
 	}
@@ -1272,7 +1273,7 @@ footer small {
 
 
 /*ボックス１個あたり*/
-.list-c2 .list {
+.cta-section .cta-card {
 	text-align: center;
 	position: relative;
 	overflow-y: hidden;
@@ -1286,26 +1287,26 @@ footer small {
 	/*画面幅600px以上の追加指定*/
 	@media screen and (min-width:600px) {
 	
-	.list-c2 > * {
+	.cta-section > * {
 		flex: 1;
 	}
-	.list-c2 .list {
+	.cta-section .cta-card {
 		margin: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
-	.list-c2 > a .list {
+	.cta-section > a .cta-card {
 		height: 100%;
 	}
 	
 	/*1つ目のボックス（お問い合わせ）*/
-	.list-c2 .list:nth-of-type(1) {
+	.cta-section .cta-card:nth-of-type(1) {
 		border-radius: 0px 30px 30px 0px;	/*角丸の上書き。左上、右上、右下、左下への順番。*/
 	}
 	
 	/*2つ目のボックス（資料請求）*/
-	.list-c2 .list:nth-of-type(2) {
+	.cta-section .cta-card:nth-of-type(2) {
 		border-radius: 30px 0px 0px 30px;	/*角丸の上書き。左上、右上、右下、左下への順番。*/
 	}
 	
@@ -1313,17 +1314,17 @@ footer small {
 
 
 /*左側ボックスの背景*/
-.list-c2 .list.image1 {
+.cta-section .cta-card.bg-contact {
 	background: url("/images/bg_contact.jpg") no-repeat center center / cover;
 }
 
 /*右側ボックスの背景*/
-.list-c2 .list.image2 {
+.cta-section .cta-card.bg-order {
 	background: url("/images/bg_request.jpg") no-repeat center center / cover;
 }
 
 /*h4見出し*/
-.list-c2 h4 {
+.cta-section h4 {
 	line-height: 1.2;	/*行間を狭く*/
 	font-family: "Jost", sans-serif;	/*フォント指定*/
 	font-optical-sizing: auto;
@@ -1331,7 +1332,7 @@ footer small {
 }
 
 /*h4見出し内のメインテキスト（main-text）*/
-.list-c2 h4 .main-text {
+.cta-section h4 .cta-main-text {
 	display: block;
 	font-size: 3rem;		/*文字サイズ。3倍。*/
 	padding-top: 1.5rem;	/*上に空ける余白*/
@@ -1341,7 +1342,7 @@ footer small {
 	/*画面幅600px以上の追加指定*/
 	@media screen and (min-width:600px) {
 
-	.list-c2 h4 .main-text {
+	.cta-section h4 .cta-main-text {
 		font-size: 4rem;	/*文字サイズ。4倍。*/
 	}
 
@@ -1349,18 +1350,18 @@ footer small {
 
 
 /*テキスト*/
-.list-c2 .list .text {
+.cta-section .cta-card .text {
 	position: relative;z-index: 1;
 	font-size: 0.85rem;	/*文字サイズ85%*/
 }
 
 /*マウスオン用のアニメーション*/
-.list-c2 .list::before {
+.cta-section .cta-card::before {
 	content: "";position: absolute;top: 0;left: 0;width: 100%;height: 100%;
 	background: rgba(0,0,0,0.6);		/*写真に重ねておく半透明の黒い色。0,0,0は黒のことで0.6は色が60%出た状態。*/
 	transition: transform 0.3s 0.1s;	/*アニメーションの速度（0.3秒）と待機時間（0.1秒）。*/
 }
-.list-c2 .list:hover::before {
+.cta-section .cta-card:hover::before {
 	transform: translateY(100%);	/*マウスオンで半透明の黒を枠外へ出す。-100%にすると逆に移動します。*/
 }
 
@@ -1414,15 +1415,15 @@ section > .bg-slideup:first-child {
 }
 
 
-/*list-normal1（「お客様の声」「制作の流れ」ブロックで使用）
+/*content-blocks（「お客様の声」「制作の流れ」ブロックで使用）
 ---------------------------------------------------------------------------*/
-.list-normal1 * {margin: 0;padding: 0;}
+.content-blocks * {margin: 0;padding: 0;}
 
 	/*画面幅600px以上の追加指定*/
 	@media screen and (min-width:600px) {
 
 	/*テキストブロック*/
-	.list-normal1 .text {
+	.content-blocks .text {
 		flex: 1;
 	}
 	
@@ -1436,7 +1437,7 @@ section > .bg-slideup:first-child {
 
 
 /*ブロック１個あたり*/
-.list-normal1 .list {
+.content-blocks .content-item {
 	background: var(--base-color) url("/images/bg-dot.png") no-repeat right bottom / 200px;
 	color: var(--base-inverse-color);	/*文字色。冒頭のbase-inverse-colorを読み込みます。*/
 	padding: 3rem;
@@ -1449,7 +1450,7 @@ section > .bg-slideup:first-child {
 	@media screen and (min-width:600px) {
 
 	/*ブロック１個あたり*/
-	.list-normal1 .list {
+	.content-blocks .content-item {
 		display: flex;
 		gap: 2rem;	/*画像とテキストの間のスペース。２文字分。画像がない場合はこれは適用されません。*/
 	}
@@ -1458,7 +1459,7 @@ section > .bg-slideup:first-child {
 
 
 /*画像ブロック*/
-.list-normal1 figure {
+.content-blocks figure {
 	width: 30%;	/*幅*/
 	margin-bottom: 1rem;	/*下に空けるスペース*/
 }
@@ -1467,7 +1468,7 @@ section > .bg-slideup:first-child {
 	@media screen and (min-width:600px) {
 
 	/*画像の下マージンのリセット*/
-	.list-normal1 figure {
+	.content-blocks figure {
 		margin-bottom: 0;
 	}
 
@@ -1475,7 +1476,7 @@ section > .bg-slideup:first-child {
 
 
 /*h4見出し*/
-.list-normal1 h4 {
+.content-blocks h4 {
 	font-size: 1.2rem;	/*文字サイズ200%*/
 	line-height: 1.5;	/*行間*/
 	margin-bottom: 1rem;	/*下に空けるスペース*/
@@ -1484,7 +1485,7 @@ section > .bg-slideup:first-child {
 	/*画面幅600px以上の追加指定*/
 	@media screen and (min-width:600px) {
 
-	.list-normal1 h4 {
+	.content-blocks h4 {
 		font-size: 2rem;	/*文字サイズ200%*/
 		line-height: 1.8;	/*行間*/
 	}
@@ -1493,18 +1494,18 @@ section > .bg-slideup:first-child {
 
 
 /*h4内にアイコンを配置した場合（制作の流れの見出し左のアイコン）*/
-.list-normal1.flow h4 i {
+.content-blocks.process-flow h4 i {
 	margin-right: 1rem;	/*アイコンとテキストとの間の余白*/
 }
 
 /*名前*/
-.list-normal1 .name {
+.content-blocks .author-name {
 	text-align: right;	/*右寄せ*/
 	margin-top: 1rem;	/*上に空けるスペース*/
 }
 
 /*制作の流れで使用しているブロック間の「▼」の矢印*/
-.list-normal1.flow .list::after {
+.content-blocks.process-flow .content-item::after {
 	content: "▼";	/*このテキストを出力します*/
 	position: absolute;
 	left: 50%;		/*左からの配置場所。厳密ではありませんが、文字が小さいので問題ないかと。*/
@@ -1514,7 +1515,7 @@ section > .bg-slideup:first-child {
 }
 
 /*最後のボックスだけ下矢印を出さない*/
-.list-normal1.flow .list:last-child::after {
+.content-blocks.process-flow .content-item:last-child::after {
 	content: none;
 }
 
@@ -1769,7 +1770,7 @@ section + section::before {
 	100% { transform: rotate(360deg); }
 }
 
-.list-grid1 .list:hover .icon img {
+.feature-cards .feature-card:hover .card-icon img {
 	animation: iconSpin 0.6s ease-in-out;
 }
 
@@ -1793,19 +1794,19 @@ section + section::before {
 	50% { transform: translateY(-10px); }
 }
 
-.list-normal1 .list {
+.content-blocks .content-item {
 	animation: float 3s ease-in-out infinite;
 }
 
-.list-normal1 .list:nth-child(2) {
+.content-blocks .content-item:nth-child(2) {
 	animation-delay: 0.5s;
 }
 
-.list-normal1 .list:nth-child(3) {
+.content-blocks .content-item:nth-child(3) {
 	animation-delay: 1s;
 }
 
-.list-normal1 .list:nth-child(4) {
+.content-blocks .content-item:nth-child(4) {
 	animation-delay: 1.5s;
 }
 

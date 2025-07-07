@@ -8,15 +8,15 @@ export default function Home() {
   return (
     <Layout>
       {/* メイン画像 */}
-      <div id="mainimg">
+      <div id="hero-section">
         <div>
-          <div className="text">
+          <div className="hero-text">
             <p>AIを活用した<br />
             <span className="highlight">高速・高品質</span>な<br />
-            切り抜き動画制作サービス</p>
+            動画編集サービス</p>
           </div>
 
-          <div className="btn">
+          <div className="hero-buttons">
             <p><Link href="/order"><i className="fa-solid fa-video"></i>今すぐ注文する</Link></p>
             <p><Link href="#plan"><i className="fa-solid fa-yen-sign"></i>料金を見る</Link></p>
           </div>
@@ -25,61 +25,61 @@ export default function Home() {
 
       {/* こんなお悩みありませんか？ */}
       <section className="bg1 bg-pattern1 arrow">
-        <h2 className="c">YouTubeでこんなお悩みありませんか？<span>Do you have any of these problems?</span></h2>
+        <h2 className="c">動画編集でこんなお悩みありませんか？<span>Do you have any of these problems?</span></h2>
 
-        <div className="list-grid1">
-          <div className="list bg-black up">
-            <figure className="icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
-            <h4 className="kazari">切り抜きチームを<span className="color-check">内製したいけど人材</span>がいない…</h4>
-            <p>動画編集ができるスタッフを採用したいが、スキルのある人材が見つからない。外注費を抑えるために内製化したいけど、教育コストも心配。</p>
-            <span className="num">01</span>
+        <div className="feature-cards">
+          <div className="feature-card bg-dark up">
+            <figure className="card-icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
+            <h4 className="decorated">切り抜きチームを<span className="color-check">内製したいけど人材</span>がいない…</h4>
+            <p>切り抜き動画編集ができるスタッフを採用したいが、スキルのある人材が見つからない。外注費を抑えるために内製化したいけど、教育コストも心配。</p>
+            {/* <span className="card-number">01</span> */}
           </div>
 
-          <div className="list bg-black up">
-            <figure className="icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
-            <h4 className="kazari">外部に委託したが<span className="color-check">品質や納期が不安</span>…</h4>
+          <div className="feature-card bg-dark up">
+            <figure className="card-icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
+            <h4 className="decorated">外部に委託したいが<span className="color-check">品質や納期が不安</span>…</h4>
             <p>フリーランスに依頼したものの、品質にばらつきがあったり納期が遅れたりで安定しない。継続的に高品質な動画を制作してもらえる業者を探している。</p>
-            <span className="num">02</span>
+            {/* <span className="card-number">02</span> */}
           </div>
 
-          <div className="list bg-black up">
-            <figure className="icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
-            <h4 className="kazari">大量に切り抜き動画を<span className="color-check">作成したいけど難しい</span>…</h4>
-            <p>チャンネル登録者を増やすために毎日複数本投稿したいが、一人では限界がある。大量制作するための効率的な仕組みや体制作りが分からない。</p>
-            <span className="num">03</span>
+          <div className="feature-card bg-dark up">
+            <figure className="card-icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
+            <h4 className="decorated">大量に切り抜き動画を<span className="color-check">制作したい</span>…</h4>
+            <p>再生回数を伸ばすために切り抜き動画を大量に投稿したいが、限界がある。大量制作するための効率的な仕組みや体制作りが分からない。</p>
+            {/* <span className="card-number">03</span> */}
           </div>
         </div>
       </section>
 
-      {/* 全てキリヌキプロが解決します！ */}
+      {/* 全てビデオプロが解決します！ */}
       <section className="bg-primary-color">
         <div className="c">
           <h2 className="inline-block relative">
-            全てキリヌキプロが解決します！
-            <div><Image src="/images/onayami.png" alt="そのお悩み" width={200} height={100} /></div>
+            全て動画のAIKATAが解決します！
+            {/* <div><Image src="/images/onayami.png" alt="そのお悩み" width={200} height={100} /></div> */}
           </h2>
         </div>
 
-        <div className="list-grid1">
-          <div className="list up">
-            <figure className="icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
+        <div className="feature-cards">
+          <div className="feature-card up">
+            <figure className="card-icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AI活用で従来の3倍速い制作スピード</span></h4>
-            <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、最短12時間で高品質な切り抜き動画をお届けします。</p>
-            <span className="num">01</span>
+            <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、最短12時間で高品質な動画をお届けします。</p>
+            <span className="card-number">01</span>
           </div>
 
-          <div className="list up">
-            <figure className="icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
+          <div className="feature-card up">
+            <figure className="card-icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AIデータ分析による確実にバズる編集</span></h4>
             <p>10,000本以上の動画データをAIが分析し、再生数・エンゲージメント率の高いパターンを特定。人間の感覚だけでは見つけられない「バズる法則」を動画に反映します。</p>
-            <span className="num">02</span>
+            <span className="card-number">02</span>
           </div>
 
-          <div className="list up">
-            <figure className="icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
+          <div className="feature-card up">
+            <figure className="card-icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AI効率化により実現した圧倒的コスパ</span></h4>
             <p>AI技術による作業効率化で、従来の半額以下を実現。1本あたり1,500円〜の業界最安値でありながら、品質は従来の手作業を上回る高水準を保証します。</p>
-            <span className="num">03</span>
+            <span className="card-number">03</span>
           </div>
         </div>
       </section>
@@ -88,36 +88,36 @@ export default function Home() {
       <section className="bg3 bg-pattern3" id="koe">
         <h2 className="c">お客様の声<span>Customer Testimonials</span></h2>
 
-        <div className="list-normal1">
-          <div className="list up">
+        <div className="content-blocks">
+          <div className="content-item up">
             <figure><Image src="/images/photo1.jpg" alt="" width={200} height={200} /></figure>
             <div className="text">
               <h4>AI分析のおかげで再生数が5倍に！</h4>
               <p>AIが過去の成功動画を分析して最適な編集パターンを提案してくれるので、確実にバズる動画が作れるようになりました。制作スピードも従来の3倍速くなり、登録者数が3ヶ月で1,000人から10,000人に急成長！</p>
-              <p className="name">YouTuber Aさん（ゲーム実況）</p>
+              <p className="author-name">YouTuber Aさん（ゲーム実況）</p>
             </div>
           </div>
 
-          <div className="list up reverse">
+          <div className="content-item up reverse">
             <figure><Image src="/images/photo2.jpg" alt="" width={200} height={200} /></figure>
             <div className="text">
               <h4>AI活用で編集時間が1/10、品質は2倍に！</h4>
               <p>AIが自動で最適なカット点を見つけてくれるので、以前8時間かかっていた編集が今では30分程度で完了。しかも品質は手作業の時より格段に向上しています。浮いた時間で企画に集中できるようになりました。</p>
-              <p className="name">ビジネス系YouTuber Bさん</p>
+              <p className="author-name">ビジネス系YouTuber Bさん</p>
             </div>
           </div>
 
-          <div className="list up">
+          <div className="content-item up">
             <figure><Image src="/images/photo3.jpg" alt="" width={200} height={200} /></figure>
             <div className="text">
               <h4>AIの精密分析で確実にバズる動画に</h4>
               <p>AIが視聴者の行動パターンを分析して、どの瞬間で離脱するか、どこで興味を持つかを正確に予測。その結果、再生数が平均5倍、視聴完了率も80%以上を達成できました。データに基づいた確実な成果です！</p>
-              <p className="name">エンタメ系YouTuber Cさん</p>
+              <p className="author-name">エンタメ系YouTuber Cさん</p>
             </div>
           </div>
         </div>
 
-        <div className="r"><p className="btn1"><Link href="#" className="inline-block">もっと見る</Link></p></div>
+        <div className="r"><p className="action-btn"><Link href="#" className="inline-block">もっと見る</Link></p></div>
       </section>
 
       {/* 制作実績 */}
@@ -129,15 +129,15 @@ export default function Home() {
           </div>
         </h2>
 
-        <div className="list-grid-simple">
+        <div className="portfolio-grid">
           {[1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6].map((num, index) => (
-            <div key={index} className="list">
+            <div key={index} className="portfolio-item">
               <figure><Image src={`/images/thumb${num}.jpg`} alt="" width={200} height={150} /></figure>
               <h4 className="c">{
-                index % 6 === 0 ? 'ゲーム実況切り抜き' :
+                index % 6 === 0 ? 'ゲーム実況動画' :
                 index % 6 === 1 ? 'ビジネス系解説動画' :
                 index % 6 === 2 ? 'エンタメ・バラエティ' :
-                index % 6 === 3 ? 'ライブ配信切り抜き' :
+                index % 6 === 3 ? 'ライブ配信動画' :
                 index % 6 === 4 ? '教育・学習コンテンツ' :
                 'トーク・対談動画'
               }</h4>
@@ -145,7 +145,7 @@ export default function Home() {
           ))}
         </div>
 
-        <p className="btn1"><Link href="#">もっと見る</Link></p>
+        <p className="action-btn"><Link href="#">もっと見る</Link></p>
       </section>
 
       {/* 料金プラン */}
@@ -213,7 +213,7 @@ export default function Home() {
 
           <div className="text">
             <dl className="faq">
-              <dt className="openclose">どのような動画でも切り抜き対応可能ですか？</dt>
+              <dt className="openclose">どのような動画でも編集対応可能ですか？</dt>
               <dd>ゲーム実況、トーク配信、教育コンテンツ、ライブ配信など、ほぼ全てのジャンルに対応しています。著作権に問題がない動画であれば、どのような内容でも承ります。</dd>
 
               <dt className="openclose">なぜそんなに早く高品質な動画が作れるのですか？</dt>
@@ -231,39 +231,39 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="r"><p className="btn1"><Link href="#" className="inline-block">もっと見る</Link></p></div>
+        <div className="r"><p className="action-btn"><Link href="#" className="inline-block">もっと見る</Link></p></div>
       </section>
 
       {/* 制作の流れ */}
       <section className="bg2 bg-pattern2" id="flow">
         <h2 className="c">制作の流れ<span>Production Flow</span></h2>
 
-        <div className="list-normal1 flow">
-          <div className="list up">
+        <div className="content-blocks process-flow">
+          <div className="content-item up">
             <div className="text">
               <h4><i className="fa-solid fa-upload"></i>動画素材のアップロード</h4>
-              <p>お客様の元動画をクラウドストレージ経由でアップロードしていただきます。YouTube動画のURLでも対応可能です。切り抜きたい部分の指定や、特別なご要望があれば詳細をお聞かせください。長時間の動画でも問題ありません。</p>
+              <p>お客様の元動画をクラウドストレージ経由でアップロードしていただきます。YouTube動画のURLでも対応可能です。編集したい部分の指定や、特別なご要望があれば詳細をお聞かせください。長時間の動画でも問題ありません。</p>
             </div>
           </div>
 
-          <div className="list up">
+          <div className="content-item up">
             <div className="text">
               <h4><i className="fa-solid fa-scissors"></i>AI×プロによる超高速編集</h4>
               <p>AIが動画を自動解析し、最適なカット点・テロップ位置・効果音タイミングを瞬時に特定。その後、経験豊富な編集者が最終調整を行い、従来の3倍速で高品質な動画を完成させます。AIの精密さと人間の感性を融合した最高品質をお届けします。</p>
             </div>
           </div>
 
-          <div className="list up">
+          <div className="content-item up">
             <div className="text">
               <h4><i className="fa-solid fa-eye"></i>品質チェック＆確認</h4>
               <p>編集完了後、品質チェックを行い、お客様に確認用動画をお送りします。修正が必要な箇所があれば、プランに応じた回数まで無料で対応いたします。ご満足いただけるまで調整を重ねます。</p>
             </div>
           </div>
 
-          <div className="list up">
+          <div className="content-item up">
             <div className="text">
               <h4><i className="fa-solid fa-download"></i>完成動画の納品</h4>
-              <p>最終確認後、完成した切り抜き動画とサムネイルをお客様にお渡しします。YouTubeやTikTokなど、各プラットフォームに最適化した形式で納品。アップロード方法のサポートも行っております。</p>
+              <p>最終確認後、完成した動画とサムネイルをお客様にお渡しします。YouTubeやTikTokなど、各プラットフォームに最適化した形式で納品。アップロード方法のサポートも行っております。</p>
             </div>
           </div>
         </div>
@@ -272,7 +272,7 @@ export default function Home() {
       {/* テキストスライドショー */}
       <div className="text-slide-wrapper">
         <div className="text-slide">
-          <span>KIRINUKI PRO</span>
+          <span>VIDEO PRO</span>
         </div>
       </div>
 
@@ -289,11 +289,11 @@ export default function Home() {
 
           <div className="text">
             <table className="ta1">
-              <caption>キリヌキプロについて</caption>
+              <caption>ビデオプロについて</caption>
               <tbody>
                 <tr>
                   <th>サービス名</th>
-                  <td>キリヌキプロ - AI活用による高速・高品質切り抜き動画制作サービス</td>
+                  <td>ビデオプロ - AI活用による高速・高品質動画制作サービス</td>
                 </tr>
                 <tr>
                   <th>対応ジャンル</th>
@@ -321,18 +321,18 @@ export default function Home() {
       <section className="padding0">
         <h2 className="dn">問い合わせ＆見積もり依頼</h2>
 
-        <div className="list-c2">
-          <div className="list image1">
+        <div className="cta-section">
+          <div className="cta-card bg-contact">
             <div className="text">
-              <h4><span className="sub-text">今すぐ注文</span><span className="main-text">Order Now</span></h4>
-              <p className="btn1"><Link href="/order">オンライン注文</Link></p>
+              <h4><span className="sub-text">今すぐ注文</span><span className="cta-main-text">Order Now</span></h4>
+              <p className="action-btn"><Link href="/order">オンライン注文</Link></p>
             </div>
           </div>
 
-          <div className="list image2">
+          <div className="cta-card bg-order">
             <div className="text">
-              <h4><span className="sub-text">お問い合わせ</span><span className="main-text">Contact</span></h4>
-              <p className="btn1"><Link href="/contact">お問い合わせフォーム</Link></p>
+              <h4><span className="sub-text">お問い合わせ</span><span className="cta-main-text">Contact</span></h4>
+              <p className="action-btn"><Link href="/contact">お問い合わせフォーム</Link></p>
             </div>
           </div>
         </div>
@@ -380,10 +380,10 @@ export default function Home() {
       </section>
 
       {/* ローディング */}
-      <div id="loading">
-        <Image src="/images/logo.png" alt="KIRINUKI PRO" width={300} height={90} />
-        <div className="progress-container">
-          <div className="progress-bar"></div>
+      <div id="startup-loader">
+        <Image src="/images/logo.png" alt="VIDEO PRO" width={300} height={90} />
+        <div className="loader-progress-container">
+          <div className="loader-progress-bar"></div>
         </div>
       </div>
     </Layout>
