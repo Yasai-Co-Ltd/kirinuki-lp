@@ -4,19 +4,16 @@ import Layout from '@/components/layout/Layout';
 export default function OrderPage() {
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <div className="min-h-screen bg-[gradient-to-br from-orange-50 via-white to-red-50] pt-24">
         {/* ヒーローセクション */}
-        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-16">
+        <div className="bg-[#3498db] text-white py-16">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 切り抜き動画制作
               </h1>
-              <p className="text-xl md:text-2xl font-light opacity-90 mb-2">
-                プロが作る高品質な切り抜き動画
-              </p>
               <p className="text-lg opacity-80">
-                YouTube動画から魅力的な切り抜き動画を制作いたします
+                長編動画から魅力的な切り抜き動画を制作いたします
               </p>
             </div>
           </div>

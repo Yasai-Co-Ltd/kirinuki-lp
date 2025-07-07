@@ -20,13 +20,6 @@ export default function RootLayout({
       </head>
       <body>
         {children}
-        
-        {/* 著作権表示 */}
-        <span className="pr">
-          <a href="https://template-party.com/" target="_blank" rel="noopener noreferrer">
-            《Web Design:Template-Party》
-          </a>
-        </span>
       </body>
     </html>
   )

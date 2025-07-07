@@ -603,12 +603,12 @@ export default function Home() {
       </section> */}
 
       {/* ローディング */}
-      <div id="startup-loader">
+      {/* <div id="startup-loader">
         <Image src="/images/logo.png" alt="VIDEO PRO" width={300} height={90} />
         <div className="loader-progress-container">
           <div className="loader-progress-bar"></div>
         </div>
-      </div>
+      </div> */}
     </Layout>
   )
 }
