@@ -1213,6 +1213,7 @@ footer small {
 	line-height: 1.6;	/*行間*/
 	margin-bottom: 1rem;	/*下に１文字分のスペースを空ける*/
 	position: relative;
+	font-weight: bold;
 }
 
 /*ボックス内のp要素*/
@@ -1231,7 +1232,10 @@ footer small {
 .feature-cards .feature-card figure.card-icon {
 	margin: 0 auto;
 	width: 100px;		/*画像サイズ*/
-	margin-top: -40px;	/*本来の場所より上にずらす*/
+}
+
+.feature-cards .feature-card figure.card-icon img {
+	width: 100%;
 }
 
 /*bg1内のfigureへの追加設定*/
@@ -1246,7 +1250,6 @@ footer small {
 	/*ボックス内のfigure画像*/
 	.feature-cards .feature-card figure.card-icon {
 		width: 150px;		/*画像サイズ*/
-		margin-top: -50px;	/*本来の場所より上にずらす*/
 	}
 
 	}/*追加指定ここまで*/
@@ -1765,14 +1768,14 @@ section + section::before {
 }
 
 /*アイコンの回転アニメーション*/
-@keyframes iconSpin {
+/* @keyframes iconSpin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
 }
 
 .feature-cards .feature-card:hover .card-icon img {
 	animation: iconSpin 0.6s ease-in-out;
-}
+} */
 
 /*テキストのタイプライター効果*/
 @keyframes typewriter {

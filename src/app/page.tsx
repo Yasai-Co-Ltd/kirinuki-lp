@@ -44,8 +44,8 @@ export default function Home() {
 
           <div className="feature-card bg-dark up">
             <figure className="card-icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
-            <h4 className="decorated">大量に切り抜き動画を<span className="color-check">制作したい</span>…</h4>
-            <p>再生回数を伸ばすために切り抜き動画を大量に投稿したいが、限界がある。大量制作するための効率的な仕組みや体制作りが分からない。</p>
+            <h4 className="decorated">大量に切り抜き動画を制作したいけど<span className="color-check">費用が</span>…</h4>
+            <p>再生回数を伸ばすために切り抜き動画を大量に投稿したいが、どれくらい費用がかかるか不安。大量制作するための効率的な仕組みや体制作りが分からない。</p>
             {/* <span className="card-number">03</span> */}
           </div>
         </div>
@@ -65,21 +65,21 @@ export default function Home() {
             <figure className="card-icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AI活用で従来の3倍速い制作スピード</span></h4>
             <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、最短12時間で高品質な動画をお届けします。</p>
-            <span className="card-number">01</span>
+            {/* <span className="card-number">01</span> */}
           </div>
 
           <div className="feature-card up">
             <figure className="card-icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AIデータ分析による確実にバズる編集</span></h4>
             <p>10,000本以上の動画データをAIが分析し、再生数・エンゲージメント率の高いパターンを特定。人間の感覚だけでは見つけられない「バズる法則」を動画に反映します。</p>
-            <span className="card-number">02</span>
+            {/* <span className="card-number">02</span> */}
           </div>
 
           <div className="feature-card up">
             <figure className="card-icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AI効率化により実現した圧倒的コスパ</span></h4>
             <p>AI技術による作業効率化で、従来の半額以下を実現。1本あたり1,500円〜の業界最安値でありながら、品質は従来の手作業を上回る高水準を保証します。</p>
-            <span className="card-number">03</span>
+            {/* <span className="card-number">03</span> */}
           </div>
         </div>
       </section>
