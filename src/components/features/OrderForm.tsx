@@ -537,33 +537,133 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           </div>
 
           {/* 追加オプション */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            {/* 字幕 */}
-            <div>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  {...register('subtitleSwitch', {
-                    setValueAs: (value) => value ? 1 : 0
-                  })}
-                  className="mr-2 w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                />
-                <span className="text-sm font-medium text-gray-700">字幕を追加</span>
-              </label>
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <h4 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <svg className="h-5 w-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+              </svg>
+              追加オプション
+            </h4>
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <svg className="h-6 w-6 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <div>
+                  <p className="font-semibold text-yellow-800 mb-1">重要：字幕・ヘッドラインの設定</p>
+                  <p className="text-yellow-700 text-sm">以下のオプションを見落とさないよう、必ずご確認ください。設定により動画の見栄えが大きく変わります。</p>
+                </div>
+              </div>
             </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 字幕オプション */}
+              <div className="bg-white border-2 border-blue-200 rounded-xl p-6 hover:border-blue-300 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <h5 className="text-lg font-bold text-blue-900 flex items-center gap-2">
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2" />
+                    </svg>
+                    字幕設定
+                  </h5>
+                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">推奨</span>
+                </div>
+                <p className="text-blue-700 text-sm mb-4">動画に字幕を表示するかどうかを選択してください</p>
+                
+                <div className="space-y-3">
+                  <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                    watch('subtitleSwitch') === 1
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-blue-300 bg-white'
+                  }`}>
+                    <input
+                      type="radio"
+                      value={1}
+                      {...register('subtitleSwitch', {
+                        setValueAs: (value) => parseInt(value)
+                      })}
+                      className="mr-3 w-5 h-5 text-blue-600"
+                    />
+                    <div>
+                      <div className="font-semibold text-gray-900">字幕を表示する</div>
+                      <div className="text-sm text-gray-600">視聴者にとって分かりやすい動画になります</div>
+                    </div>
+                  </label>
+                  
+                  <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                    watch('subtitleSwitch') === 0
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-blue-300 bg-white'
+                  }`}>
+                    <input
+                      type="radio"
+                      value={0}
+                      {...register('subtitleSwitch', {
+                        setValueAs: (value) => parseInt(value)
+                      })}
+                      className="mr-3 w-5 h-5 text-blue-600"
+                    />
+                    <div>
+                      <div className="font-semibold text-gray-900">字幕を非表示にする</div>
+                      <div className="text-sm text-gray-600">シンプルな見た目の動画になります</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
 
-            {/* ヘッドライン */}
-            <div>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  {...register('headlineSwitch', {
-                    setValueAs: (value) => value ? 1 : 0
-                  })}
-                  className="mr-2 w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
-                />
-                <span className="text-sm font-medium text-gray-700">ヘッドラインを追加</span>
-              </label>
+              {/* ヘッドラインオプション */}
+              <div className="bg-white border-2 border-purple-200 rounded-xl p-6 hover:border-purple-300 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <h5 className="text-lg font-bold text-purple-900 flex items-center gap-2">
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    ヘッドライン設定
+                  </h5>
+                  <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-bold">注目度UP</span>
+                </div>
+                <p className="text-purple-700 text-sm mb-4">動画にキャッチーなヘッドラインを表示するかどうかを選択してください</p>
+                
+                <div className="space-y-3">
+                  <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                    watch('headlineSwitch') === 1
+                      ? 'border-purple-500 bg-purple-50'
+                      : 'border-gray-200 hover:border-purple-300 bg-white'
+                  }`}>
+                    <input
+                      type="radio"
+                      value={1}
+                      {...register('headlineSwitch', {
+                        setValueAs: (value) => parseInt(value)
+                      })}
+                      className="mr-3 w-5 h-5 text-purple-600"
+                    />
+                    <div>
+                      <div className="font-semibold text-gray-900">ヘッドラインを表示する</div>
+                      <div className="text-sm text-gray-600">視聴者の注目を集めやすくなります</div>
+                    </div>
+                  </label>
+                  
+                  <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                    watch('headlineSwitch') === 0
+                      ? 'border-purple-500 bg-purple-50'
+                      : 'border-gray-200 hover:border-purple-300 bg-white'
+                  }`}>
+                    <input
+                      type="radio"
+                      value={0}
+                      {...register('headlineSwitch', {
+                        setValueAs: (value) => parseInt(value)
+                      })}
+                      className="mr-3 w-5 h-5 text-purple-600"
+                    />
+                    <div>
+                      <div className="font-semibold text-gray-900">ヘッドラインを非表示にする</div>
+                      <div className="text-sm text-gray-600">すっきりとした見た目の動画になります</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
