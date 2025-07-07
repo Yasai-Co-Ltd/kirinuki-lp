@@ -40,10 +40,11 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     formState: { errors },
   } = useForm<OrderFormData>({
     defaultValues: {
+      format: 'default',
       preferLength: 0,
       aspectRatio: 1,
-      subtitleSwitch: 0,
-      headlineSwitch: 0,
+      subtitleSwitch: 1,
+      headlineSwitch: 1,
     }
   });
 
@@ -167,7 +168,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   }
 
   if (step === 'payment' && estimate && videoInfo) {
-    const breakdown = getPricingBreakdown(estimate, watchedFormat === 'with_subtitles');
+    const breakdown = getPricingBreakdown(estimate, watchedFormat);
 
     return (
       <div className="max-w-3xl mx-auto">
@@ -193,7 +194,11 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               </div>
               <div>
                 <span className="font-semibold text-blue-900 block mb-1">フォーマット:</span>
-                <span className="text-blue-800">{watchedFormat === 'with_subtitles' ? '字幕あり' : '字幕なし'}</span>
+                <span className="text-blue-800">
+                  {watchedFormat === 'default' && 'デフォルト'}
+                  {watchedFormat === 'separate' && '2分割'}
+                  {watchedFormat === 'zoom' && 'ズーム'}
+                </span>
               </div>
               <div>
                 <span className="font-semibold text-blue-900 block mb-1">納期:</span>
@@ -229,7 +234,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <span className="text-blue-700">{watch('subtitleSwitch') ? 'あり' : 'なし'}</span>
                 </div>
                 <div>
-                  <span className="font-medium text-blue-800 block mb-1">ヘッドライン:</span>
+                  <span className="font-medium text-blue-800 block mb-1">タイトル:</span>
                   <span className="text-blue-700">{watch('headlineSwitch') ? 'あり' : 'なし'}</span>
                 </div>
               </div>
@@ -349,60 +354,84 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           <label className="block text-lg font-bold text-orange-900 mb-6">
             フォーマット選択 *
           </label>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
-              watchedFormat === 'without_subtitles'
-                ? 'border-orange-500 bg-orange-50'
-                : 'border-gray-200 hover:border-orange-300 bg-white/50'
-            }`}>
-              <div className="flex items-start mb-4">
-                <input
-                  type="radio"
-                  value="without_subtitles"
-                  {...register('format', { required: 'フォーマットを選択してください' })}
-                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
-                />
-                <div className="flex-1">
-                  <div className="font-bold text-gray-900 text-lg mb-2">字幕なし</div>
-                  <div className="text-orange-600 font-bold text-xl mb-2">500円/分</div>
-                  <div className="text-sm text-gray-600">シンプルで素早い制作</div>
-                </div>
-              </div>
-              <div className="mt-4 border-t border-gray-200 pt-4">
-                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
-                <img
-                  src="/images/sample-without-subtitles.svg"
-                  alt="字幕なしサンプル"
-                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
-                />
-              </div>
-            </label>
-            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
-              watchedFormat === 'with_subtitles'
+              watchedFormat === 'default'
                 ? 'border-orange-500 bg-orange-50'
                 : 'border-orange-300 hover:border-orange-400 bg-white'
             }`}>
               <div className="flex items-start mb-4">
                 <input
                   type="radio"
-                  value="with_subtitles"
+                  value="default"
                   {...register('format', { required: 'フォーマットを選択してください' })}
                   className="mt-1 mr-4 text-orange-500 w-5 h-5"
                 />
                 <div className="flex-1">
-                  <div className="flex items-center mb-2">
-                    <span className="font-bold text-gray-900 text-lg mr-2">字幕あり</span>
+                  <div className="flex flex-col items-start mb-2">
                     <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">おすすめ</span>
+                    <span className="font-bold text-gray-900 text-lg mr-2">デフォルト</span>
                   </div>
-                  <div className="text-orange-600 font-bold text-xl mb-2">700円/分</div>
-                  <div className="text-sm text-gray-600">視聴者に優しい字幕付き</div>
+                  <div className="text-sm text-gray-600">標準的なレイアウト</div>
                 </div>
               </div>
               <div className="mt-4 border-t border-gray-200 pt-4">
                 <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
                 <img
-                  src="/images/sample-with-subtitles.svg"
-                  alt="字幕ありサンプル"
+                  src="/images/format-sample/default.png"
+                  alt="デフォルトサンプル"
+                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
+                />
+              </div>
+            </label>
+            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedFormat === 'separate'
+                ? 'border-orange-500 bg-orange-50'
+                : 'border-gray-200 hover:border-orange-300 bg-white/50'
+            }`}>
+              <div className="flex items-start mb-4">
+                <input
+                  type="radio"
+                  value="separate"
+                  {...register('format', { required: 'フォーマットを選択してください' })}
+                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
+                />
+                <div className="flex-1">
+                  <div className="font-bold text-gray-900 text-lg mb-2">2分割</div>
+                  <div className="text-sm text-gray-600">画面を2つに分割</div>
+                </div>
+              </div>
+              <div className="mt-4 border-t border-gray-200 pt-4">
+                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
+                <img
+                  src="/images/format-sample/sepalate.png"
+                  alt="2分割サンプル"
+                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
+                />
+              </div>
+            </label>
+            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedFormat === 'zoom'
+                ? 'border-orange-500 bg-orange-50'
+                : 'border-gray-200 hover:border-orange-300 bg-white/50'
+            }`}>
+              <div className="flex items-start mb-4">
+                <input
+                  type="radio"
+                  value="zoom"
+                  {...register('format', { required: 'フォーマットを選択してください' })}
+                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
+                />
+                <div className="flex-1">
+                  <div className="font-bold text-gray-900 text-lg mb-2">ズーム</div>
+                  <div className="text-sm text-gray-600">拡大表示で迫力アップ</div>
+                </div>
+              </div>
+              <div className="mt-4 border-t border-gray-200 pt-4">
+                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
+                <img
+                  src="/images/format-sample/zoom.png"
+                  alt="ズームサンプル"
                   className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
                 />
               </div>
@@ -550,7 +579,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
                 <div>
-                  <p className="font-semibold text-yellow-800 mb-1">重要：字幕・ヘッドラインの設定</p>
+                  <p className="font-semibold text-yellow-800 mb-1">重要：字幕・タイトルの設定</p>
                   <p className="text-yellow-700 text-sm">以下のオプションを見落とさないよう、必ずご確認ください。設定により動画の見栄えが大きく変わります。</p>
                 </div>
               </div>
@@ -579,6 +608,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                     <input
                       type="radio"
                       value={1}
+                      defaultChecked
                       {...register('subtitleSwitch', {
                         setValueAs: (value) => parseInt(value)
                       })}
@@ -611,18 +641,18 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                 </div>
               </div>
 
-              {/* ヘッドラインオプション */}
+              {/* タイトルオプション */}
               <div className="bg-white border-2 border-purple-200 rounded-xl p-6 hover:border-purple-300 transition-all">
                 <div className="flex items-center justify-between mb-4">
                   <h5 className="text-lg font-bold text-purple-900 flex items-center gap-2">
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                    ヘッドライン設定
+                    タイトル設定
                   </h5>
                   <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-bold">注目度UP</span>
                 </div>
-                <p className="text-purple-700 text-sm mb-4">動画にキャッチーなヘッドラインを表示するかどうかを選択してください</p>
+                <p className="text-purple-700 text-sm mb-4">動画にキャッチーなタイトルを表示するかどうかを選択してください</p>
                 
                 <div className="space-y-3">
                   <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
@@ -637,9 +667,10 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                         setValueAs: (value) => parseInt(value)
                       })}
                       className="mr-3 w-5 h-5 text-purple-600"
+                      defaultChecked
                     />
                     <div>
-                      <div className="font-semibold text-gray-900">ヘッドラインを表示する</div>
+                      <div className="font-semibold text-gray-900">タイトルを表示する</div>
                       <div className="text-sm text-gray-600">視聴者の注目を集めやすくなります</div>
                     </div>
                   </label>
@@ -658,7 +689,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                       className="mr-3 w-5 h-5 text-purple-600"
                     />
                     <div>
-                      <div className="font-semibold text-gray-900">ヘッドラインを非表示にする</div>
+                      <div className="font-semibold text-gray-900">タイトルを非表示にする</div>
                       <div className="text-sm text-gray-600">すっきりとした見た目の動画になります</div>
                     </div>
                   </label>

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // 見積もり計算
     const estimate = calculateEstimate(
       orderData.videoDuration,
-      orderData.format === 'with_subtitles'
+      orderData.format
     );
 
     // Stripe PaymentIntentを作成
@@ -42,7 +42,11 @@ export async function POST(request: NextRequest) {
         headlineSwitch: orderData.headlineSwitch?.toString() || '0',
       },
       receipt_email: orderData.customerEmail,
-      description: `切り抜き動画制作 - ${orderData.format === 'with_subtitles' ? '字幕あり' : '字幕なし'}`,
+      description: `切り抜き動画制作 - ${
+        orderData.format === 'default' ? 'デフォルト' :
+        orderData.format === 'separate' ? '2分割' :
+        orderData.format === 'zoom' ? 'ズーム' : orderData.format
+      }`,
     });
 
     return NextResponse.json({

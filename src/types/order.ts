@@ -8,7 +8,7 @@ export interface VideoInfo {
 
 export interface OrderFormData {
   videoUrl: string;
-  format: 'with_subtitles' | 'without_subtitles';
+  format: 'default' | 'separate' | 'zoom';
   // 切り抜き設定
   preferLength: number; // 0: 自動, 1: ~30秒, 2: 30-60秒, 3: 60-90秒, 4: 90秒-3分
   aspectRatio: number; // 1: 9:16, 2: 1:1, 3: 4:5, 4: 16:9
@@ -36,7 +36,7 @@ export interface Order {
     phone?: string;
   };
   videoInfo: VideoInfo;
-  format: 'with_subtitles' | 'without_subtitles';
+  format: 'default' | 'separate' | 'zoom';
   estimate: OrderEstimate;
   specialRequests?: string;
   status: 'pending' | 'paid' | 'processing' | 'completed' | 'cancelled';
