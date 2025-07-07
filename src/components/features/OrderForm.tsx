@@ -38,7 +38,14 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<OrderFormData>();
+  } = useForm<OrderFormData>({
+    defaultValues: {
+      preferLength: 0,
+      aspectRatio: 1,
+      subtitleSwitch: 0,
+      headlineSwitch: 0,
+    }
+  });
 
   const watchedVideoUrl = watch('videoUrl');
   const watchedFormat = watch('format');
@@ -192,6 +199,40 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                 <span className="text-blue-800">約{estimate.estimatedDeliveryDays}営業日</span>
               </div>
             </div>
+            
+            {/* 切り抜き設定詳細 */}
+            <div className="mt-6 pt-4 border-t border-blue-200">
+              <h4 className="font-semibold text-blue-900 mb-3">切り抜き設定</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <span className="font-medium text-blue-800 block mb-1">優先クリップ長:</span>
+                  <span className="text-blue-700">
+                    {watch('preferLength') === 0 && '自動'}
+                    {watch('preferLength') === 1 && '〜30秒'}
+                    {watch('preferLength') === 2 && '30秒〜60秒'}
+                    {watch('preferLength') === 3 && '60秒〜90秒'}
+                    {watch('preferLength') === 4 && '90秒〜3分'}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-medium text-blue-800 block mb-1">アスペクト比:</span>
+                  <span className="text-blue-700">
+                    {watch('aspectRatio') === 1 && '9:16 (縦型)'}
+                    {watch('aspectRatio') === 2 && '1:1 (正方形)'}
+                    {watch('aspectRatio') === 3 && '4:5 (ポートレート)'}
+                    {watch('aspectRatio') === 4 && '16:9 (横型)'}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-medium text-blue-800 block mb-1">字幕:</span>
+                  <span className="text-blue-700">{watch('subtitleSwitch') ? 'あり' : 'なし'}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-blue-800 block mb-1">ヘッドライン:</span>
+                  <span className="text-blue-700">{watch('headlineSwitch') ? 'あり' : 'なし'}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -341,6 +382,92 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           {errors.format && (
             <p className="text-red-600 font-medium mt-3">{errors.format.message}</p>
           )}
+        </div>
+
+        {/* 切り抜き生成設定 */}
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <div className="border-b pb-4 mb-6">
+            <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              切り抜き生成設定
+            </h3>
+            <p className="text-gray-600 mt-1">動画から生成する切り抜きの詳細設定</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 優先クリップ長 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                優先クリップ長（秒）
+              </label>
+              <select
+                {...register('preferLength', { required: '優先クリップ長を選択してください' })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              >
+                <option value={0}>自動</option>
+                <option value={1}>〜30秒</option>
+                <option value={2}>30秒〜60秒</option>
+                <option value={3}>60秒〜90秒</option>
+                <option value={4}>90秒〜3分</option>
+              </select>
+              {errors.preferLength && (
+                <p className="text-red-600 text-sm mt-1">{errors.preferLength.message}</p>
+              )}
+            </div>
+
+            {/* アスペクト比 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                アスペクト比
+              </label>
+              <select
+                {...register('aspectRatio', { required: 'アスペクト比を選択してください' })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              >
+                <option value={1}>9:16 (縦型・ショート動画)</option>
+                <option value={2}>1:1 (正方形・SNS)</option>
+                <option value={3}>4:5 (ポートレート)</option>
+                <option value={4}>16:9 (横型・標準)</option>
+              </select>
+              {errors.aspectRatio && (
+                <p className="text-red-600 text-sm mt-1">{errors.aspectRatio.message}</p>
+              )}
+            </div>
+          </div>
+
+          {/* 追加オプション */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            {/* 字幕 */}
+            <div>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  {...register('subtitleSwitch', {
+                    setValueAs: (value) => value ? 1 : 0
+                  })}
+                  className="mr-2 w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                />
+                <span className="text-sm font-medium text-gray-700">字幕を追加</span>
+              </label>
+            </div>
+
+            {/* ヘッドライン */}
+            <div>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  {...register('headlineSwitch', {
+                    setValueAs: (value) => value ? 1 : 0
+                  })}
+                  className="mr-2 w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                />
+                <span className="text-sm font-medium text-gray-700">ヘッドラインを追加</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         {/* お客様情報 */}

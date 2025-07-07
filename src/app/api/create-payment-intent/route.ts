@@ -35,6 +35,11 @@ export async function POST(request: NextRequest) {
         format: orderData.format,
         videoDuration: orderData.videoDuration.toString(),
         specialRequests: orderData.specialRequests || '',
+        // 切り抜き設定
+        preferLength: orderData.preferLength?.toString() || '0',
+        aspectRatio: orderData.aspectRatio?.toString() || '1',
+        subtitleSwitch: orderData.subtitleSwitch?.toString() || '0',
+        headlineSwitch: orderData.headlineSwitch?.toString() || '0',
       },
       receipt_email: orderData.customerEmail,
       description: `切り抜き動画制作 - ${orderData.format === 'with_subtitles' ? '字幕あり' : '字幕なし'}`,
