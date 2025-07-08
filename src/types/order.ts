@@ -6,8 +6,13 @@ export interface VideoInfo {
   channelTitle: string;
 }
 
-export interface OrderFormData {
+export interface VideoOrderItem {
   videoUrl: string;
+  videoInfo?: VideoInfo;
+}
+
+export interface OrderFormData {
+  videos: VideoOrderItem[]; // 複数動画対応
   format: 'default' | 'separate' | 'zoom';
   qualityOption: 'ai_only' | 'human_review'; // 品質オプション
   // 切り抜き設定
@@ -25,9 +30,11 @@ export interface OrderEstimate {
   basePricePerMinute: number;
   subtitleSurcharge: number;
   videoDurationMinutes: number;
+  totalVideoDurationMinutes: number; // 全動画の合計分数
   totalPrice: number;
   estimatedDeliveryDays: number;
   qualityOption?: 'ai_only' | 'human_review';
+  videoCount: number; // 動画数
 }
 
 export interface Order {

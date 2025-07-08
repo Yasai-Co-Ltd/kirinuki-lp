@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { OrderFormData, VideoInfo, OrderEstimate } from '@/types/order';
+import { OrderFormData, VideoInfo, VideoOrderItem, OrderEstimate } from '@/types/order';
 import { formatDuration } from '@/lib/youtube';
 import { formatPrice, getPricingBreakdown } from '@/lib/pricing';
 import StepBar from '@/components/ui/StepBar';
@@ -55,7 +55,8 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     const currentIndex = stepOrder.indexOf(step);
     return stepOrder.slice(0, currentIndex);
   };
-  const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
+  const [videos, setVideos] = useState<VideoOrderItem[]>([{ videoUrl: '' }]);
+  const [videoInfos, setVideoInfos] = useState<VideoInfo[]>([]);
   const [estimate, setEstimate] = useState<OrderEstimate | null>(null);
   const [formData, setFormData] = useState<OrderFormData | null>(null);
   const [clientSecret, setClientSecret] = useState<string>('');
@@ -69,9 +70,11 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<OrderFormData>({
     defaultValues: {
+      videos: [{ videoUrl: '' }],
       format: 'default',
       qualityOption: 'ai_only',
       preferLength: 0,
@@ -81,14 +84,15 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     }
   });
 
-  const watchedVideoUrl = watch('videoUrl');
+  const watchedVideos = watch('videos');
   const watchedFormat = watch('format');
   const watchedQualityOption = watch('qualityOption');
   const watchedAspectRatio = watch('aspectRatio');
 
-  // 動画情報を取得
-  const fetchVideoInfo = async (videoUrl: string) => {
-    if (!videoUrl) return;
+  // 複数動画情報を取得
+  const fetchVideoInfos = async (videoUrls: string[]) => {
+    const validUrls = videoUrls.filter(url => url.trim() !== '');
+    if (validUrls.length === 0) return;
 
     setIsLoading(true);
     setError('');
@@ -97,7 +101,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       const response = await fetch('/api/video-info', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoUrl }),
+        body: JSON.stringify({ videoUrls: validUrls }),
       });
 
       const data = await response.json();
@@ -106,24 +110,33 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         throw new Error(data.error);
       }
 
-      setVideoInfo(data.videoInfo);
+      setVideoInfos(data.videoInfos || []);
+      if (data.errors && data.errors.length > 0) {
+        setError(data.errors.join(', '));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : '動画情報の取得に失敗しました');
-      setVideoInfo(null);
+      setVideoInfos([]);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // 単一動画情報を取得（後方互換性のため）
+  const fetchVideoInfo = async (videoUrl: string) => {
+    if (!videoUrl) return;
+    await fetchVideoInfos([videoUrl]);
+  };
+
   // 見積もりを作成（確認画面へ）
   const createEstimate = async (data: OrderFormData) => {
-    if (!videoInfo) return;
+    if (!videoInfos || videoInfos.length === 0) return;
 
     setIsLoading(true);
     setError('');
 
     console.log('送信データ:', data);
-    console.log('動画情報:', videoInfo);
+    console.log('動画情報:', videoInfos);
 
     try {
       // Stripe環境変数が設定されていない場合はモックデータを使用
@@ -135,8 +148,9 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         
         // モック見積もりデータを作成
         const { calculateEstimate } = await import('@/lib/pricing');
+        const durations = videoInfos.map(info => info.duration);
         const mockEstimate = calculateEstimate(
-          videoInfo.duration,
+          durations,
           data.format,
           data.qualityOption
         );
@@ -145,15 +159,15 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         setClientSecret('mock_client_secret');
         setFormData(data);
         setStep('confirm');
-        // スクロール位置を維持
         window.scrollTo({ top: 0, behavior: 'smooth' });
         console.log('確認画面に遷移しました（モックデータ使用）');
         return;
       }
 
+      const durations = videoInfos.map(info => info.duration);
       const requestData = {
         ...data,
-        videoDuration: videoInfo.duration,
+        videoDurations: durations,
       };
 
       console.log('APIリクエストデータ:', requestData);
@@ -176,7 +190,6 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       setClientSecret(responseData.clientSecret);
       setFormData(data);
       setStep('confirm');
-      // スクロール位置を維持
       window.scrollTo({ top: 0, behavior: 'smooth' });
       console.log('確認画面に遷移しました');
     } catch (err) {
@@ -253,7 +266,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   // デバッグ情報
   console.log('現在のステップ:', step);
   console.log('見積もり:', estimate);
-  console.log('動画情報:', videoInfo);
+  console.log('動画情報:', videoInfos);
   console.log('フォームデータ:', formData);
 
   if (step === 'processing') {
@@ -284,7 +297,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     );
   }
 
-  if (step === 'confirm' && estimate && videoInfo && formData) {
+  if (step === 'confirm' && estimate && videoInfos.length > 0 && formData) {
     const breakdown = getPricingBreakdown(estimate, formData.format, formData.qualityOption);
 
     return (
@@ -311,17 +324,24 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           <div className="space-y-6">
             {/* 動画情報 */}
             <div className="bg-white rounded-xl p-6 border border-blue-200">
-              <div className="flex flex-col lg:flex-row gap-6">
-                <img
-                  src={videoInfo.thumbnailUrl}
-                  alt={videoInfo.title}
-                  className="w-full lg:w-48 h-36 object-cover rounded-xl shadow-md"
-                />
-                <div className="flex-1">
-                  <h4 className="font-bold text-gray-900 text-lg mb-2 leading-tight">{videoInfo.title}</h4>
-                  <p className="text-gray-600 mb-2">{videoInfo.channelTitle}</p>
-                  <p className="text-gray-600">長さ: {formatDuration(videoInfo.duration)}</p>
-                </div>
+              <h5 className="font-semibold text-blue-900 mb-4">
+                注文動画 ({videoInfos.length}本・合計{Math.ceil(videoInfos.reduce((sum, info) => sum + info.duration, 0) / 60)}分)
+              </h5>
+              <div className="space-y-4">
+                {videoInfos.map((videoInfo, index) => (
+                  <div key={index} className="flex flex-col lg:flex-row gap-4 p-4 bg-gray-50 rounded-lg">
+                    <img
+                      src={videoInfo.thumbnailUrl}
+                      alt={videoInfo.title}
+                      className="w-full lg:w-32 h-24 object-cover rounded-lg shadow-sm"
+                    />
+                    <div className="flex-1">
+                      <h6 className="font-medium text-gray-900 text-sm mb-1 leading-tight">{videoInfo.title}</h6>
+                      <p className="text-gray-600 text-xs mb-1">{videoInfo.channelTitle}</p>
+                      <p className="text-gray-600 text-xs">長さ: {formatDuration(videoInfo.duration)}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -482,7 +502,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     );
   }
 
-  if (step === 'payment' && estimate && videoInfo && formData) {
+  if (step === 'payment' && estimate && videoInfos.length > 0 && formData) {
     const breakdown = getPricingBreakdown(estimate, formData.format, formData.qualityOption);
 
     return (
@@ -506,15 +526,32 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
             注文サマリー
           </h3>
           <div className="bg-white rounded-xl p-4 border border-blue-200">
-            <div className="flex items-center gap-4 mb-4">
-              <img
-                src={videoInfo.thumbnailUrl}
-                alt={videoInfo.title}
-                className="w-20 h-15 object-cover rounded-lg shadow-sm"
-              />
-              <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 text-sm leading-tight mb-1">{videoInfo.title}</h4>
-                <p className="text-gray-600 text-xs">{formatDuration(videoInfo.duration)} • {formData.format === 'default' ? 'デフォルト' : formData.format === 'separate' ? '2分割' : 'ズーム'} • {formData.qualityOption === 'ai_only' ? 'AIのみ' : '人の目で確認'}</p>
+            <div className="mb-4">
+              <h4 className="font-semibold text-gray-900 text-sm mb-3">
+                注文動画 ({videoInfos.length}本・合計{Math.ceil(videoInfos.reduce((sum, info) => sum + info.duration, 0) / 60)}分)
+              </h4>
+              <div className="space-y-2">
+                {videoInfos.slice(0, 2).map((videoInfo, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <img
+                      src={videoInfo.thumbnailUrl}
+                      alt={videoInfo.title}
+                      className="w-12 h-9 object-cover rounded shadow-sm"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-xs leading-tight truncate">{videoInfo.title}</p>
+                      <p className="text-gray-600 text-xs">{formatDuration(videoInfo.duration)}</p>
+                    </div>
+                  </div>
+                ))}
+                {videoInfos.length > 2 && (
+                  <p className="text-gray-500 text-xs">他{videoInfos.length - 2}本</p>
+                )}
+              </div>
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <p className="text-gray-600 text-xs">
+                  {formData.format === 'default' ? 'デフォルト' : formData.format === 'separate' ? '2分割' : 'ズーム'} • {formData.qualityOption === 'ai_only' ? 'AIのみ' : '人の目で確認'}
+                </p>
               </div>
             </div>
             <div className="flex justify-between items-center pt-3 border-t border-blue-200">
@@ -627,38 +664,119 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
             <p className="text-gray-600">必要な情報を入力してください</p>
           </div>
 
-        {/* 動画URL入力 */}
+        {/* 複数動画URL入力 */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 md:p-8">
-          <label className="block text-lg font-bold text-blue-900 mb-4">
-            YouTube動画URL *
-          </label>
-          <input
-            type="url"
-            {...register('videoUrl', { required: '動画URLは必須です' })}
-            className="w-full px-6 py-4 border-2 border-blue-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all text-lg bg-white"
-            placeholder="https://www.youtube.com/watch?v=..."
-            onBlur={(e) => fetchVideoInfo(e.target.value)}
-          />
-          {errors.videoUrl && (
-            <p className="text-red-600 font-medium mt-2">{errors.videoUrl.message}</p>
-          )}
+          <div className="flex items-center justify-between mb-4">
+            <label className="block text-lg font-bold text-blue-900">
+              YouTube動画URL *
+            </label>
+            <span className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+              {videos.length}本の動画
+            </span>
+          </div>
+          
+          <div className="space-y-4">
+            {videos.map((video, index) => (
+              <div key={index} className="flex gap-3">
+                <div className="flex-1">
+                  <input
+                    type="url"
+                    {...register(`videos.${index}.videoUrl` as const, {
+                      required: index === 0 ? '最低1つの動画URLは必須です' : false
+                    })}
+                    className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all bg-white"
+                    placeholder={`動画${index + 1}のURL: https://www.youtube.com/watch?v=...`}
+                    onBlur={(e) => {
+                      const newVideos = [...videos];
+                      newVideos[index] = { ...newVideos[index], videoUrl: e.target.value };
+                      setVideos(newVideos);
+                      setValue('videos', newVideos);
+                      
+                      // 全ての有効なURLを取得して動画情報を更新
+                      const validUrls = newVideos.filter(v => v.videoUrl.trim() !== '').map(v => v.videoUrl);
+                      if (validUrls.length > 0) {
+                        fetchVideoInfos(validUrls);
+                      }
+                    }}
+                  />
+                  {errors.videos?.[index]?.videoUrl && (
+                    <p className="text-red-600 text-sm mt-1">{errors.videos[index]?.videoUrl?.message}</p>
+                  )}
+                </div>
+                
+                {videos.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newVideos = videos.filter((_, i) => i !== index);
+                      setVideos(newVideos);
+                      setValue('videos', newVideos);
+                      
+                      // 動画情報も更新
+                      const validUrls = newVideos.filter(v => v.videoUrl.trim() !== '').map(v => v.videoUrl);
+                      if (validUrls.length > 0) {
+                        fetchVideoInfos(validUrls);
+                      } else {
+                        setVideoInfos([]);
+                      }
+                    }}
+                    className="px-3 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                    title="この動画を削除"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-between items-center mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                const newVideos = [...videos, { videoUrl: '' }];
+                setVideos(newVideos);
+                setValue('videos', newVideos);
+              }}
+              className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              動画を追加
+            </button>
+            
+            {videos.length > 1 && (
+              <p className="text-sm text-blue-700">
+                複数動画の一括制作で効率的に！
+              </p>
+            )}
+          </div>
         </div>
 
         {/* 動画情報表示 */}
-        {videoInfo && (
+        {videoInfos.length > 0 && (
           <div className="bg-white border-2 border-green-200 rounded-2xl p-6 md:p-8 shadow-lg">
-            <h3 className="text-lg font-bold text-green-800 mb-4">動画情報を取得しました</h3>
-            <div className="flex flex-col lg:flex-row gap-6">
-              <img
-                src={videoInfo.thumbnailUrl}
-                alt={videoInfo.title}
-                className="w-full lg:w-48 h-36 object-cover rounded-xl shadow-md"
-              />
-              <div className="flex-1">
-                <h4 className="font-bold text-gray-900 text-lg mb-2 leading-tight">{videoInfo.title}</h4>
-                <p className="text-gray-600 mb-2">{videoInfo.channelTitle}</p>
-                <p className="text-gray-600">長さ: {formatDuration(videoInfo.duration)}</p>
-              </div>
+            <h3 className="text-lg font-bold text-green-800 mb-4">
+              動画情報を取得しました ({videoInfos.length}本・合計{Math.ceil(videoInfos.reduce((sum, info) => sum + info.duration, 0) / 60)}分)
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {videoInfos.map((videoInfo, index) => (
+                <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-xl">
+                  <img
+                    src={videoInfo.thumbnailUrl}
+                    alt={videoInfo.title}
+                    className="w-24 h-18 object-cover rounded-lg shadow-sm flex-shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-gray-900 text-sm mb-1 leading-tight line-clamp-2">{videoInfo.title}</h4>
+                    <p className="text-gray-600 text-xs mb-1">{videoInfo.channelTitle}</p>
+                    <p className="text-gray-600 text-xs">長さ: {formatDuration(videoInfo.duration)}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -817,7 +935,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                 <ul className="space-y-1">
                   <li>• 人による最終チェック</li>
                   <li>• より高い品質保証</li>
-                  <li>• 細かい調整対応</li>
+                  <li>• 修正対応</li>
                 </ul>
               </div>
             </label>
@@ -1173,7 +1291,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
         <button
           type="submit"
-          disabled={!videoInfo || isLoading}
+          disabled={videoInfos.length === 0 || isLoading}
           className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-bold text-lg hover:from-blue-600 hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
         >
           {isLoading ? (

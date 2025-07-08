@@ -9,21 +9,28 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    const orderData: OrderFormData & { videoDuration: number } = await request.json();
+    const orderData: OrderFormData & { videoDurations: number[] } = await request.json();
 
-    if (!orderData.videoUrl || !orderData.format || !orderData.qualityOption || !orderData.customerName || !orderData.customerEmail) {
+    if (!orderData.videos || orderData.videos.length === 0 || !orderData.format || !orderData.qualityOption || !orderData.customerName || !orderData.customerEmail) {
       return NextResponse.json(
         { error: '必要な情報が不足しています' },
         { status: 400 }
       );
     }
 
-    // 見積もり計算
+    // 見積もり計算（複数動画対応）
     const estimate = calculateEstimate(
-      orderData.videoDuration,
+      orderData.videoDurations,
       orderData.format,
       orderData.qualityOption
     );
+
+    // 動画URLリストを作成
+    const videoUrls = orderData.videos.map(video => video.videoUrl);
+    
+    // トータル分数を計算
+    const totalMinutes = Math.ceil(orderData.videoDurations.reduce((sum, duration) => sum + duration, 0) / 60);
+    const videoCount = orderData.videos.length;
 
     // Stripe PaymentIntentを作成
     const paymentIntent = await stripe.paymentIntents.create({
@@ -32,10 +39,12 @@ export async function POST(request: NextRequest) {
       metadata: {
         customerName: orderData.customerName,
         customerEmail: orderData.customerEmail,
-        videoUrl: orderData.videoUrl,
+        videoUrls: JSON.stringify(videoUrls), // 複数URLをJSON形式で保存
+        videoCount: videoCount.toString(),
+        totalDurationMinutes: totalMinutes.toString(),
         format: orderData.format,
         qualityOption: orderData.qualityOption,
-        videoDuration: orderData.videoDuration.toString(),
+        videoDurations: JSON.stringify(orderData.videoDurations),
         specialRequests: orderData.specialRequests || '',
         // 切り抜き設定
         preferLength: orderData.preferLength?.toString() || '0',
@@ -44,7 +53,7 @@ export async function POST(request: NextRequest) {
         headlineSwitch: orderData.headlineSwitch?.toString() || '0',
       },
       receipt_email: orderData.customerEmail,
-      description: `切り抜き動画制作 - ${
+      description: `切り抜き動画制作 - ${videoCount}本 (合計${totalMinutes}分) - ${
         orderData.format === 'default' ? 'デフォルト' :
         orderData.format === 'separate' ? '2分割' :
         orderData.format === 'zoom' ? 'ズーム' : orderData.format
