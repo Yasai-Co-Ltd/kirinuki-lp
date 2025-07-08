@@ -4,7 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Layout from '../components/layout/Layout'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faScissors, faClock, faChartLine, faEye, faHeart, faBriefcase, faArrowRight, faStar, faUsers, faRobot, faCalculator, faInfo, faInfoCircle, faVideo, faChartBar, faGamepad, faShare, faUpload, faE, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faScissors, faClock, faChartLine, faEye, faHeart, faBriefcase, faArrowRight, faStar, faUsers, faRobot, faCalculator, faInfo, faInfoCircle, faVideo, faChartBar, faGamepad, faShare, faUpload, faE, faDownload, faCut } from "@fortawesome/free-solid-svg-icons";
+import { calculatePricePerClip, generatePricePerClipText, formatPrice } from '../lib/pricing';
 
 export default function Home() {
   return (
@@ -16,6 +17,11 @@ export default function Home() {
             <p>切り抜きは<span className="highlight">AI</span>に丸投げ！<br />
             <span className="highlight">格安・最短当日納品</span>の<br />
             動画切り抜きサービス</p>
+            <p className="hero-subtext">
+              <FontAwesomeIcon icon={faCut} />
+              1時間動画から20〜30本作成で<br />
+              <span className="price-highlight">1本あたり200円〜360円</span>の圧倒的コスパ！
+            </p>
           </div>
 
           <div className="hero-buttons">
@@ -345,6 +351,41 @@ export default function Home() {
           </table>
         </div>
         
+        {/* 1本あたりの価格セクション */}
+        <div className="content-blocks">
+          <div className="content-item up">
+            <div className="text">
+              <h4><FontAwesomeIcon icon={faCut} />1本あたりの価格（1時間動画の場合）</h4>
+              <div className="per-clip-pricing">
+                <div className="per-clip-card highlight-card">
+                  <div className="per-clip-header">
+                    <h5>AIのみプラン</h5>
+                    <p className="total-price">総額 {formatPrice(6000)}</p>
+                  </div>
+                  <div className="per-clip-breakdown">
+                    <p className="clip-count">20〜30本の切り抜き動画</p>
+                    <p className="per-clip-price">{generatePricePerClipText(60, 'ai_only')}</p>
+                  </div>
+                </div>
+                <div className="per-clip-card highlight-card">
+                  <div className="per-clip-header">
+                    <h5>高品質プラン</h5>
+                    <p className="total-price">総額 {formatPrice(10800)}</p>
+                  </div>
+                  <div className="per-clip-breakdown">
+                    <p className="clip-count">20〜30本の切り抜き動画</p>
+                    <p className="per-clip-price">{generatePricePerClipText(60, 'human_review')}</p>
+                  </div>
+                </div>
+              </div>
+              <p className="per-clip-note">
+                <FontAwesomeIcon icon={faInfoCircle} />
+                ※1時間の動画から平均20〜30本の切り抜き動画が作成されます。動画の内容や設定により本数は変動します。
+              </p>
+            </div>
+          </div>
+        </div>
+        
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
@@ -357,12 +398,12 @@ export default function Home() {
                 </div>
                 <div className="pricing-example-card">
                   <h5>30分動画（人の目で確認）</h5>
-                  <p className="price price-premium">4,500円</p>
+                  <p className="price price-premium">5,400円</p>
                   <p className="calculation">180円 × 30分</p>
                 </div>
                 <div className="pricing-example-card">
                   <h5>1時間動画（人の目で確認）</h5>
-                  <p className="price price-premium">9,000円</p>
+                  <p className="price price-premium">10,800円</p>
                   <p className="calculation">180円 × 60分</p>
                 </div>
               </div>

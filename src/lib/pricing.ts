@@ -116,3 +116,50 @@ export function getPricingBreakdown(
     breakdown
   };
 }
+
+// 1本あたりの価格計算（1時間動画から20-30本の切り抜きが作成される前提）
+export function calculatePricePerClip(
+  durationMinutes: number = 60, // デフォルト1時間
+  qualityOption: 'ai_only' | 'human_review' = 'ai_only',
+  estimatedClips: { min: number; max: number } = { min: 20, max: 30 }
+): {
+  totalPrice: number;
+  pricePerClipMin: number;
+  pricePerClipMax: number;
+  averagePricePerClip: number;
+  estimatedClips: { min: number; max: number };
+} {
+  const basePricePerMinute = PRICING_CONFIG.basePricePerMinute;
+  const qualitySurcharge = PRICING_CONFIG.qualityOptions[qualityOption];
+  const totalPricePerMinute = basePricePerMinute + qualitySurcharge;
+  
+  // 1時間動画の総額を計算
+  const totalPrice = Math.max(durationMinutes * totalPricePerMinute, PRICING_CONFIG.minimumCharge);
+  
+  // 1本あたりの価格を計算
+  const pricePerClipMax = Math.floor(totalPrice / estimatedClips.min); // 最小本数で割る = 最高価格
+  const pricePerClipMin = Math.floor(totalPrice / estimatedClips.max); // 最大本数で割る = 最低価格
+  const averagePricePerClip = Math.floor(totalPrice / ((estimatedClips.min + estimatedClips.max) / 2));
+  
+  return {
+    totalPrice,
+    pricePerClipMin,
+    pricePerClipMax,
+    averagePricePerClip,
+    estimatedClips
+  };
+}
+
+// 1本あたりの価格表示用のテキストを生成
+export function generatePricePerClipText(
+  durationMinutes: number = 60,
+  qualityOption: 'ai_only' | 'human_review' = 'ai_only'
+): string {
+  const calculation = calculatePricePerClip(durationMinutes, qualityOption);
+  
+  if (calculation.pricePerClipMin === calculation.pricePerClipMax) {
+    return `1本あたり約${formatPrice(calculation.averagePricePerClip)}`;
+  } else {
+    return `1本あたり${formatPrice(calculation.pricePerClipMin)}〜${formatPrice(calculation.pricePerClipMax)}`;
+  }
+}

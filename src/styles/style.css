@@ -1999,6 +1999,150 @@ section > .bg-slideup:first-child {
 	margin-right: 0.5rem;
 }
 
+/*1本あたりの価格表示（per-clip-pricing）
+---------------------------------------------------------------------------*/
+.per-clip-pricing {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.5rem;
+	margin: 2rem 0;
+}
+
+	/*画面幅700px以上の追加指定*/
+	@media screen and (min-width:700px) {
+	
+	.per-clip-pricing {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 2rem;
+	}
+	
+	}/*追加指定ここまで*/
+
+.per-clip-card {
+	background: #fff;
+	border-radius: 12px;
+	padding: 1.5rem;
+	box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+	transition: all 0.3s ease;
+	border: 2px solid transparent;
+}
+
+.per-clip-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.per-clip-card.highlight-card {
+	border: 2px solid var(--primary-color);
+	position: relative;
+}
+
+.per-clip-card.highlight-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4px;
+	background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+	border-radius: 12px 12px 0 0;
+}
+
+.per-clip-header {
+	text-align: center;
+	margin-bottom: 1rem;
+}
+
+.per-clip-header h5 {
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: var(--primary-color);
+	margin-bottom: 0.5rem;
+}
+
+.per-clip-header .total-price {
+	font-size: 1.1rem;
+	color: #666;
+	margin: 0;
+}
+
+.per-clip-breakdown {
+	text-align: center;
+}
+
+.per-clip-breakdown .clip-count {
+	font-size: 0.9rem;
+	color: #888;
+	margin-bottom: 0.5rem;
+}
+
+.per-clip-breakdown .per-clip-price {
+	font-size: 1.6rem;
+	font-weight: bold;
+	color: var(--accent-color);
+	margin: 0;
+}
+
+	/*画面幅700px以上の追加指定*/
+	@media screen and (min-width:700px) {
+	
+	.per-clip-breakdown .per-clip-price {
+		font-size: 1.8rem;
+	}
+	
+	}/*追加指定ここまで*/
+
+.per-clip-note {
+	margin-top: 1.5rem;
+	padding: 1rem;
+	background: #f8f9fa;
+	border-radius: 8px;
+	font-size: 0.875rem;
+	color: #666;
+	border-left: 4px solid var(--primary-color);
+}
+
+.per-clip-note svg {
+	margin-right: 0.5rem;
+	color: var(--primary-color);
+}
+
+/*ヒーローセクションのサブテキスト
+---------------------------------------------------------------------------*/
+.hero-subtext {
+	font-size: 1rem;
+	margin-top: 1rem;
+	padding: 1rem;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(10px);
+}
+
+.hero-subtext svg {
+	margin-right: 0.5rem;
+	color: #ff5500;
+}
+
+.price-highlight {
+	color: #ff5500;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+	/*画面幅700px以上の追加指定*/
+	@media screen and (min-width:700px) {
+	
+	.hero-subtext {
+		font-size: 1.1rem;
+	}
+	
+	.price-highlight {
+		font-size: 1.2em;
+	}
+	
+	}/*追加指定ここまで*/
+
 
 /*調整用スタイル
 ---------------------------------------------------------------------------*/
