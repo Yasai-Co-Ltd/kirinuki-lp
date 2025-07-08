@@ -23,9 +23,10 @@ export default function OrderForm({ onSuccess }: OrderFormProps) {
 }
 
 function OrderFormContent({ onSuccess }: OrderFormProps) {
-  const [step, setStep] = useState<'form' | 'payment' | 'processing'>('form');
+  const [step, setStep] = useState<'form' | 'confirm' | 'payment' | 'processing'>('form');
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [estimate, setEstimate] = useState<OrderEstimate | null>(null);
+  const [formData, setFormData] = useState<OrderFormData | null>(null);
   const [clientSecret, setClientSecret] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -83,50 +84,101 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     }
   };
 
-  // 見積もりを作成
-  const createEstimate = async (formData: OrderFormData) => {
+  // 見積もりを作成（確認画面へ）
+  const createEstimate = async (data: OrderFormData) => {
     if (!videoInfo) return;
 
     setIsLoading(true);
     setError('');
 
+    console.log('送信データ:', data);
+    console.log('動画情報:', videoInfo);
+
     try {
+      // Stripe環境変数が設定されていない場合はモックデータを使用
+      const hasStripeKeys = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY &&
+                           process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY !== 'pk_test_51234567890abcdef';
+
+      if (!hasStripeKeys) {
+        console.log('Stripe環境変数が設定されていないため、モックデータを使用します');
+        
+        // モック見積もりデータを作成
+        const { calculateEstimate } = await import('@/lib/pricing');
+        const mockEstimate = calculateEstimate(
+          videoInfo.duration,
+          data.format,
+          data.qualityOption
+        );
+
+        setEstimate(mockEstimate);
+        setClientSecret('mock_client_secret');
+        setFormData(data);
+        setStep('confirm');
+        console.log('確認画面に遷移しました（モックデータ使用）');
+        return;
+      }
+
+      const requestData = {
+        ...data,
+        videoDuration: videoInfo.duration,
+      };
+
+      console.log('APIリクエストデータ:', requestData);
+
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          videoDuration: videoInfo.duration,
-        }),
+        body: JSON.stringify(requestData),
       });
 
-      const data = await response.json();
+      const responseData = await response.json();
+      console.log('APIレスポンス:', responseData);
 
       if (!response.ok) {
-        throw new Error(data.error);
+        console.error('APIエラー:', responseData);
+        throw new Error(responseData.error || `HTTPエラー: ${response.status}`);
       }
 
-      setEstimate(data.estimate);
-      setClientSecret(data.clientSecret);
-      setStep('payment');
+      setEstimate(responseData.estimate);
+      setClientSecret(responseData.clientSecret);
+      setFormData(data);
+      setStep('confirm');
+      console.log('確認画面に遷移しました');
     } catch (err) {
+      console.error('見積もり作成エラー:', err);
       setError(err instanceof Error ? err.message : '見積もりの作成に失敗しました');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // 決済画面へ進む
+  const proceedToPayment = () => {
+    setStep('payment');
+  };
+
   // 決済処理
   const handlePayment = async () => {
-    if (!stripe || !elements || !clientSecret) return;
-
     setIsLoading(true);
     setError('');
 
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) return;
-
     try {
+      // モックデータの場合は決済をスキップ
+      if (clientSecret === 'mock_client_secret') {
+        console.log('モックデータのため決済をスキップします');
+        setTimeout(() => {
+          setStep('processing');
+          onSuccess?.();
+          setIsLoading(false);
+        }, 1000);
+        return;
+      }
+
+      if (!stripe || !elements || !clientSecret) return;
+
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) return;
+
       const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
@@ -147,6 +199,12 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       setIsLoading(false);
     }
   };
+
+  // デバッグ情報
+  console.log('現在のステップ:', step);
+  console.log('見積もり:', estimate);
+  console.log('動画情報:', videoInfo);
+  console.log('フォームデータ:', formData);
 
   if (step === 'processing') {
     return (
@@ -169,121 +227,257 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     );
   }
 
-  if (step === 'payment' && estimate && videoInfo) {
-    const breakdown = getPricingBreakdown(estimate, watchedFormat, watchedQualityOption);
+  if (step === 'confirm' && estimate && videoInfo && formData) {
+    const breakdown = getPricingBreakdown(estimate, formData.format, formData.qualityOption);
 
     return (
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">お支払い</h2>
-          <p className="text-gray-600">注文内容をご確認の上、お支払いください</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">ご注文内容の確認</h2>
+          <p className="text-gray-600">内容をご確認の上、お支払いへお進みください</p>
         </div>
-        
+
         {/* 注文内容確認 */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 md:p-8 mb-8">
-          <h3 className="text-xl font-bold text-blue-900 mb-6">注文内容</h3>
-          <div className="space-y-4">
-            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
-              <div className="flex-1">
-                <span className="font-semibold text-blue-900 block mb-1">動画:</span>
-                <span className="text-blue-800 leading-relaxed">{videoInfo.title}</span>
+          <h3 className="text-xl font-bold text-blue-900 mb-6 flex items-center gap-2">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            注文内容
+          </h3>
+          
+          <div className="space-y-6">
+            {/* 動画情報 */}
+            <div className="bg-white rounded-xl p-6 border border-blue-200">
+              <div className="flex flex-col lg:flex-row gap-6">
+                <img
+                  src={videoInfo.thumbnailUrl}
+                  alt={videoInfo.title}
+                  className="w-full lg:w-48 h-36 object-cover rounded-xl shadow-md"
+                />
+                <div className="flex-1">
+                  <h4 className="font-bold text-gray-900 text-lg mb-2 leading-tight">{videoInfo.title}</h4>
+                  <p className="text-gray-600 mb-2">{videoInfo.channelTitle}</p>
+                  <p className="text-gray-600">長さ: {formatDuration(videoInfo.duration)}</p>
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <span className="font-semibold text-blue-900 block mb-1">長さ:</span>
-                <span className="text-blue-800">{formatDuration(videoInfo.duration)}</span>
+
+            {/* 制作設定 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl p-4 border border-blue-200">
+                <h5 className="font-semibold text-blue-900 mb-3">基本設定</h5>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">フォーマット:</span>
+                    <span className="font-medium text-gray-900">
+                      {formData.format === 'default' && 'デフォルト'}
+                      {formData.format === 'separate' && '2分割'}
+                      {formData.format === 'zoom' && 'ズーム'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">品質オプション:</span>
+                    <span className="font-medium text-gray-900">
+                      {formData.qualityOption === 'ai_only' && 'AIのみ'}
+                      {formData.qualityOption === 'human_review' && '人の目で確認'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">納期:</span>
+                    <span className="font-medium text-gray-900">約{estimate.estimatedDeliveryDays}営業日</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <span className="font-semibold text-blue-900 block mb-1">フォーマット:</span>
-                <span className="text-blue-800">
-                  {watchedFormat === 'default' && 'デフォルト'}
-                  {watchedFormat === 'separate' && '2分割'}
-                  {watchedFormat === 'zoom' && 'ズーム'}
-                </span>
-              </div>
-              <div>
-                <span className="font-semibold text-blue-900 block mb-1">品質オプション:</span>
-                <span className="text-blue-800">
-                  {watchedQualityOption === 'ai_only' && 'AIのみ'}
-                  {watchedQualityOption === 'human_review' && '人の目で確認'}
-                </span>
-              </div>
-              <div>
-                <span className="font-semibold text-blue-900 block mb-1">納期:</span>
-                <span className="text-blue-800">約{estimate.estimatedDeliveryDays}営業日</span>
+
+              <div className="bg-white rounded-xl p-4 border border-blue-200">
+                <h5 className="font-semibold text-blue-900 mb-3">切り抜き設定</h5>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">優先クリップ長:</span>
+                    <span className="font-medium text-gray-900">
+                      {formData.preferLength === 0 && '自動'}
+                      {formData.preferLength === 1 && '〜30秒'}
+                      {formData.preferLength === 2 && '30秒〜60秒'}
+                      {formData.preferLength === 3 && '60秒〜90秒'}
+                      {formData.preferLength === 4 && '90秒〜3分'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">アスペクト比:</span>
+                    <span className="font-medium text-gray-900">
+                      {formData.aspectRatio === 1 && '9:16 (縦型)'}
+                      {formData.aspectRatio === 2 && '1:1 (正方形)'}
+                      {formData.aspectRatio === 3 && '4:5 (ポートレート)'}
+                      {formData.aspectRatio === 4 && '16:9 (横型)'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">字幕:</span>
+                    <span className="font-medium text-gray-900">{formData.subtitleSwitch ? 'あり' : 'なし'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">タイトル:</span>
+                    <span className="font-medium text-gray-900">{formData.headlineSwitch ? 'あり' : 'なし'}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            
-            {/* 切り抜き設定詳細 */}
-            <div className="mt-6 pt-4 border-t border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-3">切り抜き設定</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <span className="font-medium text-blue-800 block mb-1">優先クリップ長:</span>
-                  <span className="text-blue-700">
-                    {watch('preferLength') === 0 && '自動'}
-                    {watch('preferLength') === 1 && '〜30秒'}
-                    {watch('preferLength') === 2 && '30秒〜60秒'}
-                    {watch('preferLength') === 3 && '60秒〜90秒'}
-                    {watch('preferLength') === 4 && '90秒〜3分'}
-                  </span>
+
+            {/* お客様情報 */}
+            <div className="bg-white rounded-xl p-4 border border-blue-200">
+              <h5 className="font-semibold text-blue-900 mb-3">お客様情報</h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">お名前:</span>
+                  <span className="font-medium text-gray-900">{formData.customerName}</span>
                 </div>
-                <div>
-                  <span className="font-medium text-blue-800 block mb-1">アスペクト比:</span>
-                  <span className="text-blue-700">
-                    {watch('aspectRatio') === 1 && '9:16 (縦型)'}
-                    {watch('aspectRatio') === 2 && '1:1 (正方形)'}
-                    {watch('aspectRatio') === 3 && '4:5 (ポートレート)'}
-                    {watch('aspectRatio') === 4 && '16:9 (横型)'}
-                  </span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">メールアドレス:</span>
+                  <span className="font-medium text-gray-900">{formData.customerEmail}</span>
                 </div>
-                <div>
-                  <span className="font-medium text-blue-800 block mb-1">字幕:</span>
-                  <span className="text-blue-700">{watch('subtitleSwitch') ? 'あり' : 'なし'}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-blue-800 block mb-1">タイトル:</span>
-                  <span className="text-blue-700">{watch('headlineSwitch') ? 'あり' : 'なし'}</span>
-                </div>
+                {formData.customerPhone && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">電話番号:</span>
+                    <span className="font-medium text-gray-900">{formData.customerPhone}</span>
+                  </div>
+                )}
               </div>
+              {formData.specialRequests && (
+                <div className="mt-4 pt-4 border-t border-blue-200">
+                  <span className="text-gray-600 text-sm block mb-2">特別なご要望:</span>
+                  <p className="text-gray-900 text-sm bg-gray-50 p-3 rounded-lg">{formData.specialRequests}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* 料金詳細 */}
         <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-6 md:p-8 mb-8">
-          <h3 className="text-xl font-bold text-orange-900 mb-6">料金詳細</h3>
-          <div className="space-y-3">
-            {breakdown.breakdown.map((item, index) => (
-              <div key={index} className={`flex justify-between items-center ${item.isTotal ? 'font-bold text-xl border-t border-orange-300 pt-4 mt-4 text-orange-900' : 'text-orange-800'}`}>
-                <span>{item.label}</span>
-                <span className={item.isTotal ? 'text-2xl' : ''}>{formatPrice(item.amount)}</span>
+          <h3 className="text-xl font-bold text-orange-900 mb-6 flex items-center gap-2">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            </svg>
+            料金詳細
+          </h3>
+          <div className="bg-white rounded-xl p-6 border border-orange-200">
+            <div className="space-y-3">
+              {breakdown.breakdown.map((item, index) => (
+                <div key={index} className={`flex justify-between items-center ${item.isTotal ? 'font-bold text-xl border-t border-orange-300 pt-4 mt-4 text-orange-900' : 'text-orange-800'}`}>
+                  <span>{item.label}</span>
+                  <span className={item.isTotal ? 'text-2xl' : ''}>{formatPrice(item.amount)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl mb-6">
+            <p className="font-semibold">エラーが発生しました</p>
+            <p>{error}</p>
+          </div>
+        )}
+
+        {/* アクションボタン */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            type="button"
+            onClick={() => setStep('form')}
+            className="flex-1 px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all"
+            disabled={isLoading}
+          >
+            内容を修正する
+          </button>
+          <button
+            onClick={proceedToPayment}
+            disabled={isLoading}
+            className="flex-1 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 transition-all"
+          >
+            {isLoading ? '処理中...' : `${formatPrice(estimate.totalPrice)}でお支払いへ進む`}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'payment' && estimate && videoInfo && formData) {
+    const breakdown = getPricingBreakdown(estimate, formData.format, formData.qualityOption);
+
+    return (
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">お支払い</h2>
+          <p className="text-gray-600">カード情報を入力してお支払いを完了してください</p>
+        </div>
+        
+        {/* 注文サマリー（簡潔版） */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
+          <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            注文サマリー
+          </h3>
+          <div className="bg-white rounded-xl p-4 border border-blue-200">
+            <div className="flex items-center gap-4 mb-4">
+              <img
+                src={videoInfo.thumbnailUrl}
+                alt={videoInfo.title}
+                className="w-20 h-15 object-cover rounded-lg shadow-sm"
+              />
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 text-sm leading-tight mb-1">{videoInfo.title}</h4>
+                <p className="text-gray-600 text-xs">{formatDuration(videoInfo.duration)} • {formData.format === 'default' ? 'デフォルト' : formData.format === 'separate' ? '2分割' : 'ズーム'} • {formData.qualityOption === 'ai_only' ? 'AIのみ' : '人の目で確認'}</p>
               </div>
-            ))}
+            </div>
+            <div className="flex justify-between items-center pt-3 border-t border-blue-200">
+              <span className="font-semibold text-blue-900">合計金額</span>
+              <span className="text-2xl font-bold text-blue-900">{formatPrice(estimate.totalPrice)}</span>
+            </div>
           </div>
         </div>
 
         {/* カード情報入力 */}
         <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 mb-8">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">カード情報</h3>
-          <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
-            <CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: '18px',
-                    color: '#374151',
-                    fontFamily: 'system-ui, -apple-system, sans-serif',
-                    '::placeholder': {
-                      color: '#9CA3AF',
+          <h3 className="text-xl font-bold text-gray-900 mb-6">
+            {clientSecret === 'mock_client_secret' ? 'お支払い（デモモード）' : 'カード情報'}
+          </h3>
+          {clientSecret === 'mock_client_secret' ? (
+            <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h4 className="font-bold text-yellow-800">デモモード</h4>
+              </div>
+              <p className="text-yellow-700 text-sm">
+                Stripe環境変数が設定されていないため、デモモードで動作しています。<br />
+                実際の決済は行われません。「お支払いを完了する」ボタンをクリックすると完了画面に進みます。
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
+                <CardElement
+                  options={{
+                    style: {
+                      base: {
+                        fontSize: '18px',
+                        color: '#374151',
+                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                        '::placeholder': {
+                          color: '#9CA3AF',
+                        },
+                      },
                     },
-                  },
-                },
-              }}
-            />
-          </div>
-          <p className="text-sm text-gray-500 mt-3">SSL暗号化により安全に処理されます</p>
+                  }}
+                />
+              </div>
+              <p className="text-sm text-gray-500 mt-3">SSL暗号化により安全に処理されます</p>
+            </>
+          )}
         </div>
 
         {error && (
@@ -296,18 +490,21 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         <div className="flex flex-col sm:flex-row gap-4">
           <button
             type="button"
-            onClick={() => setStep('form')}
+            onClick={() => setStep('confirm')}
             className="flex-1 px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all"
             disabled={isLoading}
           >
-            戻る
+            確認画面に戻る
           </button>
           <button
             onClick={handlePayment}
-            disabled={!stripe || isLoading}
+            disabled={(clientSecret !== 'mock_client_secret' && !stripe) || isLoading}
             className="flex-1 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 transition-all"
           >
-            {isLoading ? '処理中...' : `${formatPrice(estimate.totalPrice)}を支払う`}
+            {isLoading ? '処理中...' :
+             clientSecret === 'mock_client_secret' ?
+             `お支払いを完了する（デモ）` :
+             `${formatPrice(estimate.totalPrice)}を支払う`}
           </button>
         </div>
       </div>
@@ -858,7 +1055,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           disabled={!videoInfo || isLoading}
           className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:hover:scale-100 shadow-lg"
         >
-          {isLoading ? '処理中...' : 'ご注文を確認'}
+          {isLoading ? '見積もり作成中...' : '見積もりを確認する'}
         </button>
       </form>
     </div>
