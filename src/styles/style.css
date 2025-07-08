@@ -1,9 +1,9 @@
 @charset "utf-8";
 
 
-/*Font Awesomeの読み込み
+/*Font Awesomeの読み込み（Next.jsで管理）
 ---------------------------------------------------------------------------*/
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+/* Font AwesomeはNext.jsのlayout.tsxで読み込み済み */
 
 
 /*Google Fontsの読み込み
@@ -309,13 +309,6 @@ header nav ul ul a {
 /*ドロップダウンをデフォルトで非表示*/
 .ddmenu_parent ul {display: none;}
 
-/*ddmenuを指定しているメニューに矢印アイコンをつける設定*/
-a.ddmenu::before {
-	font-family: "Font Awesome 6 Free";	/*Font Awesomeを使う指示*/
-	content: "\f078";		/*使いたいアイコン名（Font Awesome）をここで指定*/
-	font-weight: bold;		/*この手の設定がないとアイコンが出ない場合があります*/
-	margin-right: 0.5em;	/*アイコンとテキストとの間に空けるスペース*/
-}
 
 /*メニューブロック内のロゴ画像の幅*/
 #menubar .logo {
@@ -999,15 +992,6 @@ footer small {
 	background: #fff;	/*背景色*/
 	color: #333;		/*文字色*/
 }
-
-/*矢印アイコン*/
-.action-btn a::after {
-	font-family: "Font Awesome 6 Free";	/*Font Awesomeを使う指示*/
-	content: "\f0a9";		/*使いたいアイコン名（Font Awesome）をここで指定*/
-	font-weight: bold;		/*この手の設定がないとアイコンが出ない場合があります*/
-	margin-left: 0.5em;		/*アイコンとテキストとの間に空けるスペース*/
-}
-
 
 /*bg-primary-color
 ---------------------------------------------------------------------------*/

@@ -15,15 +15,8 @@ export default function Header() {
 
         <nav>
           <ul>
-            <li><Link href="/order" className="order-btn">今すぐ注文</Link></li>
-            <li><Link href="/#koe">お客様の声</Link></li>
-            <li>
-              <Link href="/#products">制作実績</Link>
-              <ul>
-                <li><Link href="#">ゲーム実況</Link></li>
-                <li><Link href="#">ビジネス系</Link></li>
-                <li><Link href="#">エンタメ</Link></li>
-              </ul>
+            <li><Link href="/#services">サービス詳細</Link></li>
+            <li><Link href="/#products">制作サンプル</Link>
             </li>
             <li><Link href="/#plan">料金プラン</Link></li>
             <li><Link href="/#faq">よく頂く質問</Link></li>
@@ -47,16 +40,8 @@ export default function Header() {
         <nav>
           <ul>
             <li><Link href="/">ホーム</Link></li>
-            <li><Link href="/order" className="order-btn">今すぐ注文</Link></li>
             <li><Link href="/#koe">お客様の声</Link></li>
-            <li>
-              <Link href="/#products">制作実績</Link>
-              <ul>
-                <li><Link href="#">ゲーム実況</Link></li>
-                <li><Link href="#">ビジネス系</Link></li>
-                <li><Link href="#">エンタメ</Link></li>
-              </ul>
-            </li>
+            <li><Link href="/#products">制作サンプル</Link></li>
             <li><Link href="/#plan">料金プラン</Link></li>
             <li><Link href="/#faq">よく頂く質問</Link></li>
             <li><Link href="/#flow">制作の流れ</Link></li>

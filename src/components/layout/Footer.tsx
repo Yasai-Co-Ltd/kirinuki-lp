@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLine, faXTwitter, faYoutube, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 export default function Footer() {
   return (
@@ -11,10 +13,10 @@ export default function Footer() {
           <Image src="/images/logo_w.png" alt="SAMPLE COMPANY" width={150} height={45} />
         </p>
         <ul className="icons">
-          <li><Link href="#"><i className="fa-brands fa-x-twitter"></i></Link></li>
-          <li><Link href="#"><i className="fab fa-line"></i></Link></li>
-          <li><Link href="#"><i className="fab fa-youtube"></i></Link></li>
-          <li><Link href="#"><i className="fab fa-instagram"></i></Link></li>
+          <li><Link href="#"><FontAwesomeIcon icon={faXTwitter} /></Link></li>
+          <li><Link href="#"><FontAwesomeIcon icon={faLine} /></Link></li>
+          <li><Link href="#"><FontAwesomeIcon icon={faYoutube} /></Link></li>
+          <li><Link href="#"><FontAwesomeIcon icon={faInstagram} /></Link></li>
         </ul>
         {/* <p>東京都XXX区XXXXビル１F<br />
         03-0000-0000</p> */}

@@ -3,6 +3,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Layout from '../components/layout/Layout'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faScissors, faClock, faChartLine, faEye, faHeart, faBriefcase, faArrowRight, faStar, faUsers, faRobot, faCalculator, faInfo, faInfoCircle, faVideo, faChartBar, faGamepad, faShare, faUpload, faE, faDownload } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   return (
@@ -11,14 +13,14 @@ export default function Home() {
       <div id="hero-section">
         <div>
           <div className="hero-text">
-            <p>切り抜きは丸投げ！<br />
+            <p>切り抜きは<span className="highlight">AI</span>に丸投げ！<br />
             <span className="highlight">格安・最短当日納品</span>の<br />
             動画切り抜きサービス</p>
           </div>
 
           <div className="hero-buttons">
-            <p><Link href="/order"><i className="fa-solid fa-video"></i>今すぐ注文する</Link></p>
-            <p><Link href="#plan"><i className="fa-solid fa-yen-sign"></i>料金を見る</Link></p>
+            <p><Link href="/order">今すぐ注文する</Link></p>
+            <p><Link href="#plan">料金を見る</Link></p>
           </div>
         </div>
       </div>
@@ -121,27 +123,27 @@ export default function Home() {
       </section> */}
 
       {/* サービス詳細説明 */}
-      <section className="bg3 bg-pattern3">
+      <section className="bg3 bg-pattern3" id="services">
         <h2 className="c">サービス詳細<span>Service Details</span></h2>
 
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-scissors"></i>1本の長編動画から複数の切り抜き動画を制作</h4>
+              <h4><FontAwesomeIcon icon={faScissors} />1本の長編動画から複数の切り抜き動画を制作</h4>
               <p>お客様の長時間配信やセミナー動画から、AIが自動で面白いシーンやハイライト部分を抽出。1本の元動画から5〜10本の魅力的な切り抜き動画を制作します。各切り抜きは独立したコンテンツとして最適化され、より多くの視聴者にリーチできます。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-clock"></i>動画の長さに応じたシンプルな料金設定</h4>
+              <h4><FontAwesomeIcon icon={faClock} />動画の長さに応じたシンプルな料金設定</h4>
               <p>基本料金100円/分に、選択したオプションの追加料金を加算するだけのシンプルな料金体系。短時間動画から長時間配信まで対応可能で、明確で分かりやすい料金設定です。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-chart-line"></i>AIによる最適なシーン抽出</h4>
+              <h4><FontAwesomeIcon icon={faChartLine} />AIによる最適なシーン抽出</h4>
               <p>10,000本以上の動画データを学習したAIが、視聴者の興味を引くシーンを自動判定。感情の変化、音声の盛り上がり、視覚的なインパクトなど、複数の要素を総合的に分析して、バズりやすいシーンを確実に抽出します。</p>
             </div>
           </div>
@@ -165,7 +167,7 @@ export default function Home() {
           {/* サンプル1: ゲーム実況 */}
           <div className="sample-item up">
             <div className="sample-header">
-              <h3><i className="fa-solid fa-gamepad"></i>ゲーム実況動画の制作例</h3>
+              <h3><FontAwesomeIcon icon={faGamepad} />ゲーム実況動画の制作例</h3>
             </div>
             <div className="before-after-container">
               <div className="before-section">
@@ -173,13 +175,13 @@ export default function Home() {
                 <div className="video-placeholder">
                   <Image src="/images/thumb1.jpg" alt="元動画サムネイル" width={300} height={200} />
                   <div className="video-info">
-                    <p><i className="fa-solid fa-clock"></i>2時間30分の配信動画</p>
-                    <p><i className="fa-solid fa-eye"></i>視聴者の離脱が多い長時間配信</p>
+                    <p><FontAwesomeIcon icon={faClock} />2時間30分の配信動画</p>
+                    <p><FontAwesomeIcon icon={faEye} />視聴者の離脱が多い長時間配信</p>
                   </div>
                 </div>
               </div>
               <div className="arrow-section">
-                <i className="fa-solid fa-arrow-right"></i>
+                <FontAwesomeIcon icon={faArrowRight} />
                 <span>AI分析・編集</span>
               </div>
               <div className="after-section">
@@ -199,8 +201,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="result-stats">
-                  <p><i className="fa-solid fa-chart-line"></i>再生数 5倍アップ</p>
-                  <p><i className="fa-solid fa-heart"></i>エンゲージメント率 300%向上</p>
+                  <p><FontAwesomeIcon icon={faChartLine} />再生数 5倍アップ</p>
+                  <p><FontAwesomeIcon icon={faHeart} />エンゲージメント率 300%向上</p>
                 </div>
               </div>
             </div>
@@ -209,7 +211,7 @@ export default function Home() {
           {/* サンプル2: ビジネス系 */}
           <div className="sample-item up">
             <div className="sample-header">
-              <h3><i className="fa-solid fa-briefcase"></i>ビジネス系解説動画の制作例</h3>
+              <h3><FontAwesomeIcon icon={faBriefcase} />ビジネス系解説動画の制作例</h3>
             </div>
             <div className="before-after-container">
               <div className="before-section">
@@ -217,13 +219,13 @@ export default function Home() {
                 <div className="video-placeholder">
                   <Image src="/images/thumb5.jpg" alt="元動画サムネイル" width={300} height={200} />
                   <div className="video-info">
-                    <p><i className="fa-solid fa-clock"></i>1時間のセミナー動画</p>
-                    <p><i className="fa-solid fa-eye"></i>重要ポイントが埋もれがち</p>
+                    <p><FontAwesomeIcon icon={faClock} />1時間のセミナー動画</p>
+                    <p><FontAwesomeIcon icon={faEye} />重要ポイントが埋もれがち</p>
                   </div>
                 </div>
               </div>
               <div className="arrow-section">
-                <i className="fa-solid fa-arrow-right"></i>
+                <FontAwesomeIcon icon={faArrowRight} />
                 <span>AI分析・編集</span>
               </div>
               <div className="after-section">
@@ -243,8 +245,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="result-stats">
-                  <p><i className="fa-solid fa-chart-line"></i>視聴完了率 80%達成</p>
-                  <p><i className="fa-solid fa-share"></i>シェア数 10倍増加</p>
+                  <p><FontAwesomeIcon icon={faChartLine} />視聴完了率 80%達成</p>
+                  <p><FontAwesomeIcon icon={faShare} />シェア数 10倍増加</p>
                 </div>
               </div>
             </div>
@@ -253,7 +255,7 @@ export default function Home() {
           {/* サンプル3: エンタメ系 */}
           <div className="sample-item up">
             <div className="sample-header">
-              <h3><i className="fa-solid fa-star"></i>エンタメ・バラエティの制作例</h3>
+              <h3><FontAwesomeIcon icon={faStar} />エンタメ・バラエティの制作例</h3>
             </div>
             <div className="before-after-container">
               <div className="before-section">
@@ -261,13 +263,13 @@ export default function Home() {
                 <div className="video-placeholder">
                   <Image src="/images/thumb3.jpg" alt="元動画サムネイル" width={300} height={200} />
                   <div className="video-info">
-                    <p><i className="fa-solid fa-clock"></i>3時間のライブ配信</p>
-                    <p><i className="fa-solid fa-eye"></i>面白シーンが点在</p>
+                    <p><FontAwesomeIcon icon={faClock} />3時間のライブ配信</p>
+                    <p><FontAwesomeIcon icon={faEye} />面白シーンが点在</p>
                   </div>
                 </div>
               </div>
               <div className="arrow-section">
-                <i className="fa-solid fa-arrow-right"></i>
+                <FontAwesomeIcon icon={faArrowRight} />
                 <span>AI分析・編集</span>
               </div>
               <div className="after-section">
@@ -287,8 +289,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="result-stats">
-                  <p><i className="fa-solid fa-chart-line"></i>バズ率 400%向上</p>
-                  <p><i className="fa-solid fa-users"></i>新規フォロワー 2000人獲得</p>
+                  <p><FontAwesomeIcon icon={faChartLine} />バズ率 400%向上</p>
+                  <p><FontAwesomeIcon icon={faUsers} />新規フォロワー 2000人獲得</p>
                 </div>
               </div>
             </div>
@@ -297,7 +299,7 @@ export default function Home() {
 
         <div className="sample-cta">
           <p className="sample-note">※上記は制作サンプルです。実際の動画や画像は仮のものを使用しています。</p>
-          <p className="action-btn"><Link href="/order">あなたの動画も切り抜いてみる</Link></p>
+          <p className="action-btn"><Link href="/order">切り抜き動画を作成する</Link></p>
         </div>
       </section>
 
@@ -310,8 +312,8 @@ export default function Home() {
             <thead>
               <tr>
                 <th>&nbsp;</th>
-                <th><i className="fa-solid fa-robot"></i>AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span></span></th>
-                <th><i className="fa-solid fa-eye"></i>AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span></span><span className="osusume">おすすめ</span></th>
+                <th><FontAwesomeIcon icon={faRobot} />AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span></span></th>
+                <th><FontAwesomeIcon icon={faEye} />AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span></span><span className="osusume">おすすめ</span></th>
               </tr>
             </thead>
             <tbody>
@@ -346,7 +348,7 @@ export default function Home() {
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-calculator"></i>料金例</h4>
+              <h4><FontAwesomeIcon icon={faCalculator} />料金例</h4>
               <div className="pricing-examples" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginTop: '1rem'}}>
                 <div style={{textAlign: 'center', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '12px', border: '1px solid #e9ecef'}}>
                   <h5 style={{fontWeight: 'bold', color: '#333', marginBottom: '0.5rem'}}>15分動画（AIのみ）</h5>
@@ -365,7 +367,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="mt-4 text-sm" style={{padding: '1rem', backgroundColor: '#fff3cd', border: '1px solid #ffeaa7', borderRadius: '8px', color: '#856404'}}>
-                <i className="fa-solid fa-info-circle" style={{marginRight: '0.5rem'}}></i>
+                <FontAwesomeIcon icon={faInfoCircle} style={{marginRight: '0.5rem'}} />
                 ※生成される切り抜き動画の本数は、元動画の長さや内容によって変わります。一般的に15分以上の動画で最適な結果が得られます。
               </p>
             </div>
@@ -380,21 +382,21 @@ export default function Home() {
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-video"></i>動画の長さと内容について</h4>
+              <h4><FontAwesomeIcon icon={faVideo} />動画の長さと内容について</h4>
               <p>AIが動画内の音声を分析し、会話を検出します。最適な結果を得るには、動画に会話が含まれていることを確認してください。長い動画（15分以上を推奨）では、より多くのコンテンツが提供され、より鮮明で多様なコンテンツは、AIが適切なクリッピングポイントを見つけるのに役立ちます。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-clock"></i>切り抜き動画の長さ設定について</h4>
+              <h4><FontAwesomeIcon icon={faClock} />切り抜き動画の長さ設定について</h4>
               <p>「自動」またはより長い継続時間（「60～90秒」など）を選択すると、切り抜き動画の数が少なくなり、切り抜き動画が長くなります。より多くの切り抜き動画をご希望の場合は、アップロード前に切り抜き動画の長さとして「30秒未満」を選択してください。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-chart-bar"></i>コンテンツの適合性について</h4>
+              <h4><FontAwesomeIcon icon={faChartBar} />コンテンツの適合性について</h4>
               <p>AIはインタビュー形式の動画など、特定のコンテンツタイプで優れたパフォーマンスを発揮します。コンテンツが一致しない場合は、生成される切り抜き動画の数が少なくなる可能性があります。動画に十分なコンテンツがない場合、AIは切り抜き動画を生成しません。</p>
             </div>
           </div>
@@ -448,28 +450,28 @@ export default function Home() {
         <div className="content-blocks process-flow">
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-upload"></i>動画素材のアップロード</h4>
+              <h4><FontAwesomeIcon icon={faUpload} />動画素材のアップロード</h4>
               <p>お客様の元動画をクラウドストレージ経由でアップロードしていただきます。YouTube動画のURLでも対応可能です。編集したい部分の指定や、特別なご要望があれば詳細をお聞かせください。長時間の動画でも問題ありません。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-scissors"></i>AI×プロによる超高速編集</h4>
+              <h4><FontAwesomeIcon icon={faScissors} />AI×プロによる超高速編集</h4>
               <p>AIが動画を自動解析し、最適なカット点・テロップ位置・効果音タイミングを瞬時に特定。その後、経験豊富な編集者が最終調整を行い、従来の3倍速で高品質な動画を完成させます。AIの精密さと人間の感性を融合した最高品質をお届けします。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-eye"></i>品質チェック＆確認</h4>
+              <h4><FontAwesomeIcon icon={faEye} />品質チェック＆確認</h4>
               <p>編集完了後、品質チェックを行い、お客様に確認用動画をお送りします。修正が必要な箇所があれば、プランに応じた回数まで無料で対応いたします。ご満足いただけるまで調整を重ねます。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-download"></i>完成動画の納品</h4>
+              <h4><FontAwesomeIcon icon={faDownload} />完成動画の納品</h4>
               <p>最終確認後、完成した動画とサムネイルをお客様にお渡しします。YouTubeやTikTokなど、各プラットフォームに最適化した形式で納品。アップロード方法のサポートも行っております。</p>
             </div>
           </div>
