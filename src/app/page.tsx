@@ -313,14 +313,14 @@ export default function Home() {
               <tr>
                 <th>&nbsp;</th>
                 <th>AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span><span className='text-xs'>(元動画の長さ)</span></span></th>
-                <th>AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span><span className='text-xs'>(元動画の長さ)</span></span><span className="osusume">おすすめ</span></th>
+                <th>AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>180<span className="small">/分</span><span className='text-xs'>(元動画の長さ)</span></span><span className="osusume">おすすめ</span></th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>料金</td>
                 <td><strong>100円/分</strong></td>
-                <td><strong>150円/分</strong><br /><span className="small">(基本料金+50円)</span></td>
+                <td><strong>180円/分</strong><br /><span className="small">(基本料金+80円)</span></td>
               </tr>
               <tr>
                 <td>最低料金</td>
@@ -358,12 +358,12 @@ export default function Home() {
                 <div className="pricing-example-card">
                   <h5>30分動画（人の目で確認）</h5>
                   <p className="price price-premium">4,500円</p>
-                  <p className="calculation">150円 × 30分</p>
+                  <p className="calculation">180円 × 30分</p>
                 </div>
                 <div className="pricing-example-card">
                   <h5>1時間動画（人の目で確認）</h5>
                   <p className="price price-premium">9,000円</p>
-                  <p className="calculation">150円 × 60分</p>
+                  <p className="calculation">180円 × 60分</p>
                 </div>
               </div>
               <p className="pricing-note">
@@ -413,7 +413,7 @@ export default function Home() {
           <div className="text">
             <dl className="faq">
               <dt className="openclose">料金はどのように計算されますか？</dt>
-              <dd>元動画の長さ（分数）に応じて料金が決まります。AIのみの場合は1分あたり100円、人の目で確認する高品質プランは1分あたり150円です。最低料金は1,000円で、5分以下の動画でも最低料金が適用されます。例：15分動画（AIのみ）= 1,500円、30分動画（人の目で確認）= 4,500円</dd>
+              <dd>元動画の長さ（分数）に応じて料金が決まります。AIのみの場合は1分あたり100円、人の目で確認する高品質プランは1分あたり180円です。最低料金は1,000円で、5分以下の動画でも最低料金が適用されます。例：15分動画（AIのみ）= 1,500円、30分動画（人の目で確認）= 5,400円</dd>
 
               <dt className="openclose">複数の動画を同時に依頼できますか？</dt>
               <dd>はい、複数の動画を同時にご依頼いただけます。各動画ごとに最低料金（1,000円）が適用され、動画数が多い場合は納期が延長される場合があります。3本を超える場合は追加の日数をいただく場合がございます。</dd>
