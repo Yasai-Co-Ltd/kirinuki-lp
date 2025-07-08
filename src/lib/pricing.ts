@@ -5,7 +5,7 @@ const PRICING_CONFIG = {
   basePricePerMinute: 100, // 基本料金: 1分あたり100円
   qualityOptions: {
     ai_only: 0,      // AIのみ: 追加料金なし
-    human_review: 50, // 人の目で確認: 1分あたり50円追加
+    human_review: 80, // 人の目で確認: 1分あたり80円追加
   },
   minimumCharge: 1000, // 最低料金
   maxFreeMinutes: 5,   // 5分以下は最低料金

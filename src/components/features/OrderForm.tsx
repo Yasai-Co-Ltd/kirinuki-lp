@@ -1200,17 +1200,6 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         {/* お客様情報 */}
         <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-              watch('customerName') && watch('customerEmail') ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
-            }`}>
-              {watch('customerName') && watch('customerEmail') ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              ) : (
-                '4'
-              )}
-            </div>
             <h3 className="text-lg font-bold text-gray-900">お客様情報</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
