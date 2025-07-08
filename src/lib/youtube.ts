@@ -28,7 +28,13 @@ export async function getVideoInfo(videoId: string): Promise<VideoInfo | null> {
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch video information');
+      const errorText = await response.text();
+      console.error('YouTube API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`YouTube API Error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();

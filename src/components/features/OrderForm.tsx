@@ -857,7 +857,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           disabled={!videoInfo || isLoading}
           className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:hover:scale-100 shadow-lg"
         >
-          {isLoading ? '処理中...' : '見積もりを確認する'}
+          {isLoading ? '処理中...' : 'ご注文を確認'}
         </button>
       </form>
     </div>

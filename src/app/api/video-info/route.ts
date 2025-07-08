@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
 
     const videoInfo = await getVideoInfo(videoId);
     if (!videoInfo) {
+      console.error('Failed to get video info for videoId:', videoId);
       return NextResponse.json(
         { error: '動画情報を取得できませんでした。URLを確認してください。' },
         { status: 404 }
