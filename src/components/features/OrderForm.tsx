@@ -7,6 +7,7 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { OrderFormData, VideoInfo, OrderEstimate } from '@/types/order';
 import { formatDuration } from '@/lib/youtube';
 import { formatPrice, getPricingBreakdown } from '@/lib/pricing';
+import StepBar from '@/components/ui/StepBar';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -24,6 +25,36 @@ export default function OrderForm({ onSuccess }: OrderFormProps) {
 
 function OrderFormContent({ onSuccess }: OrderFormProps) {
   const [step, setStep] = useState<'form' | 'confirm' | 'payment' | 'processing'>('form');
+
+  // ステップバー用の設定
+  const steps = [
+    {
+      id: 'form',
+      title: '注文情報入力',
+      description: '動画URLと設定を入力'
+    },
+    {
+      id: 'confirm',
+      title: '内容確認',
+      description: '注文内容と料金を確認'
+    },
+    {
+      id: 'payment',
+      title: 'お支払い',
+      description: 'クレジットカード決済'
+    },
+    {
+      id: 'processing',
+      title: '完了',
+      description: '注文完了・制作開始'
+    }
+  ];
+
+  const getCompletedSteps = () => {
+    const stepOrder = ['form', 'confirm', 'payment', 'processing'];
+    const currentIndex = stepOrder.indexOf(step);
+    return stepOrder.slice(0, currentIndex);
+  };
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [estimate, setEstimate] = useState<OrderEstimate | null>(null);
   const [formData, setFormData] = useState<OrderFormData | null>(null);
@@ -114,6 +145,8 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         setClientSecret('mock_client_secret');
         setFormData(data);
         setStep('confirm');
+        // スクロール位置を維持
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         console.log('確認画面に遷移しました（モックデータ使用）');
         return;
       }
@@ -143,6 +176,8 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       setClientSecret(responseData.clientSecret);
       setFormData(data);
       setStep('confirm');
+      // スクロール位置を維持
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       console.log('確認画面に遷移しました');
     } catch (err) {
       console.error('見積もり作成エラー:', err);
@@ -155,6 +190,19 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   // 決済画面へ進む
   const proceedToPayment = () => {
     setStep('payment');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // フォームに戻る
+  const backToForm = () => {
+    setStep('form');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 確認画面に戻る
+  const backToConfirm = () => {
+    setStep('confirm');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // 決済処理
@@ -168,6 +216,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         console.log('モックデータのため決済をスキップします');
         setTimeout(() => {
           setStep('processing');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           onSuccess?.();
           setIsLoading(false);
         }, 1000);
@@ -191,6 +240,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
       if (paymentIntent?.status === 'succeeded') {
         setStep('processing');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         onSuccess?.();
       }
     } catch (err) {
@@ -208,19 +258,26 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
   if (step === 'processing') {
     return (
-      <div className="text-center py-16">
-        <div className="max-w-md mx-auto">
-          <div className="w-24 h-24 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
-            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-3xl font-bold text-green-600 mb-6">ご注文ありがとうございます！</h2>
-          <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-            <p className="text-green-800 text-lg leading-relaxed">
-              決済が完了しました。<br />
-              制作完了次第、メールにてお届けいたします。
-            </p>
+      <div className="max-w-4xl mx-auto">
+        <StepBar
+          steps={steps}
+          currentStep={step}
+          completedSteps={getCompletedSteps()}
+        />
+        <div className="text-center py-16">
+          <div className="max-w-md mx-auto">
+            <div className="w-24 h-24 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold text-green-600 mb-6">ご注文ありがとうございます！</h2>
+            <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+              <p className="text-green-800 text-lg leading-relaxed">
+                決済が完了しました。<br />
+                制作完了次第、メールにてお届けいたします。
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -231,7 +288,12 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     const breakdown = getPricingBreakdown(estimate, formData.format, formData.qualityOption);
 
     return (
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        <StepBar
+          steps={steps}
+          currentStep={step}
+          completedSteps={getCompletedSteps()}
+        />
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">ご注文内容の確認</h2>
           <p className="text-gray-600">内容をご確認の上、お支払いへお進みください</p>
@@ -384,18 +446,36 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         <div className="flex flex-col sm:flex-row gap-4">
           <button
             type="button"
-            onClick={() => setStep('form')}
-            className="flex-1 px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all"
+            onClick={backToForm}
+            className="flex-1 px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 flex items-center justify-center gap-2"
             disabled={isLoading}
           >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
             内容を修正する
           </button>
           <button
             onClick={proceedToPayment}
             disabled={isLoading}
-            className="flex-1 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 transition-all"
+            className="flex-1 px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-bold text-lg hover:from-blue-600 hover:to-indigo-600 disabled:opacity-50 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
           >
-            {isLoading ? '処理中...' : `${formatPrice(estimate.totalPrice)}でお支払いへ進む`}
+            {isLoading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                処理中...
+              </>
+            ) : (
+              <>
+                {`${formatPrice(estimate.totalPrice)}でお支払いへ進む`}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -406,7 +486,12 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
     const breakdown = getPricingBreakdown(estimate, formData.format, formData.qualityOption);
 
     return (
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        <StepBar
+          steps={steps}
+          currentStep={step}
+          completedSteps={getCompletedSteps()}
+        />
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">お支払い</h2>
           <p className="text-gray-600">カード情報を入力してお支払いを完了してください</p>
@@ -490,21 +575,38 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         <div className="flex flex-col sm:flex-row gap-4">
           <button
             type="button"
-            onClick={() => setStep('confirm')}
-            className="flex-1 px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all"
+            onClick={backToConfirm}
+            className="flex-1 px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 flex items-center justify-center gap-2"
             disabled={isLoading}
           >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
             確認画面に戻る
           </button>
           <button
             onClick={handlePayment}
             disabled={(clientSecret !== 'mock_client_secret' && !stripe) || isLoading}
-            className="flex-1 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 transition-all"
+            className="flex-1 px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-bold text-lg hover:from-blue-600 hover:to-indigo-600 disabled:opacity-50 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
           >
-            {isLoading ? '処理中...' :
-             clientSecret === 'mock_client_secret' ?
-             `お支払いを完了する（デモ）` :
-             `${formatPrice(estimate.totalPrice)}を支払う`}
+            {isLoading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                処理中...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                {clientSecret === 'mock_client_secret' ?
+                 `お支払いを完了する（デモ）` :
+                 `${formatPrice(estimate.totalPrice)}を支払う`}
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -512,12 +614,18 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   }
 
   return (
-    <div id="order-form">
-      <form onSubmit={handleSubmit(createEstimate)} className="max-w-3xl mx-auto space-y-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">切り抜き動画制作のご注文</h2>
-          <p className="text-gray-600">必要な情報を入力してください</p>
-        </div>
+    <div>
+      <div className="max-w-4xl mx-auto">
+        <StepBar
+          steps={steps}
+          currentStep={step}
+          completedSteps={getCompletedSteps()}
+        />
+        <form onSubmit={handleSubmit(createEstimate)} className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">切り抜き動画制作のご注文</h2>
+            <p className="text-gray-600">必要な情報を入力してください</p>
+          </div>
 
         {/* 動画URL入力 */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 md:p-8">
@@ -979,7 +1087,20 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
         {/* お客様情報 */}
         <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8">
-          <h3 className="text-lg font-bold text-gray-900 mb-6">お客様情報</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+              watch('customerName') && watch('customerEmail') ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
+            }`}>
+              {watch('customerName') && watch('customerEmail') ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                '4'
+              )}
+            </div>
+            <h3 className="text-lg font-bold text-gray-900">お客様情報</h3>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -1053,11 +1174,30 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
         <button
           type="submit"
           disabled={!videoInfo || isLoading}
-          className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-lg hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:hover:scale-100 shadow-lg"
+          className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-bold text-lg hover:from-blue-600 hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
         >
-          {isLoading ? '見積もり作成中...' : '見積もりを確認する'}
+          {isLoading ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              見積もり作成中...
+            </>
+          ) : (
+            <>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              見積もりを確認する
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </>
+          )}
         </button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
