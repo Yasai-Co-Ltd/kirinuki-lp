@@ -22,7 +22,6 @@ export interface OrderFormData {
   headlineSwitch: number; // 0: なし, 1: あり
   customerName: string;
   customerEmail: string;
-  customerPhone?: string;
   specialRequests?: string;
 }
 
@@ -42,7 +41,6 @@ export interface Order {
   customerInfo: {
     name: string;
     email: string;
-    phone?: string;
   };
   videoInfo: VideoInfo;
   format: 'default' | 'separate' | 'zoom';

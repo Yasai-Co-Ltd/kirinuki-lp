@@ -418,12 +418,6 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <span className="text-gray-600">メールアドレス:</span>
                   <span className="font-medium text-gray-900">{formData.customerEmail}</span>
                 </div>
-                {formData.customerPhone && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">電話番号:</span>
-                    <span className="font-medium text-gray-900">{formData.customerPhone}</span>
-                  </div>
-                )}
               </div>
               {formData.specialRequests && (
                 <div className="mt-4 pt-4 border-t border-blue-200">
@@ -1259,25 +1253,13 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
           <div className="mt-6">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              電話番号
-            </label>
-            <input
-              type="tel"
-              {...register('customerPhone')}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
-              placeholder="090-1234-5678"
-            />
-          </div>
-
-          <div className="mt-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              特別なご要望
+              備考
             </label>
             <textarea
               {...register('specialRequests')}
               rows={4}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all resize-vertical"
-              placeholder="切り抜きの内容や特別なご要望があればお書きください"
+              placeholder="何かお伝えしたいこと等ございましたらお書きください"
             />
           </div>
         </div>

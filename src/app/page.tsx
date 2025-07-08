@@ -66,13 +66,13 @@ export default function Home() {
           <div className="feature-card">
             <figure className="card-icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AI活用で従来の3倍速い制作スピード</span></h4>
-            <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、最短12時間で高品質な動画をお届けします。</p>
+            <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、最短当日で高品質な動画をお届けします。</p>
             {/* <span className="card-number">01</span> */}
           </div>
 
           <div className="feature-card">
             <figure className="card-icon"><Image src="/images/icon2.png" alt="" width={60} height={60} /></figure>
-            <h4><span className="marker">AIデータ分析による確実にバズる編集</span></h4>
+            <h4><span className="marker">AIデータ分析によるバズる切り抜き</span></h4>
             <p>切り抜き動画に特化したAIが、再生数・エンゲージメント率の高いパターンを特定。人間の感覚だけでは見つけられない「バズる法則」を動画に反映します。</p>
             {/* <span className="card-number">02</span> */}
           </div>
@@ -312,8 +312,8 @@ export default function Home() {
             <thead>
               <tr>
                 <th>&nbsp;</th>
-                <th>AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span></span></th>
-                <th>AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span></span><span className="osusume">おすすめ</span></th>
+                <th>AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span><span className='text-xs'>(元動画の長さ)</span></span></th>
+                <th>AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span><span className='text-xs'>(元動画の長さ)</span></span><span className="osusume">おすすめ</span></th>
               </tr>
             </thead>
             <tbody>
@@ -338,7 +338,7 @@ export default function Home() {
                 <td>
                   専門スタッフチェック
                   <p className='text-sm'>※字幕などのAIのミスをチェックして修正します。</p>
-                  <p className='text-sm'>※1回のみお客様からの修正依頼に対応します。(大きなフォーマット変更などには対応不可)</p>
+                  <p className='text-sm'>※1回のみお客様からの修正依頼に対応します。(大きなフォーマット変更などには対応できない場合がございます)</p>
                 </td>
               </tr>
             </tbody>
@@ -383,14 +383,14 @@ export default function Home() {
           <div className="content-item up">
             <div className="text">
               <h4><FontAwesomeIcon icon={faVideo} />動画の長さと内容について</h4>
-              <p>AIが動画内の音声を分析し、会話を検出します。最適な結果を得るには、動画に会話が含まれていることを確認してください。長い動画（15分以上を推奨）では、より多くのコンテンツが提供され、より鮮明で多様なコンテンツは、AIが適切なクリッピングポイントを見つけるのに役立ちます。</p>
+              <p>AIが動画内の音声を分析し、会話を検出します。最適な結果を得るには、動画に会話が含まれていることを確認してください。長い動画（15分以上を推奨）では、より多くのコンテンツが提供され、より鮮明で多様なコンテンツは、AIが適切な切り抜きポイントを見つけるのに役立ちます。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
               <h4><FontAwesomeIcon icon={faClock} />切り抜き動画の長さ設定について</h4>
-              <p>「自動」またはより長い継続時間（「60～90秒」など）を選択すると、切り抜き動画の数が少なくなり、切り抜き動画が長くなります。より多くの切り抜き動画をご希望の場合は、アップロード前に切り抜き動画の長さとして「30秒未満」を選択してください。</p>
+              <p>「自動」またはより長い時間（「60～90秒」など）を選択すると、切り抜き動画の数が少なくなり、切り抜き動画が長くなります。より多くの切り抜き動画をご希望の場合は、アップロード前に切り抜き動画の長さとして「30秒未満」を選択してください。</p>
             </div>
           </div>
 
@@ -534,7 +534,7 @@ export default function Home() {
           <div className="cta-card bg-contact">
             <div className="text">
               <h4><span className="sub-text">今すぐ注文</span><span className="cta-main-text">Order Now</span></h4>
-              <p className="action-btn"><Link href="/order">オンライン注文</Link></p>
+              <p className="action-btn"><Link href="/order">切り抜き動画を注文</Link></p>
             </div>
           </div>
 

@@ -1498,7 +1498,7 @@ section > .bg-slideup:first-child {
 }
 
 .bg3.bg-pattern3 .content-blocks .content-item:hover {
-	transform: translateX(10px);
+	/* transform: translateX(10px); */
 	box-shadow: 0 12px 35px rgba(52, 152, 219, 0.25);
 }
 
@@ -1571,23 +1571,6 @@ section > .bg-slideup:first-child {
 	position: relative;
 }
 
-.bg2.bg-pattern2 .content-blocks .content-item::before {
-	content: '⚠️';
-	position: absolute;
-	top: -10px;
-	right: 20px;
-	font-size: 2rem;
-	background: #f39c12;
-	color: white;
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-}
-
 .bg2.bg-pattern2 .content-blocks .content-item h4 {
 	color: #d35400;
 	font-weight: 700;
@@ -1601,7 +1584,7 @@ section > .bg-slideup:first-child {
 }
 
 .bg2.bg-pattern2 .content-blocks .content-item:hover {
-	transform: scale(1.02);
+	/* transform: scale(1.02); */
 	box-shadow: 0 12px 35px rgba(243, 156, 18, 0.3);
 }
 
@@ -1646,8 +1629,8 @@ section > .bg-slideup:first-child {
 }
 
 .bg2.bg-pattern2 .content-blocks.process-flow .content-item:hover {
-	transform: translateX(10px);
-	box-shadow: 0 12px 35px rgba(76, 175, 80, 0.25);
+	/* transform: translateX(10px); */
+	/* box-shadow: 0 12px 35px rgba(76, 175, 80, 0.25); */
 }
 
 /*制作の流れの矢印を緑色に変更*/

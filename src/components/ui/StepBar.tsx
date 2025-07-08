@@ -83,11 +83,6 @@ export default function StepBar({ steps, currentStep, completedSteps }: StepBarP
                     {step.description}
                   </p>
                 </div>
-
-                {/* アニメーション効果 */}
-                {status === 'current' && (
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-16 rounded-full bg-blue-400 opacity-20 animate-ping" />
-                )}
               </div>
             );
           })}
