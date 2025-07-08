@@ -19,7 +19,7 @@ export default function Header() {
             <li><Link href="/#products">制作サンプル</Link>
             </li>
             <li><Link href="/#plan">料金プラン</Link></li>
-            <li><Link href="/#faq">よく頂く質問</Link></li>
+            <li><Link href="/#faq">よくある質問</Link></li>
             <li><Link href="/#flow">制作の流れ</Link></li>
             <li><Link href="/contact">お問い合わせ</Link></li>
           </ul>
@@ -40,17 +40,14 @@ export default function Header() {
         <nav>
           <ul>
             <li><Link href="/">ホーム</Link></li>
-            <li><Link href="/#koe">お客様の声</Link></li>
+            <li><Link href="/#services">サービス詳細</Link></li>
             <li><Link href="/#products">制作サンプル</Link></li>
             <li><Link href="/#plan">料金プラン</Link></li>
-            <li><Link href="/#faq">よく頂く質問</Link></li>
+            <li><Link href="/#faq">よくある質問</Link></li>
             <li><Link href="/#flow">制作の流れ</Link></li>
             <li><Link href="/contact">お問い合わせ</Link></li>
           </ul>
         </nav>
-
-        <p>プロが作る高品質な切り抜き動画で、<br />
-        あなたのチャンネルを次のレベルへ！</p>
       </div>
     </>
   )

@@ -312,8 +312,8 @@ export default function Home() {
             <thead>
               <tr>
                 <th>&nbsp;</th>
-                <th><FontAwesomeIcon icon={faRobot} />AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span></span></th>
-                <th><FontAwesomeIcon icon={faEye} />AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span></span><span className="osusume">おすすめ</span></th>
+                <th>AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span></span></th>
+                <th>AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span></span><span className="osusume">おすすめ</span></th>
               </tr>
             </thead>
             <tbody>
@@ -349,25 +349,25 @@ export default function Home() {
           <div className="content-item up">
             <div className="text">
               <h4><FontAwesomeIcon icon={faCalculator} />料金例</h4>
-              <div className="pricing-examples" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginTop: '1rem'}}>
-                <div style={{textAlign: 'center', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '12px', border: '1px solid #e9ecef'}}>
-                  <h5 style={{fontWeight: 'bold', color: '#333', marginBottom: '0.5rem'}}>15分動画（AIのみ）</h5>
-                  <p style={{fontSize: '2rem', fontWeight: 'bold', color: '#3498db', margin: '0.5rem 0'}}>1,500円</p>
-                  <p style={{fontSize: '0.875rem', color: '#666'}}>100円 × 15分</p>
+              <div className="pricing-examples">
+                <div className="pricing-example-card">
+                  <h5>15分動画（AIのみ）</h5>
+                  <p className="price">1,500円</p>
+                  <p className="calculation">100円 × 15分</p>
                 </div>
-                <div style={{textAlign: 'center', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '12px', border: '1px solid #e9ecef'}}>
-                  <h5 style={{fontWeight: 'bold', color: '#333', marginBottom: '0.5rem'}}>30分動画（人の目で確認）</h5>
-                  <p style={{fontSize: '2rem', fontWeight: 'bold', color: '#28a745', margin: '0.5rem 0'}}>4,500円</p>
-                  <p style={{fontSize: '0.875rem', color: '#666'}}>150円 × 30分</p>
+                <div className="pricing-example-card">
+                  <h5>30分動画（人の目で確認）</h5>
+                  <p className="price price-premium">4,500円</p>
+                  <p className="calculation">150円 × 30分</p>
                 </div>
-                <div style={{textAlign: 'center', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '12px', border: '1px solid #e9ecef'}}>
-                  <h5 style={{fontWeight: 'bold', color: '#333', marginBottom: '0.5rem'}}>1時間動画（人の目で確認）</h5>
-                  <p style={{fontSize: '2rem', fontWeight: 'bold', color: '#28a745', margin: '0.5rem 0'}}>9,000円</p>
-                  <p style={{fontSize: '0.875rem', color: '#666'}}>150円 × 60分</p>
+                <div className="pricing-example-card">
+                  <h5>1時間動画（人の目で確認）</h5>
+                  <p className="price price-premium">9,000円</p>
+                  <p className="calculation">150円 × 60分</p>
                 </div>
               </div>
-              <p className="mt-4 text-sm" style={{padding: '1rem', backgroundColor: '#fff3cd', border: '1px solid #ffeaa7', borderRadius: '8px', color: '#856404'}}>
-                <FontAwesomeIcon icon={faInfoCircle} style={{marginRight: '0.5rem'}} />
+              <p className="pricing-note">
+                <FontAwesomeIcon icon={faInfoCircle} />
                 ※生成される切り抜き動画の本数は、元動画の長さや内容によって変わります。一般的に15分以上の動画で最適な結果が得られます。
               </p>
             </div>
@@ -407,7 +407,7 @@ export default function Home() {
       <section className="bg-primary-color" id="faq">
         <div className="c2">
           <div className="title">
-            <h2>よく頂く質問<span>FAQ</span></h2>
+            <h2>よくある質問<span>FAQ</span></h2>
           </div>
 
           <div className="text">

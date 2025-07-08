@@ -331,7 +331,7 @@ header nav ul ul a {
 	width: 100%;
 	height: 100%;
 	padding: 90px 10vw 50px;				/*ブロック内の余白。上、左右、下への順番。*/
-	background: var(--primary-color);		/*背景色。冒頭のprimary-colorを読み込みます。*/
+	background: white;		/*背景色。冒頭のprimary-colorを読み込みます。*/
 	color: var(--primary-inverse-color);	/*文字色。冒頭のprimary-inverse-colorを読み込みます。*/
 	animation: animation1 0.2s both;		/*animation1を実行する。0.2sは0.2秒の事。*/
 }
@@ -372,7 +372,7 @@ header nav ul ul a {
 	flex-direction: column;
 	justify-content: space-between;
 	transform-origin: right top;
-	background: var(--base-inverse-color);	/*背景色。冒頭のbase-inverse-colorを読み込みます。*/
+	background: none;	/*背景色。冒頭のbase-inverse-colorを読み込みます。*/
 	border-radius: 0px 0px 0px 10px;		/*角を丸くする指定。左上、右上、右下、左下への順番。*/
 }
 
@@ -399,12 +399,17 @@ header nav ul ul a {
 #menubar_hdr span {
 	display: block;
 	transition: 0.3s;	/*アニメーションにかける時間。0.3秒。*/
-	border-top: 1.5px solid var(--base-color);	/*線の幅、線種、varは色のことで冒頭のbase-colorを読み込みます。*/
+	border-top: 1.5px solid black;	/*線の幅、線種、varは色のことで冒頭のbase-colorを読み込みます。*/
 }
 
 /*×印が出ている状態の3本バーの背景色*/
 #menubar_hdr.ham {
-	background: #ff0000;
+	background: var(--primary-color);
+	border-color: white;
+}
+
+#menubar_hdr.ham span {
+	border-color: white;
 }
 
 /*×印が出ている状態の設定。※１本目および２本目のバーの共通設定。*/
@@ -464,7 +469,7 @@ header nav ul ul a {
 
 #hero-section > div {
 	position: absolute;
-	top: 60px;	/*header分を確保*/
+	top: 30%;	/*header分を確保*/
 	left: 0;
 	width: 100%;
 	height: 100%;
@@ -477,6 +482,7 @@ header nav ul ul a {
 	@media screen and (min-width:420px) {
 
 	#hero-section > div {
+		top: 60px;
 		left: var(--space-large);
 		align-items: flex-start;
 		justify-content: center;
@@ -487,7 +493,7 @@ header nav ul ul a {
 /*テキストのブロック*/
 #hero-section p {margin: 0;}
 #hero-section .hero-text {
-	font-size: 28px;	/*文字サイズ。*/
+	font-size: 24px;	/*文字サイズ。*/
 	font-weight: 800;	/*太字に*/
 	line-height: 1.8;	/*行間*/
 	text-align: center;	/*テキストをセンタリング*/
@@ -1008,6 +1014,13 @@ footer small {
 	color: var(--base-color);	/*文字色。冒頭のbase-colorを読み込みます。*/
 }
 
+@media screen and (max-width:699px) {
+	.bg1 {
+		padding-top: 60px;
+		padding-bottom: 100px;
+	}
+}
+
 
 /*bg2
 ---------------------------------------------------------------------------*/
@@ -1252,6 +1265,10 @@ footer small {
 
 /*cta-section（お問い合わせ、資料請求）
 ---------------------------------------------------------------------------*/
+.cta-section {
+	padding: 0 1rem;	/*スマホ時の両端余白*/
+}
+
 .cta-section > a {
     text-decoration: none;
     display: block;
@@ -1264,6 +1281,7 @@ footer small {
 	.cta-section {
 		display: flex;	/*横並びにする*/
 		gap: 2vw;		/*ブロックの間に空けるマージン的な指定*/
+		padding: 0;		/*PC時は余白をリセット*/
 	}
 
 	}/*追加指定ここまで*/
@@ -1453,13 +1471,22 @@ section > .bg-slideup:first-child {
 .content-blocks .content-item {
 	background: var(--base-color) url("/images/bg-dot.png") no-repeat right bottom / 200px;
 	color: var(--base-inverse-color);	/*文字色。冒頭のbase-inverse-colorを読み込みます。*/
-	padding: 3rem;
+	padding: 2rem;	/*スマホ向けに小さく調整*/
 	margin-bottom: 2rem;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
 	position: relative;
 	border-radius: 10px;
 	transition: all 0.3s ease;
 }
+
+	/*画面幅700px以上の追加指定*/
+	@media screen and (min-width:700px) {
+
+	.content-blocks .content-item {
+		padding: 3rem;	/*PC向けは元の値を維持*/
+	}
+
+	}/*追加指定ここまで*/
 
 /*サービス詳細説明セクション専用のcontent-item*/
 .bg3.bg-pattern3 .content-blocks .content-item {
@@ -1755,6 +1782,8 @@ section > .bg-slideup:first-child {
 	text-align: center;
 	border: 2px solid var(--base-inverse-color);	/*テーブルの枠線の幅、線種、varは色のことで冒頭のbase-inverse-colorを読み込みます*/
 	padding: 0.5rem;
+	font-size: 0.85rem;	/*スマホでは小さめのフォントサイズ*/
+	line-height: 1.4;	/*行間を調整*/
 }
 
 	/*画面幅801px以上の追加指定*/
@@ -1771,8 +1800,18 @@ section > .bg-slideup:first-child {
 /*一番左側の縦列の幅*/
 .ta1.plan th:first-child,
 .ta1.plan td:first-child {
-    width: 12rem;	/*目安としては約12文字分。*/
+    width: 8rem;	/*スマホでは幅を狭く調整*/
 }
+
+	/*画面幅801px以上の追加指定*/
+	@media screen and (min-width:801px) {
+
+	.ta1.plan th:first-child,
+	.ta1.plan td:first-child {
+		width: 12rem;	/*PC表示では元の幅に戻す*/
+	}
+
+	}/*追加指定ここまで*/
 
 /*１行目のプランブロック*/
 .ta1.plan th {
@@ -1834,7 +1873,7 @@ section > .bg-slideup:first-child {
 /*１行目の金額*/
 .plan th > span {
 	display: block;
-	font-size: 1.6rem;	/*文字サイズを160%*/
+	font-size: 1.2rem;	/*スマホでは小さめのサイズ*/
 	font-family: "Oswald", sans-serif;	/*フォント指定*/
 	font-optical-sizing: auto;
 	font-weight: 700;	/*太さ。200〜900まで指定できます。数値が大きいほど太くなる。*/
@@ -1854,10 +1893,128 @@ section > .bg-slideup:first-child {
 	/*画面幅800px以下の追加指定*/
 	@media screen and (max-width:800px) {
 
-	.scroll .ta1.plan {width: 700px;}
-	.scroll {overflow-x: auto;}
+	.scroll .ta1.plan {width: 600px;}	/*スマホでは幅を狭く調整*/
+	.scroll {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;	/*スマホでのスムーズなスクロール*/
+	}
 
 	}/*追加指定ここまで*/
+
+/*料金プランテーブル内の小さなテキスト*/
+.ta1.plan .text-sm {
+	font-size: 0.75rem;	/*スマホでは更に小さく*/
+	line-height: 1.3;
+	margin: 0.25rem 0;
+}
+
+	/*画面幅600px以上の追加指定*/
+	@media screen and (min-width:600px) {
+
+	.ta1.plan .text-sm {
+		font-size: 0.85rem;	/*タブレット以上では少し大きく*/
+	}
+
+	}/*追加指定ここまで*/
+
+
+/*料金例（pricing-examples）
+---------------------------------------------------------------------------*/
+.pricing-examples {
+	display: grid;
+	grid-template-columns: 1fr;	/*スマホでは1列表示*/
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+	/*画面幅600px以上の追加指定*/
+	@media screen and (min-width:600px) {
+
+	.pricing-examples {
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));	/*タブレット以上では自動調整*/
+	}
+
+	}/*追加指定ここまで*/
+
+	/*画面幅900px以上の追加指定*/
+	@media screen and (min-width:900px) {
+
+	.pricing-examples {
+		grid-template-columns: repeat(3, 1fr);	/*PC表示では3列固定*/
+	}
+
+	}/*追加指定ここまで*/
+
+.pricing-example-card {
+	text-align: center;
+	padding: 1.5rem;
+	background-color: #f8f9fa;
+	border-radius: 12px;
+	border: 1px solid #e9ecef;
+	transition: all 0.3s ease;
+}
+
+.pricing-example-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.pricing-example-card h5 {
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 0.5rem;
+	font-size: 1rem;
+}
+
+	/*画面幅600px以上の追加指定*/
+	@media screen and (min-width:600px) {
+
+	.pricing-example-card h5 {
+		font-size: 1.1rem;
+	}
+
+	}/*追加指定ここまで*/
+
+.pricing-example-card .price {
+	font-size: 1.8rem;
+	font-weight: bold;
+	color: #3498db;
+	margin: 0.5rem 0;
+}
+
+	/*画面幅600px以上の追加指定*/
+	@media screen and (min-width:600px) {
+
+	.pricing-example-card .price {
+		font-size: 2rem;
+	}
+
+	}/*追加指定ここまで*/
+
+.pricing-example-card .price.price-premium {
+	color: #28a745;
+}
+
+.pricing-example-card .calculation {
+	font-size: 0.875rem;
+	color: #666;
+	margin: 0;
+}
+
+.pricing-note {
+	margin-top: 1.5rem;
+	padding: 1rem;
+	background-color: #fff3cd;
+	border: 1px solid #ffeaa7;
+	border-radius: 8px;
+	color: #856404;
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+.pricing-note svg {
+	margin-right: 0.5rem;
+}
 
 
 /*調整用スタイル
