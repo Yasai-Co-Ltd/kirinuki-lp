@@ -676,7 +676,8 @@ h2 img {
 /*フッター
 ---------------------------------------------------------------------------*/
 footer {
-	background: var(--primary-color);		/*背景色。冒頭のprimary-colorを読み込みます。*/
+	/* background: var(--primary-color); */
+	background: #2c3e50;
 	color: var(--primary-inverse-color);	/*文字色。冒頭のprimary-inverse-colorを読み込みます。*/
 	padding: 2rem;	/*フッター内の余白。2文字分。*/
 	display: flex;

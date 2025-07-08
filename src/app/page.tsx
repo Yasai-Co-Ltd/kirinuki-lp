@@ -55,7 +55,7 @@ export default function Home() {
       <section className="bg-primary-color">
         <div className="c">
           <h2 className="inline-block relative">
-            全て動画のAIKATAが解決します！
+            全てDOGA NO AIKATAが解決します！
             {/* <div><Image src="/images/onayami.png" alt="そのお悩み" width={200} height={100} /></div> */}
           </h2>
         </div>
@@ -304,15 +304,6 @@ export default function Home() {
       {/* 料金プラン */}
       <section className="bg1 bg-pattern1" id="plan">
         <h2 className="c">料金プラン<span>Rate Plans</span></h2>
-        
-        <div className="content-blocks">
-          <div className="content-item">
-            <div className="text">
-              <h4><i className="fa-solid fa-info-circle"></i>シンプルで分かりやすい料金設定</h4>
-              <p>基本料金100円/分に、選択したフォーマットと品質オプションの追加料金を加算したシンプルな料金体系です。</p>
-            </div>
-          </div>
-        </div>
 
         <div className="scroll">
           <table className="ta1 plan">
@@ -356,8 +347,27 @@ export default function Home() {
           <div className="content-item up">
             <div className="text">
               <h4><i className="fa-solid fa-calculator"></i>料金例</h4>
-              <p>10分動画（AIのみ）: 1,000円 | 20分動画（人の目で確認）: 3,000円 | 30分動画（人の目で確認）: 4,500円</p>
-              <p className="mt-2 text-sm">※人の目で確認プランは150円/分の固定料金です</p>
+              <div className="pricing-examples" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginTop: '1rem'}}>
+                <div style={{textAlign: 'center', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '12px', border: '1px solid #e9ecef'}}>
+                  <h5 style={{fontWeight: 'bold', color: '#333', marginBottom: '0.5rem'}}>15分動画（AIのみ）</h5>
+                  <p style={{fontSize: '2rem', fontWeight: 'bold', color: '#3498db', margin: '0.5rem 0'}}>1,500円</p>
+                  <p style={{fontSize: '0.875rem', color: '#666'}}>100円 × 15分</p>
+                </div>
+                <div style={{textAlign: 'center', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '12px', border: '1px solid #e9ecef'}}>
+                  <h5 style={{fontWeight: 'bold', color: '#333', marginBottom: '0.5rem'}}>30分動画（人の目で確認）</h5>
+                  <p style={{fontSize: '2rem', fontWeight: 'bold', color: '#28a745', margin: '0.5rem 0'}}>4,500円</p>
+                  <p style={{fontSize: '0.875rem', color: '#666'}}>150円 × 30分</p>
+                </div>
+                <div style={{textAlign: 'center', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '12px', border: '1px solid #e9ecef'}}>
+                  <h5 style={{fontWeight: 'bold', color: '#333', marginBottom: '0.5rem'}}>1時間動画（人の目で確認）</h5>
+                  <p style={{fontSize: '2rem', fontWeight: 'bold', color: '#28a745', margin: '0.5rem 0'}}>9,000円</p>
+                  <p style={{fontSize: '0.875rem', color: '#666'}}>150円 × 60分</p>
+                </div>
+              </div>
+              <p className="mt-4 text-sm" style={{padding: '1rem', backgroundColor: '#fff3cd', border: '1px solid #ffeaa7', borderRadius: '8px', color: '#856404'}}>
+                <i className="fa-solid fa-info-circle" style={{marginRight: '0.5rem'}}></i>
+                ※生成される切り抜き動画の本数は、元動画の長さや内容によって変わります。一般的に15分以上の動画で最適な結果が得られます。
+              </p>
             </div>
           </div>
         </div>
@@ -429,8 +439,6 @@ export default function Home() {
             </dl>
           </div>
         </div>
-
-        <div className="r"><p className="action-btn"><Link href="#" className="inline-block">もっと見る</Link></p></div>
       </section>
 
       {/* 制作の流れ */}
@@ -471,7 +479,7 @@ export default function Home() {
       {/* テキストスライドショー */}
       <div className="text-slide-wrapper">
         <div className="text-slide">
-          <span>AIKATA</span>
+          <span>DOGA NO AIKATA</span>
         </div>
       </div>
 
@@ -517,7 +525,7 @@ export default function Home() {
       </section> */}
 
       {/* 問い合わせ＆見積もり依頼 */}
-      <section className="padding0">
+      <section className="padding-lr0">
         <h2 className="dn">問い合わせ＆見積もり依頼</h2>
 
         <div className="cta-section">
