@@ -41,6 +41,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   } = useForm<OrderFormData>({
     defaultValues: {
       format: 'default',
+      qualityOption: 'ai_only',
       preferLength: 0,
       aspectRatio: 1,
       subtitleSwitch: 1,
@@ -50,6 +51,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
   const watchedVideoUrl = watch('videoUrl');
   const watchedFormat = watch('format');
+  const watchedQualityOption = watch('qualityOption');
   const watchedAspectRatio = watch('aspectRatio');
 
   // 動画情報を取得
@@ -168,7 +170,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   }
 
   if (step === 'payment' && estimate && videoInfo) {
-    const breakdown = getPricingBreakdown(estimate, watchedFormat);
+    const breakdown = getPricingBreakdown(estimate, watchedFormat, watchedQualityOption);
 
     return (
       <div className="max-w-3xl mx-auto">
@@ -198,6 +200,13 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   {watchedFormat === 'default' && 'デフォルト'}
                   {watchedFormat === 'separate' && '2分割'}
                   {watchedFormat === 'zoom' && 'ズーム'}
+                </span>
+              </div>
+              <div>
+                <span className="font-semibold text-blue-900 block mb-1">品質オプション:</span>
+                <span className="text-blue-800">
+                  {watchedQualityOption === 'ai_only' && 'AIのみ'}
+                  {watchedQualityOption === 'human_review' && '人の目で確認'}
                 </span>
               </div>
               <div>
@@ -442,6 +451,77 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           )}
         </div>
 
+        {/* 品質オプション選択 */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 md:p-8">
+          <label className="block text-lg font-bold text-green-900 mb-6">
+            品質オプション *
+          </label>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedQualityOption === 'ai_only'
+                ? 'border-green-500 bg-green-50'
+                : 'border-green-300 hover:border-green-400 bg-white'
+            }`}>
+              <div className="flex items-start mb-4">
+                <input
+                  type="radio"
+                  value="ai_only"
+                  {...register('qualityOption', { required: '品質オプションを選択してください' })}
+                  className="mt-1 mr-4 text-green-500 w-5 h-5"
+                />
+                <div className="flex-1">
+                  <div className="flex flex-col items-start mb-2">
+                    <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">お得</span>
+                    <span className="font-bold text-gray-900 text-lg mr-2">AIのみ</span>
+                  </div>
+                  <div className="text-sm text-gray-600 mb-2">AI技術のみで制作</div>
+                  <div className="text-xs text-green-700 font-medium">追加料金なし</div>
+                </div>
+              </div>
+              <div className="text-sm text-gray-600">
+                <ul className="space-y-1">
+                  <li>• 高速な制作スピード</li>
+                  <li>• コストパフォーマンス重視</li>
+                  <li>• 基本的な品質保証</li>
+                </ul>
+              </div>
+            </label>
+            
+            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedQualityOption === 'human_review'
+                ? 'border-green-500 bg-green-50'
+                : 'border-gray-200 hover:border-green-300 bg-white/50'
+            }`}>
+              <div className="flex items-start mb-4">
+                <input
+                  type="radio"
+                  value="human_review"
+                  {...register('qualityOption', { required: '品質オプションを選択してください' })}
+                  className="mt-1 mr-4 text-green-500 w-5 h-5"
+                />
+                <div className="flex-1">
+                  <div className="flex flex-col items-start mb-2">
+                    <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold">高品質</span>
+                    <span className="font-bold text-gray-900 text-lg mr-2">人の目で確認</span>
+                  </div>
+                  <div className="text-sm text-gray-600 mb-2">専門スタッフによる品質チェック</div>
+                  <div className="text-xs text-orange-700 font-medium">+50円/分</div>
+                </div>
+              </div>
+              <div className="text-sm text-gray-600">
+                <ul className="space-y-1">
+                  <li>• 人による最終チェック</li>
+                  <li>• より高い品質保証</li>
+                  <li>• 細かい調整対応</li>
+                </ul>
+              </div>
+            </label>
+          </div>
+          {errors.qualityOption && (
+            <p className="text-red-600 font-medium mt-3">{errors.qualityOption.message}</p>
+          )}
+        </div>
+
         {/* 切り抜き生成設定 */}
         <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
           <div className="border-b pb-4 mb-6">
@@ -456,10 +536,10 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 優先クリップ長 */}
+            {/* 優先長 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                優先クリップ長（秒）
+                優先的な切り抜き動画の長さ（秒）
               </label>
               <select
                 {...register('preferLength', { required: '優先クリップ長を選択してください' })}
@@ -571,9 +651,9 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               <svg className="h-5 w-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
               </svg>
-              追加オプション
+              字幕・タイトル設定
             </h4>
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl p-4 mb-6">
+            {/* <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl p-4 mb-6">
               <div className="flex items-start gap-3">
                 <svg className="h-6 w-6 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -583,7 +663,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <p className="text-yellow-700 text-sm">以下のオプションを見落とさないよう、必ずご確認ください。設定により動画の見栄えが大きく変わります。</p>
                 </div>
               </div>
-            </div>
+            </div> */}
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 字幕オプション */}

@@ -78,7 +78,7 @@ export default function Home() {
           <div className="feature-card up">
             <figure className="card-icon"><Image src="/images/icon3.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AI効率化により実現した圧倒的コスパ</span></h4>
-            <p>AI技術による作業効率化で、従来の半額以下を実現。1本あたり1,500円〜の業界最安値でありながら、品質は従来の手作業を上回る高水準を保証します。</p>
+            <p>AI技術による作業効率化で、従来の半額以下を実現。1分あたり100円〜の業界最安値でありながら、品質は従来の手作業を上回る高水準を保証します。</p>
             {/* <span className="card-number">03</span> */}
           </div>
         </div>
@@ -134,8 +134,8 @@ export default function Home() {
 
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-clock"></i>動画の長さに応じた柔軟な料金設定</h4>
-              <p>元動画の長さに応じて最適な料金プランをご提案。30分以下の短時間動画から、3時間を超える長時間配信まで対応可能です。長時間の動画ほど多くの切り抜きが作成でき、1本あたりの単価がお得になる仕組みです。</p>
+              <h4><i className="fa-solid fa-clock"></i>動画の長さに応じたシンプルな料金設定</h4>
+              <p>基本料金100円/分に、選択したオプションの追加料金を加算するだけのシンプルな料金体系。短時間動画から長時間配信まで対応可能で、明確で分かりやすい料金設定です。</p>
             </div>
           </div>
 
@@ -306,10 +306,10 @@ export default function Home() {
         <h2 className="c">料金プラン<span>Rate Plans</span></h2>
         
         <div className="content-blocks">
-          <div className="content-item up">
+          <div className="content-item">
             <div className="text">
-              <h4><i className="fa-solid fa-info-circle"></i>動画の長さに応じた料金設定</h4>
-              <p>元動画の長さによって最適な料金プランをご提案いたします。長時間の動画ほど多くの切り抜きが作成でき、1本あたりの単価がお得になります。</p>
+              <h4><i className="fa-solid fa-info-circle"></i>シンプルで分かりやすい料金設定</h4>
+              <p>基本料金100円/分に、選択したフォーマットと品質オプションの追加料金を加算したシンプルな料金体系です。</p>
             </div>
           </div>
         </div>
@@ -319,59 +319,34 @@ export default function Home() {
             <thead>
               <tr>
                 <th>&nbsp;</th>
-                <th><i className="fa-solid fa-clock"></i>ショートプラン<span>30分以下<br /><span className="small">￥</span>8,000<span className="small">〜</span></span></th>
-                <th><i className="fa-solid fa-clock"></i>スタンダードプラン<span>1時間以下<br /><span className="small">￥</span>15,000<span className="small">〜</span></span><span className="osusume">おすすめ</span></th>
-                <th><i className="fa-solid fa-clock"></i>ロングプラン<span>3時間以下<br /><span className="small">￥</span>25,000<span className="small">〜</span></span></th>
+                <th><i className="fa-solid fa-robot"></i>AIのみ<span>基本プラン<br /><span className="small">￥</span>100<span className="small">/分</span></span></th>
+                <th><i className="fa-solid fa-eye"></i>AIのミスを人が確認！<span>高品質プラン<br /><span className="small">￥</span>150<span className="small">/分</span></span><span className="osusume">おすすめ</span></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>元動画の長さ</td>
-                <td>30分以下</td>
-                <td>30分〜1時間</td>
-                <td>1時間〜3時間</td>
+                <td>料金</td>
+                <td><strong>100円/分</strong></td>
+                <td><strong>150円/分</strong><br /><span className="small">(基本料金+50円)</span></td>
               </tr>
               <tr>
-                <td>切り抜き動画数</td>
-                <td>3〜5本</td>
-                <td>5〜8本</td>
-                <td>8〜12本</td>
-              </tr>
-              <tr>
-                <td>1本あたり単価</td>
-                <td>約1,600円〜</td>
-                <td>約1,875円〜</td>
-                <td>約2,083円〜</td>
+                <td>最低料金</td>
+                <td>1,000円</td>
+                <td>1,000円</td>
               </tr>
               <tr>
                 <td>納期</td>
-                <td>24時間以内</td>
-                <td>48時間以内</td>
-                <td>72時間以内</td>
+                <td>当日〜2営業日</td>
+                <td>1〜3営業日</td>
               </tr>
               <tr>
-                <td>修正回数</td>
-                <td>2回まで</td>
-                <td>3回まで</td>
-                <td>5回まで</td>
-              </tr>
-              <tr>
-                <td>サムネイル制作</td>
-                <td>各動画1案</td>
-                <td>各動画2案</td>
-                <td>各動画3案</td>
-              </tr>
-              <tr>
-                <td>テロップ・効果音</td>
-                <td>AI自動生成</td>
-                <td>AI+手動調整</td>
-                <td>AI+プロ仕上げ</td>
-              </tr>
-              <tr>
-                <td>専属担当者</td>
-                <td>なし</td>
-                <td>あり</td>
-                <td>あり（優先対応）</td>
+                <td>品質チェック</td>
+                <td>AI自動チェック</td>
+                <td>
+                  専門スタッフチェック
+                  <p className='text-sm'>※字幕などのAIのミスをチェックして修正します。</p>
+                  <p className='text-sm'>※1回のみお客様からの修正依頼に対応します。(大きなフォーマット変更などには対応不可)</p>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -380,8 +355,9 @@ export default function Home() {
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4><i className="fa-solid fa-plus-circle"></i>3時間を超える長時間動画も対応可能</h4>
-              <p>3時間を超える長時間配信やセミナー動画も承ります。動画の長さや内容に応じて個別にお見積もりいたします。お気軽にお問い合わせください。</p>
+              <h4><i className="fa-solid fa-calculator"></i>料金例</h4>
+              <p>10分動画（AIのみ）: 1,000円 | 20分動画（人の目で確認）: 3,000円 | 30分動画（人の目で確認）: 4,500円</p>
+              <p className="mt-2 text-sm">※人の目で確認プランは150円/分の固定料金です</p>
             </div>
           </div>
         </div>

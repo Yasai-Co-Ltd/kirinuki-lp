@@ -9,6 +9,7 @@ export interface VideoInfo {
 export interface OrderFormData {
   videoUrl: string;
   format: 'default' | 'separate' | 'zoom';
+  qualityOption: 'ai_only' | 'human_review'; // 品質オプション
   // 切り抜き設定
   preferLength: number; // 0: 自動, 1: ~30秒, 2: 30-60秒, 3: 60-90秒, 4: 90秒-3分
   aspectRatio: number; // 1: 9:16, 2: 1:1, 3: 4:5, 4: 16:9
@@ -26,6 +27,7 @@ export interface OrderEstimate {
   videoDurationMinutes: number;
   totalPrice: number;
   estimatedDeliveryDays: number;
+  qualityOption?: 'ai_only' | 'human_review';
 }
 
 export interface Order {
@@ -37,6 +39,7 @@ export interface Order {
   };
   videoInfo: VideoInfo;
   format: 'default' | 'separate' | 'zoom';
+  qualityOption: 'ai_only' | 'human_review';
   estimate: OrderEstimate;
   specialRequests?: string;
   status: 'pending' | 'paid' | 'processing' | 'completed' | 'cancelled';

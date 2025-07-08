@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     const orderData: OrderFormData & { videoDuration: number } = await request.json();
 
-    if (!orderData.videoUrl || !orderData.format || !orderData.customerName || !orderData.customerEmail) {
+    if (!orderData.videoUrl || !orderData.format || !orderData.qualityOption || !orderData.customerName || !orderData.customerEmail) {
       return NextResponse.json(
         { error: '必要な情報が不足しています' },
         { status: 400 }
@@ -21,7 +21,8 @@ export async function POST(request: NextRequest) {
     // 見積もり計算
     const estimate = calculateEstimate(
       orderData.videoDuration,
-      orderData.format
+      orderData.format,
+      orderData.qualityOption
     );
 
     // Stripe PaymentIntentを作成
@@ -33,6 +34,7 @@ export async function POST(request: NextRequest) {
         customerEmail: orderData.customerEmail,
         videoUrl: orderData.videoUrl,
         format: orderData.format,
+        qualityOption: orderData.qualityOption,
         videoDuration: orderData.videoDuration.toString(),
         specialRequests: orderData.specialRequests || '',
         // 切り抜き設定
@@ -46,7 +48,7 @@ export async function POST(request: NextRequest) {
         orderData.format === 'default' ? 'デフォルト' :
         orderData.format === 'separate' ? '2分割' :
         orderData.format === 'zoom' ? 'ズーム' : orderData.format
-      }`,
+      } (${orderData.qualityOption === 'ai_only' ? 'AIのみ' : '人の目で確認'})`,
     });
 
     return NextResponse.json({

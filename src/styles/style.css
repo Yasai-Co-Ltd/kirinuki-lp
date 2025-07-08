@@ -1545,10 +1545,10 @@ section > .bg-slideup:first-child {
 	text-shadow: none;
 }
 
-.bg1.bg-pattern1 .content-blocks .content-item:hover {
+/* .bg1.bg-pattern1 .content-blocks .content-item:hover {
 	transform: translateY(-5px);
 	box-shadow: 0 15px 40px rgba(231, 76, 60, 0.3);
-}
+} */
 
 /*注意事項セクション専用のcontent-item*/
 .bg2.bg-pattern2 .content-blocks .content-item {
