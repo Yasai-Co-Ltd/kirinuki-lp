@@ -675,24 +675,34 @@ h2 img {
 /*フッター
 ---------------------------------------------------------------------------*/
 footer {
-	/* background: var(--primary-color); */
 	background: #2c3e50;
-	color: var(--primary-inverse-color);	/*文字色。冒頭のprimary-inverse-colorを読み込みます。*/
-	padding: 2rem;	/*フッター内の余白。2文字分。*/
+	color: var(--primary-inverse-color);
+	padding: 2rem;
 	display: flex;
 	flex-direction: column-reverse;
+	gap: 2rem;
 }
 
 /*フッター直下の1つ目ブロック（ロゴやSNSアイコンが入ったブロック）*/
 footer div:nth-of-type(1) {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 /*フッター直下の２つ目ブロック（メニューブロック）*/
 footer div:nth-of-type(2) {
     flex: 1;
     display: flex;
-    gap: 2rem;	/*このブロック内の直下のブロック同士に空ける余白。４文字分。*/
+    justify-content: center;
+}
+
+footer div:nth-of-type(2) nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 2rem;
 }
 
 
@@ -701,35 +711,79 @@ footer div:nth-of-type(2) {
 
 	footer {
 		flex-direction: row;
-		gap: 4rem;		/*フッター内の直下のブロック同士に空ける余白。４文字分。*/
-		padding: 4rem;	/*フッター内の余白。４文字分。*/
+		gap: 4rem;
+		padding: 4rem;
+		align-items: flex-start;
 	}
 
 	/*フッター直下の1つ目ブロック（ロゴやSNSアイコンが入ったブロック）*/
 	footer div:nth-of-type(1) {
 		text-align: left;
-		width: 30%;	/*幅*/
+		width: 40%;
+		align-items: flex-start;
 	}
 
 	/*フッター直下の２つ目ブロック（メニューブロック）*/
 	footer div:nth-of-type(2) {
-		justify-content: flex-end;	/*ブロックを右に寄せる。この行を削除すれば、ロゴ画像の方によります。*/
-		gap: 4rem;	/*このブロック内の直下のブロック同士に空ける余白。４文字分。*/
+		justify-content: flex-end;
+		flex: 1;
+	}
+
+	footer div:nth-of-type(2) nav ul {
+		justify-content: flex-end;
+		flex-direction: column;
+		gap: 0.8rem;
 	}
 
 	}/*追加指定ここまで*/
 
 
 footer ul {
-	margin: 0;padding: 0;list-style: none;
-	margin-bottom: 2rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
+footer nav ul li {
+	margin-bottom: 0.5rem;
+}
+
+footer nav ul li a {
+	color: var(--primary-inverse-color);
+	text-decoration: none;
+	font-size: 0.95rem;
+	transition: color 0.3s ease;
+	opacity: 0.9;
+}
+
+footer nav ul li a:hover {
+	color: var(--primary-color);
+	opacity: 1;
+}
+
+
+/*ロゴ部分*/
+footer .logo {
+	margin-bottom: 0.5rem;
+}
+
+/*連絡先情報*/
+footer .contact-info {
+	font-size: 0.9rem;
+	line-height: 1.6;
+	opacity: 0.8;
+}
+
+footer .contact-info p {
+	margin: 0;
+}
 
 /*Copyright部分*/
 footer small {
 	display: block;
-	padding-top: 2rem;	/*SNSアイコンとコピーライトの間の余白調整*/
+	font-size: 0.8rem;
+	opacity: 0.7;
+	margin-top: 1rem;
 }
 
 
@@ -737,10 +791,40 @@ footer small {
 ---------------------------------------------------------------------------*/
 .icons {
 	list-style: none;
-	margin: 0;padding: 0;
+	margin: 0;
+	padding: 0;
 	display: flex;
 	justify-content: center;
-	gap: 1rem;	/*アイコン同士のマージン的な要素。１文字分。*/
+	gap: 1.5rem;
+}
+
+.icons li {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.icons a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.1);
+	color: var(--primary-inverse-color);
+	text-decoration: none;
+	transition: all 0.3s ease;
+}
+
+.icons a:hover {
+	background: var(--primary-color);
+	transform: translateY(-2px);
+}
+
+.icons svg {
+	width: 20px;
+	height: 20px;
 }
 
 	/*画面700px以上の追加指定*/
@@ -751,10 +835,6 @@ footer small {
 	}
 
 	}/*追加指定ここまで*/
-
-.icons i {
-	font-size: 30px;	/*アイコンサイズ*/
-}
 
 
 /*著作部分（※意図的に見えなくしたりしないで下さい。規約違反になります。）
@@ -952,7 +1032,7 @@ footer small {
 	text-shadow: none;display: block;text-decoration: none;
 	background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));		/*グラデーション背景*/
 	color: var(--primary-inverse-color);	/*文字色。冒頭のprimary-inverse-colorを読み込みます。*/
-	font-size: 1.4rem;		/*文字サイズ。140%に。*/
+	font-size: 1.2rem;		/*文字サイズ。140%に。*/
 	padding: 0.8rem 2.5rem;	/*ボタン内の余白。上下、左右へ。*/
 	border-radius: 50px;	/*角を丸くする*/
 	text-align: center;		/*テキストをセンタリング*/

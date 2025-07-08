@@ -19,9 +19,9 @@ export default function OrderPage() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 max-w-6xl py-12">
+        <div className="container mx-auto px-1 md:px-4 max-w-6xl py-12">
           {/* 注文フォーム */}
-          <div id="order-form" className="bg-white rounded-2xl shadow-xl p-6 md:p-10 mb-12 border border-gray-100">
+          <div id="order-form" className="bg-white rounded-2xl shadow-xl p-6 px-2 md:px-10 md:p-10 mb-12 border border-gray-100">
             <OrderForm />
           </div>
 
