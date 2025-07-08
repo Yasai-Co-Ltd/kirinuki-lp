@@ -43,7 +43,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       format: 'default',
       qualityOption: 'ai_only',
       preferLength: 0,
-      aspectRatio: 1,
+      aspectRatio: 1, // 9:16 (縦型) を初期値に設定
       subtitleSwitch: 1,
       headlineSwitch: 1,
     }
@@ -563,13 +563,14 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
-                  watchedAspectRatio === 1
+                  watchedAspectRatio == 1
                     ? 'border-orange-500 bg-orange-50'
                     : 'border-gray-200 hover:border-orange-300'
                 }`}>
                   <input
                     type="radio"
                     value={1}
+                    defaultChecked
                     {...register('aspectRatio', { required: 'アスペクト比を選択してください' })}
                     className="sr-only"
                   />
@@ -582,7 +583,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <span className="text-xs text-gray-500 text-center">縦型・ショート</span>
                 </label>
                 <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
-                  watchedAspectRatio === 2
+                  watchedAspectRatio == 2
                     ? 'border-orange-500 bg-orange-50'
                     : 'border-gray-200 hover:border-orange-300'
                 }`}>
@@ -601,7 +602,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <span className="text-xs text-gray-500 text-center">正方形・SNS</span>
                 </label>
                 <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
-                  watchedAspectRatio === 3
+                  watchedAspectRatio == 3
                     ? 'border-orange-500 bg-orange-50'
                     : 'border-gray-200 hover:border-orange-300'
                 }`}>
@@ -620,7 +621,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <span className="text-xs text-gray-500 text-center">ポートレート</span>
                 </label>
                 <label className={`flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-white group ${
-                  watchedAspectRatio === 4
+                  watchedAspectRatio == 4
                     ? 'border-orange-500 bg-orange-50'
                     : 'border-gray-200 hover:border-orange-300'
                 }`}>
