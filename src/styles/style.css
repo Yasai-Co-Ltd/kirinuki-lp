@@ -1596,31 +1596,25 @@ section > .bg-slideup:first-child {
 
 /*制作の流れセクション専用のcontent-item*/
 .bg2.bg-pattern2 .content-blocks.process-flow .content-item {
-	background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-	border: 2px solid #4caf50;
-	color: #2e7d32;
+	background: white;
+	border: 2px solid white;
+	color: black;
 	position: relative;
-	overflow: hidden;
+	/* overflow: hidden; */
 }
 
 .bg2.bg-pattern2 .content-blocks.process-flow .content-item::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 6px;
-	height: 100%;
-	background: linear-gradient(180deg, #4caf50, #66bb6a);
+	content: none;
 }
 
 .bg2.bg-pattern2 .content-blocks.process-flow .content-item h4 {
-	color: #1b5e20;
+	color: black;
 	font-weight: 700;
 	padding-left: 1rem;
 }
 
 .bg2.bg-pattern2 .content-blocks.process-flow .content-item h4 i {
-	background: linear-gradient(135deg, #4caf50, #66bb6a);
+	background: white;
 	color: white;
 	padding: 1rem;
 	border-radius: 12px;
@@ -1628,7 +1622,7 @@ section > .bg-slideup:first-child {
 	font-size: 1.4rem;
 	box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 	transform: rotate(0deg);
-	transition: transform 0.3s ease;
+	/* transition: transform 0.3s ease; */
 }
 
 .bg2.bg-pattern2 .content-blocks.process-flow .content-item:hover h4 i {
@@ -1652,7 +1646,7 @@ section > .bg-slideup:first-child {
 	left: 50%;
 	bottom: -2rem;
 	transform: scaleX(1.5);
-	opacity: 0.7;
+	opacity: 1;
 	color: #4caf50;
 	font-size: 1.5rem;
 	text-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
@@ -1723,7 +1717,6 @@ section > .bg-slideup:first-child {
 	left: 50%;		/*左からの配置場所。厳密ではありませんが、文字が小さいので問題ないかと。*/
 	bottom: -2rem;	/*下からの配置場所。マイナスがつくので本来の場所とは逆向きに移動。*/
 	transform: scaleX(1.5);	/*横幅を150%に*/
-	opacity: 0.5;			/*透明度。色が50%出た状態。*/
 }
 
 /*最後のボックスだけ下矢印を出さない*/
