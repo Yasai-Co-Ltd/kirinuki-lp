@@ -7,7 +7,7 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { OrderFormData, VideoInfo, VideoOrderItem, OrderEstimate } from '@/types/order';
 import { formatDuration } from '@/lib/youtube';
 import { formatPrice, getPricingBreakdown } from '@/lib/pricing';
-import { ADMIN_CONFIG } from '@/lib/admin-config';
+import { ADMIN_CONFIG, isPlanAvailable } from '@/lib/admin-config';
 import StepBar from '@/components/ui/StepBar';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -936,10 +936,12 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               </div>
             </label>
             
-            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
-              watchedQualityOption === 'human_review'
-                ? 'border-green-500 bg-green-50'
-                : 'border-gray-200 hover:border-green-300 bg-white/50'
+            <label className={`flex flex-col p-6 border-2 rounded-xl transition-all group ${
+              !isPlanAvailable('human_review')
+                ? 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-60'
+                : watchedQualityOption === 'human_review'
+                ? 'border-green-500 bg-green-50 cursor-pointer'
+                : 'border-gray-200 hover:border-green-300 bg-white/50 cursor-pointer'
             }`}>
               <div className="flex items-start mb-4">
                 <input
@@ -947,23 +949,49 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   value="human_review"
                   {...register('qualityOption', { required: '品質オプションを選択してください' })}
                   className="mt-1 mr-4 text-green-500 w-5 h-5"
+                  disabled={!isPlanAvailable('human_review')}
                 />
                 <div className="flex-1">
                   <div className="flex flex-col items-start mb-2">
-                    <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold">高品質</span>
-                    <span className="font-bold text-gray-900 text-lg mr-2">人の目で確認</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                      !isPlanAvailable('human_review')
+                        ? 'bg-gray-400 text-white'
+                        : 'bg-blue-500 text-white'
+                    }`}>
+                      {!isPlanAvailable('human_review') ? '受付停止中' : '高品質'}
+                    </span>
+                    <span className={`font-bold text-lg mr-2 ${
+                      !isPlanAvailable('human_review') ? 'text-gray-500' : 'text-gray-900'
+                    }`}>
+                      人の目で確認
+                    </span>
                   </div>
-                  <div className="text-sm text-gray-600 mb-2">専門スタッフによる品質チェック</div>
-                  <div className="text-xs text-orange-700 font-medium">+50円/分</div>
+                  <div className={`text-sm mb-2 ${
+                    !isPlanAvailable('human_review') ? 'text-gray-500' : 'text-gray-600'
+                  }`}>
+                    {!isPlanAvailable('human_review')
+                      ? '現在受付を停止しています'
+                      : '専門スタッフによる品質チェック'
+                    }
+                  </div>
+                  {isPlanAvailable('human_review') && (
+                    <div className="text-xs text-orange-700 font-medium">+{ADMIN_CONFIG.pricing.humanReviewSurcharge}円/分</div>
+                  )}
                 </div>
               </div>
-              <div className="text-sm text-gray-600">
-                <ul className="space-y-1">
-                  <li>• 人による最終チェック</li>
-                  <li>• より高い品質保証</li>
-                  <li>• 修正対応</li>
-                </ul>
-              </div>
+              {isPlanAvailable('human_review') ? (
+                <div className="text-sm text-gray-600">
+                  <ul className="space-y-1">
+                    <li>• 人による最終チェック</li>
+                    <li>• より高い品質保証</li>
+                    <li>• 修正対応</li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                  <p>{ADMIN_CONFIG.orderStatus.planStatus.humanReviewStopMessage}</p>
+                </div>
+              )}
             </label>
           </div>
           {errors.qualityOption && (

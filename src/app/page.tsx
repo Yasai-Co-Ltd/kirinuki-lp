@@ -643,7 +643,7 @@ export default function Home() {
       </div> */}
       
       {/* 管理パネル */}
-      <AdminPanel />
+      {/* <AdminPanel /> */}
     </Layout>
   )
 }
