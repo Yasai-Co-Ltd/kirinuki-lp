@@ -7,6 +7,7 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { OrderFormData, VideoInfo, VideoOrderItem, OrderEstimate } from '@/types/order';
 import { formatDuration } from '@/lib/youtube';
 import { formatPrice, getPricingBreakdown } from '@/lib/pricing';
+import { ADMIN_CONFIG } from '@/lib/admin-config';
 import StepBar from '@/components/ui/StepBar';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -639,6 +640,37 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               </>
             )}
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 受付停止チェック
+  if (!ADMIN_CONFIG.orderStatus.isAcceptingOrders) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center py-16">
+          <div className="max-w-md mx-auto">
+            <div className="w-24 h-24 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold text-orange-600 mb-6">受付を一時停止中</h2>
+            <div className="bg-orange-50 border border-orange-200 rounded-xl p-6">
+              <p className="text-orange-800 text-lg leading-relaxed">
+                {ADMIN_CONFIG.orderStatus.stopMessage}
+              </p>
+            </div>
+            <div className="mt-8">
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all duration-200"
+              >
+                ページを更新
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
