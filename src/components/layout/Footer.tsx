@@ -41,16 +41,24 @@ export default function Footer() {
         <small>Copyright&copy; DOGA NO AIKATA All Rights Reserved.</small>
       </div>
 
-      <div>
+      <div className="footer-nav">
         <nav>
-          <ul>
-            <li><Link href="/#koe">お客様の声</Link></li>
-            <li><Link href="/#products">制作実績</Link></li>
-            <li><Link href="/#plan">料金プラン</Link></li>
-            <li><Link href="/#faq">よくある質問</Link></li>
-            <li><Link href="/#flow">制作の流れ</Link></li>
-            <li><Link href="/contact">お問い合わせ</Link></li>
-          </ul>
+          <div className="nav-section">
+            <h4>サービス</h4>
+            <ul>
+              <li><Link href="/#products">制作実績</Link></li>
+              <li><Link href="/#plan">料金プラン</Link></li>
+              <li><Link href="/#flow">制作の流れ</Link></li>
+            </ul>
+          </div>
+          <div className="nav-section">
+            <h4>サポート</h4>
+            <ul>
+              <li><Link href="/#koe">お客様の声</Link></li>
+              <li><Link href="/#faq">よくある質問</Link></li>
+              <li><Link href="/contact">お問い合わせ</Link></li>
+            </ul>
+          </div>
         </nav>
       </div>
     </footer>

@@ -705,6 +705,28 @@ footer div:nth-of-type(2) nav ul {
     gap: 1rem 2rem;
 }
 
+/* フッターナビゲーション */
+.footer-nav nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.nav-section h4 {
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.nav-section ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
 
 	/*画面700px以上の追加指定*/
 	@media screen and (min-width:700px) {
@@ -735,6 +757,26 @@ footer div:nth-of-type(2) nav ul {
 		gap: 0.8rem;
 	}
 
+	/* PC表示でのフッターナビゲーション */
+	.footer-nav nav {
+		flex-direction: row;
+		gap: 4rem;
+		justify-content: flex-end;
+	}
+
+	.nav-section {
+		min-width: 150px;
+	}
+
+	.nav-section h4 {
+		font-size: 1.1rem;
+		margin-bottom: 1.2rem;
+	}
+
+	.nav-section ul {
+		gap: 1rem;
+	}
+
 	}/*追加指定ここまで*/
 
 
@@ -752,13 +794,40 @@ footer nav ul li a {
 	color: var(--primary-inverse-color);
 	text-decoration: none;
 	font-size: 0.95rem;
-	transition: color 0.3s ease;
+	transition: all 0.3s ease;
 	opacity: 0.9;
+	padding: 0.3rem 0;
+	border-bottom: 1px solid transparent;
 }
 
 footer nav ul li a:hover {
 	color: var(--primary-color);
 	opacity: 1;
+	border-bottom-color: var(--primary-color);
+	transform: translateX(5px);
+}
+
+/* ナビゲーションセクションのリンクスタイル */
+.nav-section ul li a {
+	display: block;
+	padding: 0.4rem 0;
+	position: relative;
+}
+
+.nav-section ul li a::before {
+	content: '';
+	position: absolute;
+	left: -15px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 0;
+	height: 2px;
+	background: var(--primary-color);
+	transition: width 0.3s ease;
+}
+
+.nav-section ul li a:hover::before {
+	width: 10px;
 }
 
 
