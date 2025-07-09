@@ -115,7 +115,14 @@ input {font-size: 1rem;}
 /*section*/
 section {
 	overflow-x: hidden;
-	padding: var(--space-large);	
+	/* padding: var(--space-large);	 */
+	padding: 15px;	
+}
+
+@media screen and (min-width:700px) {
+	section {
+		padding: var(--space-large);	
+	}
 }
 
 
@@ -681,35 +688,23 @@ footer {
 	display: flex;
 	flex-direction: column-reverse;
 	gap: 2rem;
+	justify-content: space-between;
 }
 
 /*フッター直下の1つ目ブロック（ロゴやSNSアイコンが入ったブロック）*/
-footer div:nth-of-type(1) {
+footer div {
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-}
-
-/*フッター直下の２つ目ブロック（メニューブロック）*/
-footer div:nth-of-type(2) {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-footer div:nth-of-type(2) nav ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem 2rem;
+    gap: 0.5rem;
 }
 
 /* フッターナビゲーション */
 .footer-nav nav {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 2rem;
+	justify-content: center;
 }
 
 .nav-section h4 {
@@ -724,7 +719,6 @@ footer div:nth-of-type(2) nav ul {
 .nav-section ul {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
 }
 
 
@@ -739,22 +733,10 @@ footer div:nth-of-type(2) nav ul {
 	}
 
 	/*フッター直下の1つ目ブロック（ロゴやSNSアイコンが入ったブロック）*/
-	footer div:nth-of-type(1) {
+	footer div {
 		text-align: left;
 		width: 40%;
 		align-items: flex-start;
-	}
-
-	/*フッター直下の２つ目ブロック（メニューブロック）*/
-	footer div:nth-of-type(2) {
-		justify-content: flex-end;
-		flex: 1;
-	}
-
-	footer div:nth-of-type(2) nav ul {
-		justify-content: flex-end;
-		flex-direction: column;
-		gap: 0.8rem;
 	}
 
 	/* PC表示でのフッターナビゲーション */
@@ -770,11 +752,11 @@ footer div:nth-of-type(2) nav ul {
 
 	.nav-section h4 {
 		font-size: 1.1rem;
-		margin-bottom: 1.2rem;
+		margin-bottom: 0;
 	}
 
 	.nav-section ul {
-		gap: 1rem;
+		gap: 0rem;
 	}
 
 	}/*追加指定ここまで*/
@@ -833,7 +815,19 @@ footer nav ul li a:hover {
 
 /*ロゴ部分*/
 footer .logo {
+	margin: auto;
 	margin-bottom: 0.5rem;
+}
+
+@media screen and (min-width:700px) {
+	footer .logo {
+		margin: 0;
+		margin-bottom: 0.5rem;
+	}
+	footer .logo img {
+		height: 30px;
+		width: auto;
+	}
 }
 
 /*連絡先情報*/
@@ -1620,7 +1614,7 @@ section > .bg-slideup:first-child {
 .content-blocks .content-item {
 	background: var(--base-color) url("/images/bg-dot.png") no-repeat right bottom / 200px;
 	color: var(--base-inverse-color);	/*文字色。冒頭のbase-inverse-colorを読み込みます。*/
-	padding: 2rem;	/*スマホ向けに小さく調整*/
+	padding: 1rem;	/*スマホ向けに小さく調整*/
 	margin-bottom: 2rem;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
 	position: relative;
@@ -1713,7 +1707,8 @@ section > .bg-slideup:first-child {
 
 /*注意事項セクション専用のcontent-item*/
 .bg2.bg-pattern2 .content-blocks .content-item {
-	background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+	/* background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); */
+	background: white;
 	border: 2px solid #f39c12;
 	color: #8b4513;
 	box-shadow: 0 8px 25px rgba(243, 156, 18, 0.2);

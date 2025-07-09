@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="logo">
           <Image src="/images/logo_w.png" alt="DOGA NO AIKATA" width={150} height={45} />
         </div>
-        <ul className="icons">
+        {/* <ul className="icons">
           <li>
             <Link href="#" aria-label="X (Twitter)">
               <FontAwesomeIcon icon={faXTwitter} />
@@ -33,11 +33,11 @@ export default function Footer() {
               <FontAwesomeIcon icon={faInstagram} />
             </Link>
           </li>
-        </ul>
-        <div className="contact-info">
+        </ul> */}
+        {/* <div className="contact-info">
           <p>東京都渋谷区XXXXビル１F<br />
           03-0000-0000</p>
-        </div>
+        </div> */}
         <small>Copyright&copy; DOGA NO AIKATA All Rights Reserved.</small>
       </div>
 
@@ -46,7 +46,7 @@ export default function Footer() {
           <div className="nav-section">
             <h4>サービス</h4>
             <ul>
-              <li><Link href="/#products">制作実績</Link></li>
+              <li><Link href="/#products">制作サンプル</Link></li>
               <li><Link href="/#plan">料金プラン</Link></li>
               <li><Link href="/#flow">制作の流れ</Link></li>
             </ul>
@@ -54,9 +54,10 @@ export default function Footer() {
           <div className="nav-section">
             <h4>サポート</h4>
             <ul>
-              <li><Link href="/#koe">お客様の声</Link></li>
+              {/* <li><Link href="/#koe">お客様の声</Link></li> */}
               <li><Link href="/#faq">よくある質問</Link></li>
               <li><Link href="/contact">お問い合わせ</Link></li>
+              <li><Link href="https://yas-ai.io" target='_blank'>運営会社</Link></li>
             </ul>
           </div>
         </nav>
