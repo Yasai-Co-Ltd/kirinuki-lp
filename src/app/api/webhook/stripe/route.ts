@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { sendOrderConfirmationEmails, OrderEmailData } from '@/lib/email';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-06-30.basil',
@@ -39,53 +40,36 @@ export async function POST(request: NextRequest) {
 async function handleOrderCompletion(paymentIntent: Stripe.PaymentIntent) {
   const metadata = paymentIntent.metadata;
   
-  // 発注情報をデータベースに保存（今回は簡略化）
-  const orderData = {
-    paymentIntentId: paymentIntent.id,
-    customerName: metadata.customerName,
-    customerEmail: metadata.customerEmail,
-    videoUrl: metadata.videoUrl,
-    format: metadata.format,
-    videoDuration: parseInt(metadata.videoDuration),
-    specialRequests: metadata.specialRequests,
-    amount: paymentIntent.amount,
-    status: 'paid',
-    createdAt: new Date(),
-  };
+  try {
+    // メタデータから注文情報を構築
+    const videoUrls = metadata.videoUrls ? JSON.parse(metadata.videoUrls) : [metadata.videoUrl];
+    const videoInfos = metadata.videoInfos ? JSON.parse(metadata.videoInfos) : [];
+    
+    const orderEmailData: OrderEmailData = {
+      paymentIntentId: paymentIntent.id,
+      customerName: metadata.customerName || '',
+      customerEmail: metadata.customerEmail || '',
+      videoUrls: videoUrls,
+      videoInfos: videoInfos,
+      format: (metadata.format as 'default' | 'separate' | 'zoom') || 'default',
+      qualityOption: (metadata.qualityOption as 'ai_only' | 'human_review') || 'ai_only',
+      preferLength: parseInt(metadata.preferLength || '0'),
+      aspectRatio: parseInt(metadata.aspectRatio || '1'),
+      subtitleSwitch: parseInt(metadata.subtitleSwitch || '1'),
+      headlineSwitch: parseInt(metadata.headlineSwitch || '1'),
+      specialRequests: metadata.specialRequests,
+      amount: paymentIntent.amount / 100, // Stripeは金額をセント単位で保存するため100で割る
+      estimatedDeliveryDays: parseInt(metadata.estimatedDeliveryDays || '3'),
+      createdAt: new Date(),
+    };
 
-  console.log('Order completed:', orderData);
+    console.log('Order completed:', orderEmailData);
 
-  // メール送信処理（実装例）
-  await sendOrderConfirmationEmail(orderData);
-}
-
-async function sendOrderConfirmationEmail(orderData: any) {
-  // SendGridやその他のメールサービスを使用してメール送信
-  // 今回は簡略化してコンソールログのみ
-  console.log('Sending confirmation email to:', orderData.customerEmail);
-  
-  // 実際の実装例：
-  /*
-  const sgMail = require('@sendgrid/mail');
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-  const msg = {
-    to: orderData.customerEmail,
-    from: process.env.FROM_EMAIL,
-    subject: '切り抜き動画制作のご注文を承りました',
-    html: `
-      <h2>ご注文ありがとうございます</h2>
-      <p>${orderData.customerName}様</p>
-      <p>切り抜き動画制作のご注文を承りました。</p>
-      <ul>
-        <li>動画URL: ${orderData.videoUrl}</li>
-        <li>フォーマット: ${orderData.format === 'with_subtitles' ? '字幕あり' : '字幕なし'}</li>
-        <li>料金: ¥${orderData.amount.toLocaleString()}</li>
-      </ul>
-      <p>制作完了次第、メールにてお届けいたします。</p>
-    `,
-  };
-
-  await sgMail.send(msg);
-  */
+    // 顧客と管理者にメール送信
+    await sendOrderConfirmationEmails(orderEmailData);
+    
+  } catch (error) {
+    console.error('注文完了処理中にエラーが発生しました:', error);
+    // メール送信エラーでも注文処理は継続
+  }
 }

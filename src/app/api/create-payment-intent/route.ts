@@ -9,9 +9,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    const orderData: OrderFormData & { videoDurations: number[] } = await request.json();
+    const requestData: OrderFormData & { videoDurations: number[] } = await request.json();
 
-    if (!orderData.videos || orderData.videos.length === 0 || !orderData.format || !orderData.qualityOption || !orderData.customerName || !orderData.customerEmail) {
+    if (!requestData.videos || requestData.videos.length === 0 || !requestData.format || !requestData.qualityOption || !requestData.customerName || !requestData.customerEmail) {
       return NextResponse.json(
         { error: '必要な情報が不足しています' },
         { status: 400 }
@@ -20,44 +20,50 @@ export async function POST(request: NextRequest) {
 
     // 見積もり計算（複数動画対応）
     const estimate = calculateEstimate(
-      orderData.videoDurations,
-      orderData.format,
-      orderData.qualityOption
+      requestData.videoDurations,
+      requestData.format,
+      requestData.qualityOption
     );
 
     // 動画URLリストを作成
-    const videoUrls = orderData.videos.map(video => video.videoUrl);
+    const videoUrls = requestData.videos.map(video => video.videoUrl);
+    
+    // 動画情報を取得（videoInfoがある場合）
+    const videoInfos = requestData.videos.map(video => video.videoInfo).filter(info => info !== undefined);
     
     // トータル分数を計算
-    const totalMinutes = Math.ceil(orderData.videoDurations.reduce((sum, duration) => sum + duration, 0) / 60);
-    const videoCount = orderData.videos.length;
+    const totalMinutes = Math.ceil(requestData.videoDurations.reduce((sum, duration) => sum + duration, 0) / 60);
+    const videoCount = requestData.videos.length;
 
     // Stripe PaymentIntentを作成
     const paymentIntent = await stripe.paymentIntents.create({
       amount: estimate.totalPrice,
       currency: 'jpy',
       metadata: {
-        customerName: orderData.customerName,
-        customerEmail: orderData.customerEmail,
+        customerName: requestData.customerName,
+        customerEmail: requestData.customerEmail,
         videoUrls: JSON.stringify(videoUrls), // 複数URLをJSON形式で保存
+        videoInfos: JSON.stringify(videoInfos), // 動画情報をJSON形式で保存
         videoCount: videoCount.toString(),
         totalDurationMinutes: totalMinutes.toString(),
-        format: orderData.format,
-        qualityOption: orderData.qualityOption,
-        videoDurations: JSON.stringify(orderData.videoDurations),
-        specialRequests: orderData.specialRequests || '',
+        format: requestData.format,
+        qualityOption: requestData.qualityOption,
+        videoDurations: JSON.stringify(requestData.videoDurations),
+        specialRequests: requestData.specialRequests || '',
         // 切り抜き設定
-        preferLength: orderData.preferLength?.toString() || '0',
-        aspectRatio: orderData.aspectRatio?.toString() || '1',
-        subtitleSwitch: orderData.subtitleSwitch?.toString() || '0',
-        headlineSwitch: orderData.headlineSwitch?.toString() || '0',
+        preferLength: requestData.preferLength?.toString() || '0',
+        aspectRatio: requestData.aspectRatio?.toString() || '1',
+        subtitleSwitch: requestData.subtitleSwitch?.toString() || '0',
+        headlineSwitch: requestData.headlineSwitch?.toString() || '0',
+        // 見積もり情報
+        estimatedDeliveryDays: estimate.estimatedDeliveryDays.toString(),
       },
-      receipt_email: orderData.customerEmail,
+      receipt_email: requestData.customerEmail,
       description: `切り抜き動画制作 - ${videoCount}本 (合計${totalMinutes}分) - ${
-        orderData.format === 'default' ? 'デフォルト' :
-        orderData.format === 'separate' ? '2分割' :
-        orderData.format === 'zoom' ? 'ズーム' : orderData.format
-      } (${orderData.qualityOption === 'ai_only' ? 'AIのみ' : '人の目で確認'})`,
+        requestData.format === 'default' ? 'デフォルト' :
+        requestData.format === 'separate' ? '2分割' :
+        requestData.format === 'zoom' ? 'ズーム' : requestData.format
+      } (${requestData.qualityOption === 'ai_only' ? 'AIのみ' : '人の目で確認'})`,
     });
 
     return NextResponse.json({
