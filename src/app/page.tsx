@@ -33,6 +33,46 @@ export default function Home() {
         </div>
       </div>
 
+      {/* 切り抜き動画マーケティングの重要性 */}
+      <section className="bg-primary-color marketing-importance">
+        <div className="c">
+          <h2 className="inline-block relative">
+            切り抜き動画は<span className="highlight">これからのマーケティング</span>に必要！
+            {/* <span className="subtitle">今がチャンス！2025年7月15日から収益化がストップ</span> */}
+          </h2>
+        </div>
+
+        <div className="feature-cards">
+          <div className="feature-card">
+            <h4><span className="marker">切り抜き動画の市場が急拡大中</span></h4>
+            <p>YouTubeやTikTokでの切り抜き動画の需要が爆発的に増加。短時間で要点を伝える切り抜き動画は、現代の視聴者のニーズに完璧にマッチしています。企業のマーケティング戦略において、もはや必須のツールとなっています。</p>
+          </div>
+
+          <div className="feature-card">
+            <h4><span className="marker">2025年7月15日から収益化ストップ</span></h4>
+            <p>YouTubeの新しいポリシーにより、2025年7月15日から切り抜き動画の収益化が大幅に制限されます。しかし、これは<strong>マーケティングツールとしての価値がさらに高まる</strong>ことを意味します。今こそ切り抜き動画を活用したブランディング戦略を始める絶好のタイミングです。</p>
+          </div>
+
+          <div className="feature-card">
+            <h4><span className="marker">AIで効率的な制作が可能に</span></h4>
+            <p>従来は時間とコストがかかっていた切り抜き動画制作が、AI技術により劇的に効率化。高品質な切り抜き動画を低コストで大量生産できるようになり、マーケティング戦略の幅が大きく広がります。</p>
+          </div>
+        </div>
+
+        <div className="marketing-cta">
+          <div className="urgency-message">
+            <h3><FontAwesomeIcon icon={faInfoCircle} />今すぐ始めるべき理由</h3>
+            <ul>
+              <li>✓ 収益化制限前の今なら、まだ競合が少ない</li>
+              <li>✓ マーケティングツールとしての価値は変わらず高い</li>
+              <li>✓ AIによる効率化で、従来の1/10のコストで制作可能</li>
+              <li>✓ 短時間動画への需要は今後も拡大し続ける</li>
+            </ul>
+          </div>
+          <p className="action-btn"><Link href="/order">今すぐ切り抜き動画マーケティングを始める</Link></p>
+        </div>
+      </section>
+
       {/* こんなお悩みありませんか？ */}
       <section className="bg1 bg-pattern1 arrow">
         <h2 className="c">動画編集でこんなお悩みありませんか？<span>Do you have any of these problems?</span></h2>
