@@ -1,13 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ADMIN_CONFIG, getCurrentConfig, isPlanAvailable } from '@/lib/admin-config';
+import { checkSheetsConfiguration } from '@/lib/sheets';
 
 // 管理者パネル - 価格と受付状況を確認・管理するためのコンポーネント
 // 本番環境では適切な認証を追加してください
 export default function AdminPanel() {
   const [isVisible, setIsVisible] = useState(false);
+  const [sheetsConfig, setSheetsConfig] = useState<{ configured: boolean; missing: string[] }>({ configured: false, missing: [] });
   const config = getCurrentConfig();
+
+  useEffect(() => {
+    setSheetsConfig(checkSheetsConfiguration());
+  }, []);
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -126,6 +132,118 @@ export default function AdminPanel() {
               </div>
             </div>
 
+            {/* Google Sheets設定状況 */}
+            <div className={`border rounded-lg p-4 ${sheetsConfig.configured ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+              <h4 className="font-semibold mb-2 text-gray-900 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Google Sheets設定
+              </h4>
+              
+              <div className="flex items-center gap-2 mb-2">
+                <div className={`w-3 h-3 rounded-full ${sheetsConfig.configured ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <span className={`font-medium text-sm ${sheetsConfig.configured ? 'text-green-800' : 'text-red-800'}`}>
+                  {sheetsConfig.configured ? '設定済み' : '未設定'}
+                </span>
+              </div>
+
+              {!sheetsConfig.configured && (
+                <div className="text-sm text-red-700 bg-red-100 p-2 rounded mb-2">
+                  <p className="font-medium mb-1">以下の環境変数が不足しています：</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    {sheetsConfig.missing.map((key) => (
+                      <li key={key} className="font-mono text-xs">{key}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {sheetsConfig.configured && (
+                <button
+                  onClick={async () => {
+                    try {
+                      const response = await fetch('/api/admin/init-sheets', {
+                        method: 'POST',
+                      });
+                      const data = await response.json();
+                      
+                      if (response.ok) {
+                        alert('スプレッドシートのヘッダーを初期化しました');
+                      } else {
+                        alert(`エラー: ${data.error}`);
+                      }
+                    } catch (error) {
+                      alert('初期化に失敗しました');
+                      console.error('初期化エラー:', error);
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors text-sm mb-2"
+                >
+                  スプレッドシートを初期化
+                </button>
+              )}
+
+              {/* テスト機能 */}
+              <div className="space-y-2">
+                <button
+                  onClick={async () => {
+                    try {
+                      const response = await fetch('/api/test-email', {
+                        method: 'POST',
+                      });
+                      const data = await response.json();
+                      
+                      if (response.ok) {
+                        alert('✅ テストメール送信成功！');
+                        console.log('メール送信テスト結果:', data);
+                      } else {
+                        alert(`❌ テストメール送信失敗: ${data.error}`);
+                        console.error('メール送信テスト失敗:', data);
+                      }
+                    } catch (error) {
+                      alert('❌ テストメール送信でエラーが発生しました');
+                      console.error('テストメール送信エラー:', error);
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors text-sm"
+                >
+                  📧 メール送信テスト
+                </button>
+
+                <button
+                  onClick={async () => {
+                    try {
+                      const response = await fetch('/api/test-sheets', {
+                        method: 'POST',
+                      });
+                      const data = await response.json();
+                      
+                      if (response.ok) {
+                        alert('✅ テストスプレッドシート保存成功！');
+                        console.log('スプレッドシート保存テスト結果:', data);
+                      } else {
+                        alert(`❌ テストスプレッドシート保存失敗: ${data.error}`);
+                        console.error('スプレッドシート保存テスト失敗:', data);
+                      }
+                    } catch (error) {
+                      alert('❌ テストスプレッドシート保存でエラーが発生しました');
+                      console.error('テストスプレッドシート保存エラー:', error);
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors text-sm"
+                >
+                  📊 スプレッドシート保存テスト
+                </button>
+              </div>
+
+              <div className="text-xs text-gray-600 space-y-1">
+                <p>• 注文データは自動的にスプレッドシートに保存されます</p>
+                <p>• 設定方法は環境変数ファイル(.env.local)を確認してください</p>
+                <p>• テスト機能で各機能の動作を確認できます</p>
+              </div>
+            </div>
+
             {/* 現在の設定をコンソールに出力 */}
             <button
               onClick={() => {
@@ -136,6 +254,10 @@ export default function AdminPanel() {
                 console.log('人の目で確認プラン:', isPlanAvailable('human_review') ? '受付中' : '停止中');
                 console.log('全体停止メッセージ:', config.stopMessage);
                 console.log('人の目で確認プラン停止メッセージ:', config.planStatus.humanReviewStopMessage);
+                console.log('Google Sheets設定:', sheetsConfig.configured ? '設定済み' : '未設定');
+                if (!sheetsConfig.configured) {
+                  console.log('不足している環境変数:', sheetsConfig.missing);
+                }
                 console.log('===================');
                 alert('現在の設定をコンソールに出力しました');
               }}

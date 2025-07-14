@@ -80,8 +80,9 @@ const formatDuration = (seconds: number): string => {
 // 顧客向け注文確認メールを送信
 export async function sendCustomerOrderConfirmationEmail(orderData: OrderEmailData): Promise<void> {
   if (!process.env.SENDGRID_API_KEY || !process.env.FROM_EMAIL) {
-    console.log('SendGrid設定が不完全のため、メール送信をスキップします');
-    return;
+    const error = 'SendGrid設定が不完全です (SENDGRID_API_KEY または FROM_EMAIL が設定されていません)';
+    console.error(error);
+    throw new Error(error);
   }
 
   const totalDurationMinutes = Math.ceil(
@@ -228,8 +229,9 @@ export async function sendCustomerOrderConfirmationEmail(orderData: OrderEmailDa
 // 管理者向け新規注文通知メールを送信
 export async function sendAdminOrderNotificationEmail(orderData: OrderEmailData): Promise<void> {
   if (!process.env.SENDGRID_API_KEY || !process.env.FROM_EMAIL || !process.env.ADMIN_EMAIL) {
-    console.log('SendGrid設定または管理者メールアドレスが不完全のため、管理者メール送信をスキップします');
-    return;
+    const error = 'SendGrid設定または管理者メールアドレスが不完全です (SENDGRID_API_KEY, FROM_EMAIL, または ADMIN_EMAIL が設定されていません)';
+    console.error(error);
+    throw new Error(error);
   }
 
   const totalDurationMinutes = Math.ceil(
@@ -378,16 +380,32 @@ export async function sendAdminOrderNotificationEmail(orderData: OrderEmailData)
 
 // 両方のメールを送信する統合関数
 export async function sendOrderConfirmationEmails(orderData: OrderEmailData): Promise<void> {
+  const errors: string[] = [];
+
+  // 顧客向けメール送信
   try {
-    // 顧客と管理者に並行してメール送信
-    await Promise.all([
-      sendCustomerOrderConfirmationEmail(orderData),
-      sendAdminOrderNotificationEmail(orderData)
-    ]);
-    console.log('注文確認メールの送信が完了しました');
+    await sendCustomerOrderConfirmationEmail(orderData);
+    console.log('✅ 顧客向けメール送信完了');
   } catch (error) {
-    console.error('メール送信中にエラーが発生しました:', error);
-    // エラーが発生してもアプリケーションを停止させない
-    // ログに記録して続行
+    console.error('❌ 顧客向けメール送信失敗:', error);
+    errors.push(`顧客向けメール: ${error instanceof Error ? error.message : String(error)}`);
   }
+
+  // 管理者向けメール送信
+  try {
+    await sendAdminOrderNotificationEmail(orderData);
+    console.log('✅ 管理者向けメール送信完了');
+  } catch (error) {
+    console.error('❌ 管理者向けメール送信失敗:', error);
+    errors.push(`管理者向けメール: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  // エラーがあった場合は例外を投げる
+  if (errors.length > 0) {
+    const errorMessage = `メール送信エラー: ${errors.join(', ')}`;
+    console.error(errorMessage);
+    throw new Error(errorMessage);
+  }
+
+  console.log('✅ 注文確認メールの送信が完了しました');
 }
