@@ -36,8 +36,9 @@ export async function POST(request: NextRequest) {
     const videoCount = requestData.videos.length;
 
     // Stripe PaymentIntentを作成
+    // 注意: Stripeは最小通貨単位で金額を受け取るため、日本円の場合はそのまま円単位で送信
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: estimate.totalPrice,
+      amount: Math.round(estimate.totalPrice), // 円単位の金額をそのまま使用（小数点以下は四捨五入）
       currency: 'jpy',
       metadata: {
         customerName: requestData.customerName,
