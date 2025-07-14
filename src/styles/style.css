@@ -112,6 +112,53 @@ iframe {width: 100%;}
 /*input*/
 input {font-size: 1rem;}
 
+/*フォーム要素の統一スタイル*/
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea {
+	font-size: 1rem;
+	padding: 0.75rem;
+	border: 2px solid #ddd;
+	border-radius: 4px;
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	font-family: inherit;
+	line-height: 1.5;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+	outline: none;
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/*送信ボタンのスタイル改善*/
+input[type="submit"] {
+	background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+	color: var(--primary-inverse-color);
+	font-size: 1.1rem;
+	font-weight: 600;
+	padding: 0.9rem 2.5rem;
+	border: none;
+	border-radius: 50px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+input[type="submit"]:hover {
+	transform: translateY(-2px) scale(1.02);
+	box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+	background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
+}
+
+input[type="submit"]:active {
+	transform: translateY(0) scale(1);
+}
+
 /*section*/
 section {
 	overflow-x: hidden;
@@ -1879,12 +1926,20 @@ section > .bg-slideup:first-child {
 .ta1 {
 	table-layout: fixed;
 	width: 100%;				/*幅*/
-	border-top: 1px solid #ccc;	/*テーブルの一番上の線。幅、線種、色*/
+	border-top: 1px solid #ddd;	/*テーブルの一番上の線。幅、線種、色*/
 	margin-bottom: 2rem;		/*テーブルの下に空けるスペース。２文字分。*/
+	border-collapse: collapse;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	border-radius: 8px;
+	overflow: hidden;
 }
 /*tr（１行分）タグ設定*/
 .ta1 tr {
-	border-bottom: 1px solid #ccc;	/*テーブルの下線。幅、線種、色*/
+	border-bottom: 1px solid #eee;	/*テーブルの下線。幅、線種、色*/
+}
+
+.ta1 tr:last-child {
+	border-bottom: none;
 }
 
 /*th（左側）、td（右側）の共通設定*/
@@ -1893,13 +1948,30 @@ section > .bg-slideup:first-child {
 	background: var(--base-color);		/*背景色。冒頭のbase-colorを読み込みます。*/
 	color: var(--base-inverse-color);	/*文字色。冒頭のbase-inverse-colorを読み込みます。*/
 	text-align: left;	/*左よせにする*/
-	padding: 0.5rem;	/*余白*/
+	padding: 1rem 0.75rem;	/*余白を増やして見やすく*/
+	vertical-align: top;
 }
 
 /*th（左側）のみの設定*/
 .ta1 th {
-	width: 25%;			/*幅*/
-	text-align: center;	/*テキストをセンタリング*/
+	width: 30%;			/*幅を少し広く*/
+	text-align: left;	/*左寄せに変更*/
+	background: #f8f9fa;
+	font-weight: 600;
+	border-right: 1px solid #eee;
+}
+
+/*スマホでのフォームテーブル改善*/
+@media screen and (max-width: 699px) {
+	.ta1 th {
+		width: 35%;
+		font-size: 0.9rem;
+		padding: 0.75rem 0.5rem;
+	}
+	
+	.ta1 td {
+		padding: 0.75rem 0.5rem;
+	}
 }
 
 
@@ -2340,8 +2412,18 @@ section > .bg-slideup:first-child {
 .l {text-align: left !important;}
 .c {text-align: center !important;}
 .r {text-align: right !important;}
-.ws {width: 95%;display: block;}
-.wl {width: 95%;display: block;}
+.ws {width: 100%;display: block;max-width: 500px;}
+.wl {width: 100%;display: block;max-width: 500px;min-height: 120px;resize: vertical;}
+
+/*エラーメッセージのスタイル*/
+.error-message {
+	color: #e74c3c;
+	font-size: 0.9rem;
+	margin-top: 0.5rem;
+	display: block;
+	font-weight: 500;
+	padding-left: 0.25rem;
+}
 .mb0 {margin-bottom: 0px !important;}
 .mb30 {margin-bottom: 30px !important;}
 .mb-space-large {margin-bottom: var(--space-large) !important;}
@@ -2359,7 +2441,7 @@ pre {white-space: pre-wrap;word-wrap: break-word;overflow-wrap: break-word;}
 	/*画面幅900px以上の追加指定*/
 	@media screen and (min-width:900px) {
 
-	.ws {width: 48%;display: inline;}
+	.ws {width: 48%;display: inline;max-width: none;}
 	.sh {display: none;}
 	.pc {display: block;}
 
