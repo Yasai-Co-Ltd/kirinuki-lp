@@ -37,12 +37,9 @@ export function calculateEstimate(
     return sum + videoPrice;
   }, 0);
   
-  // 納期計算（品質オプションと動画数に応じて調整）
-  const baseDays = 2;
-  const qualityDays = qualityOption === 'human_review' ? 1 : 0;
-  const complexityDays = totalVideoDurationMinutes > 30 ? 1 : 0;
-  const volumeDays = videoCount > 3 ? Math.ceil(videoCount / 3) - 1 : 0; // 3本を超える場合は追加日数
-  const estimatedDeliveryDays = baseDays + qualityDays + complexityDays + volumeDays;
+  // 納期計算（品質オプションに応じて統一）
+  // AIのみの場合：当日〜2営業日、人が確認する場合：1〜3営業日
+  const estimatedDeliveryDays = qualityOption === 'human_review' ? 3 : 2;
 
   return {
     basePricePerMinute: totalPricePerMinute,

@@ -17,7 +17,7 @@ export default function Home() {
         <div>
           <div className="hero-text">
             <p>切り抜きは<span className="highlight">AI</span>に丸投げ！<br />
-            <span className="highlight">格安・最短当日納品</span>の<br />
+            <span className="highlight">格安・当日〜2営業日納品</span>の<br />
             動画切り抜きサービス</p>
             <p className="hero-subtext">
               <FontAwesomeIcon icon={faCut} />
@@ -74,7 +74,7 @@ export default function Home() {
           <div className="feature-card">
             <figure className="card-icon"><Image src="/images/icon1.png" alt="" width={60} height={60} /></figure>
             <h4><span className="marker">AI活用で従来の3倍速い制作スピード</span></h4>
-            <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、最短当日で高品質な動画をお届けします。</p>
+            <p>最新のAI技術を駆使して、動画解析から編集まで自動化。人の手だけでは不可能な高速処理により、当日〜2営業日で高品質な動画をお届けします。</p>
             {/* <span className="card-number">01</span> */}
           </div>
 
@@ -556,7 +556,7 @@ export default function Home() {
                 </tr>
                 <tr>
                   <th>納期</th>
-                  <td>最短6時間〜24時間（AI技術により従来の3倍速を実現）</td>
+                  <td>AIのみ：当日〜2営業日、人確認：1〜3営業日</td>
                 </tr>
                 <tr>
                   <th>対応時間</th>
