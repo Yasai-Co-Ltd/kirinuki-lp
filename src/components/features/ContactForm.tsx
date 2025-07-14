@@ -112,7 +112,7 @@ export default function ContactForm({ onSubmit, className }: ContactFormProps) {
       </table>
 
       <p className="c">
-        <input type="submit" value="内容を確認する" />
+        <input type="submit" value="送信する" />
       </p>
     </form>
   )

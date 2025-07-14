@@ -409,3 +409,150 @@ export async function sendOrderConfirmationEmails(orderData: OrderEmailData): Pr
 
   console.log('✅ 注文確認メールの送信が完了しました');
 }
+
+// お問い合わせメール送信機能
+export interface ContactEmailData {
+  name: string;
+  email: string;
+  message: string;
+}
+
+// お問い合わせメールを送信
+export async function sendContactEmail(contactData: ContactEmailData): Promise<void> {
+  if (!process.env.SENDGRID_API_KEY || !process.env.FROM_EMAIL || !process.env.ADMIN_EMAIL) {
+    const error = 'SendGrid設定または管理者メールアドレスが不完全です (SENDGRID_API_KEY, FROM_EMAIL, または ADMIN_EMAIL が設定されていません)';
+    console.error(error);
+    throw new Error(error);
+  }
+
+  // 管理者向けお問い合わせ通知メール
+  const adminMsg = {
+    to: process.env.ADMIN_EMAIL!,
+    from: process.env.FROM_EMAIL!,
+    subject: `【お問い合わせ】${contactData.name}様からのお問い合わせ`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>お問い合わせ通知</title>
+      </head>
+      <body style="font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        
+        <div style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+          <h1 style="margin: 0; font-size: 24px; font-weight: bold;">📧 新しいお問い合わせ</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">お客様からお問い合わせが届きました</p>
+        </div>
+
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+          <h2 style="margin: 0 0 20px 0; font-size: 18px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 8px;">
+            👤 お客様情報
+          </h2>
+          
+          <div style="margin-bottom: 16px;">
+            <strong style="color: #374151;">お名前:</strong>
+            <span style="margin-left: 8px;">${contactData.name}</span>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <strong style="color: #374151;">メールアドレス:</strong>
+            <span style="margin-left: 8px;">${contactData.email}</span>
+          </div>
+          
+          <div>
+            <strong style="color: #374151;">お問い合わせ内容:</strong>
+            <div style="background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 8px; white-space: pre-wrap;">${contactData.message}</div>
+          </div>
+        </div>
+
+        <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #92400e;">📞 対応について</h3>
+          <p style="margin: 0; font-size: 14px; color: #92400e;">
+            お客様への返信をお忘れなく。迅速な対応を心がけましょう。
+          </p>
+        </div>
+
+        <div style="text-align: center; padding: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
+          <p style="margin: 0;">このメールは自動送信されています。</p>
+          <p style="margin: 4px 0 0 0;">受信日時: ${new Date().toLocaleString('ja-JP')}</p>
+        </div>
+
+      </body>
+      </html>
+    `,
+  };
+
+  // お客様向け自動返信メール
+  const customerMsg = {
+    to: contactData.email,
+    from: process.env.FROM_EMAIL!,
+    subject: 'お問い合わせを受け付けました',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>お問い合わせ受付確認</title>
+      </head>
+      <body style="font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+          <h1 style="margin: 0; font-size: 24px; font-weight: bold;">✅ お問い合わせありがとうございます</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">お問い合わせを受け付けました</p>
+        </div>
+
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+          <p style="margin: 0 0 16px 0; font-size: 16px;">
+            ${contactData.name} 様
+          </p>
+          
+          <p style="margin: 0 0 16px 0;">
+            この度は、お問い合わせいただきありがとうございます。<br>
+            以下の内容でお問い合わせを受け付けました。
+          </p>
+          
+          <div style="background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <h3 style="margin: 0 0 12px 0; font-size: 14px; color: #374151;">お問い合わせ内容:</h3>
+            <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${contactData.message}</div>
+          </div>
+          
+          <p style="margin: 16px 0 0 0;">
+            担当者が内容を確認し、2営業日以内にご返信いたします。<br>
+            しばらくお待ちください。
+          </p>
+        </div>
+
+        <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #92400e;">📞 緊急のお問い合わせについて</h3>
+          <p style="margin: 0; font-size: 14px; color: #92400e;">
+            緊急を要するお問い合わせの場合は、このメールに直接返信していただくか、<br>
+            お電話にてお問い合わせください。
+          </p>
+        </div>
+
+        <div style="text-align: center; padding: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
+          <p style="margin: 0;">このメールは自動送信されています。</p>
+          <p style="margin: 4px 0 0 0;">受付日時: ${new Date().toLocaleString('ja-JP')}</p>
+        </div>
+
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    // 管理者向けメール送信
+    await sgMail.send(adminMsg);
+    console.log('管理者向けお問い合わせ通知メールを送信しました:', process.env.ADMIN_EMAIL);
+
+    // お客様向け自動返信メール送信
+    await sgMail.send(customerMsg);
+    console.log('お客様向け自動返信メールを送信しました:', contactData.email);
+
+  } catch (error) {
+    console.error('お問い合わせメール送信エラー:', error);
+    throw error;
+  }
+}
