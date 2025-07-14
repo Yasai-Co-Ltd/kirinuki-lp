@@ -33,32 +33,51 @@ function checkEnvironmentVariables() {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('🔔 Stripe webhook received');
+  
   const body = await request.text();
   const sig = request.headers.get('stripe-signature')!;
+
+  if (!sig) {
+    console.error('❌ Stripe signature header missing');
+    return NextResponse.json({ error: 'Stripe signature header missing' }, { status: 400 });
+  }
 
   let event: Stripe.Event;
 
   try {
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+    console.log('✅ Webhook signature verified, event type:', event.type);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err);
+    console.error('❌ Webhook signature verification failed:', err);
     return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 });
   }
 
   // 決済成功時の処理
   if (event.type === 'payment_intent.succeeded') {
     const paymentIntent = event.data.object as Stripe.PaymentIntent;
+    console.log('💳 Payment intent succeeded:', paymentIntent.id);
     
     try {
       // ここで発注完了の処理を行う
       await handleOrderCompletion(paymentIntent);
     } catch (error) {
-      console.error('Order completion handling failed:', error);
+      console.error('❌ Order completion handling failed:', error);
       return NextResponse.json({ error: 'Order processing failed' }, { status: 500 });
     }
+  } else {
+    console.log('ℹ️ Unhandled event type:', event.type);
   }
 
   return NextResponse.json({ received: true });
+}
+
+// GETリクエストに対してもレスポンスを返す（テスト用）
+export async function GET() {
+  return NextResponse.json({
+    message: 'Stripe webhook endpoint is active',
+    timestamp: new Date().toISOString()
+  });
 }
 
 async function handleOrderCompletion(paymentIntent: Stripe.PaymentIntent) {
