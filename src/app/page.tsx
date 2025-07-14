@@ -536,29 +536,29 @@ export default function Home() {
         <div className="content-blocks process-flow">
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faUpload} />動画素材のアップロード</h4>
-              <p>お客様の元動画をクラウドストレージ経由でアップロードしていただきます。YouTube動画のURLでも対応可能です。編集したい部分の指定や、特別なご要望があれば詳細をお聞かせください。長時間の動画でも問題ありません。</p>
+              <h4><FontAwesomeIcon className="mr-4" icon={faVideo} />YouTube動画URL入力</h4>
+              <p>切り抜きしたいYouTube動画のURLを入力するだけ。動画情報は自動で取得され、動画の長さに基づいて料金を自動計算します。字幕の有無やフォーマットもお選びいただけます。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faScissors} />AI×プロによる超高速編集</h4>
-              <p>AIが動画を自動解析し、最適なカット点・テロップ位置・効果音タイミングを瞬時に特定。その後、経験豊富な編集者が最終調整を行い、従来の3倍速で高品質な動画を完成させます。AIの精密さと人間の感性を融合した最高品質をお届けします。</p>
+              <h4><FontAwesomeIcon className="mr-4" icon={faCalculator} />自動見積もり＆決済</h4>
+              <p>動画の長さから料金を自動算出し、その場で見積もりを確認できます。クレジットカードによる安全な決済システムで、簡単にお支払いが完了します。決済完了後、すぐに制作が開始されます。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faEye} />品質チェック＆確認</h4>
-              <p>編集完了後、品質チェックを行い、お客様に確認用動画をお送りします。修正が必要な箇所があれば、プランに応じた回数まで無料で対応いたします。ご満足いただけるまで調整を重ねます。</p>
+              <h4><FontAwesomeIcon className="mr-4" icon={faRobot} />AI自動切り抜き制作</h4>
+              <p>最新のAI技術により、動画から最適なシーンを自動抽出し、魅力的な切り抜き動画を制作します。字幕付きの場合は、自動で字幕も生成。人気の出やすいポイントを的確に捉えた高品質な動画を作成します。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faDownload} />完成動画の納品</h4>
-              <p>最終確認後、完成した動画とサムネイルをお客様にお渡しします。YouTubeやTikTokなど、各プラットフォームに最適化した形式で納品。アップロード方法のサポートも行っております。</p>
+              <h4><FontAwesomeIcon className="mr-4" icon={faDownload} />完成動画の納品</h4>
+              <p>制作完了後、完成した切り抜き動画をメールでお送りします。YouTubeショート、TikTok、Instagram リールなど、各プラットフォームに最適化された形式で納品。すぐにアップロードして収益化が可能です。</p>
             </div>
           </div>
         </div>
