@@ -37,7 +37,7 @@ export default function Home() {
       <section className="bg-primary-color marketing-importance">
         <div className="c">
           <h2 className="inline-block relative">
-            切り抜き動画は<span className="highlight">これからのマーケティング</span>に必要！
+            切り抜き動画は<span className="highlight">これからのマーケティング</span>に重要！
             {/* <span className="subtitle">今がチャンス！2025年7月15日から収益化がストップ</span> */}
           </h2>
         </div>
@@ -208,11 +208,26 @@ export default function Home() {
         </h2>
 
         <div className="sample-intro">
-          <p className="c">元のYouTube動画から、このような魅力的な切り抜き動画を制作いたします</p>
+          <p className="c">高品質な切り抜き動画の制作サンプルを準備中です</p>
         </div>
 
+        {/* Coming Soon表示 */}
+        <div className="coming-soon-container">
+          <div className="coming-soon-content">
+            <h3>制作サンプル</h3>
+            <p className="coming-soon-text">Coming Soon...</p>
+            <p className="coming-soon-description">
+              現在、様々なジャンルの切り抜き動画サンプルを制作中です。<br />
+              完成次第、こちらに掲載いたします。
+            </p>
+          </div>
+        </div>
+
+        {/* サンプル追加用のコメントアウト部分 - 後で簡単に有効化できるように */}
+        {/*
         <div className="production-samples">
           {/* サンプル1: ゲーム実況 */}
+          {/*
           <div className="sample-item up">
             <div className="sample-header">
               <h3><FontAwesomeIcon icon={faGamepad} />ゲーム実況動画の制作例</h3>
@@ -255,98 +270,15 @@ export default function Home() {
               </div>
             </div>
           </div>
+          */}
 
-          {/* サンプル2: ビジネス系 */}
-          <div className="sample-item up">
-            <div className="sample-header">
-              <h3><FontAwesomeIcon icon={faBriefcase} />ビジネス系解説動画の制作例</h3>
-            </div>
-            <div className="before-after-container">
-              <div className="before-section">
-                <h4>Before（元動画）</h4>
-                <div className="video-placeholder">
-                  <Image src="/images/thumb5.jpg" alt="元動画サムネイル" width={300} height={200} />
-                  <div className="video-info">
-                    <p><FontAwesomeIcon icon={faClock} />1時間のセミナー動画</p>
-                    <p><FontAwesomeIcon icon={faEye} />重要ポイントが埋もれがち</p>
-                  </div>
-                </div>
-              </div>
-              <div className="arrow-section">
-                <FontAwesomeIcon icon={faArrowRight} />
-                <span>AI分析・編集</span>
-              </div>
-              <div className="after-section">
-                <h4>After（切り抜き動画）</h4>
-                <div className="clips-grid">
-                  <div className="clip-item">
-                    <Image src="/images/thumb6.jpg" alt="切り抜き1" width={150} height={100} />
-                    <p>核心ポイント<br />75秒</p>
-                  </div>
-                  <div className="clip-item">
-                    <Image src="/images/thumb1.jpg" alt="切り抜き2" width={150} height={100} />
-                    <p>実践テクニック<br />90秒</p>
-                  </div>
-                  <div className="clip-item">
-                    <Image src="/images/thumb2.jpg" alt="切り抜き3" width={150} height={100} />
-                    <p>Q&Aハイライト<br />60秒</p>
-                  </div>
-                </div>
-                <div className="result-stats">
-                  <p><FontAwesomeIcon icon={faChartLine} />視聴完了率 80%達成</p>
-                  <p><FontAwesomeIcon icon={faShare} />シェア数 10倍増加</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* サンプル3: エンタメ系 */}
-          <div className="sample-item up">
-            <div className="sample-header">
-              <h3><FontAwesomeIcon icon={faStar} />エンタメ・バラエティの制作例</h3>
-            </div>
-            <div className="before-after-container">
-              <div className="before-section">
-                <h4>Before（元動画）</h4>
-                <div className="video-placeholder">
-                  <Image src="/images/thumb3.jpg" alt="元動画サムネイル" width={300} height={200} />
-                  <div className="video-info">
-                    <p><FontAwesomeIcon icon={faClock} />3時間のライブ配信</p>
-                    <p><FontAwesomeIcon icon={faEye} />面白シーンが点在</p>
-                  </div>
-                </div>
-              </div>
-              <div className="arrow-section">
-                <FontAwesomeIcon icon={faArrowRight} />
-                <span>AI分析・編集</span>
-              </div>
-              <div className="after-section">
-                <h4>After（切り抜き動画）</h4>
-                <div className="clips-grid">
-                  <div className="clip-item">
-                    <Image src="/images/thumb4.jpg" alt="切り抜き1" width={150} height={100} />
-                    <p>爆笑シーン<br />45秒</p>
-                  </div>
-                  <div className="clip-item">
-                    <Image src="/images/thumb5.jpg" alt="切り抜き2" width={150} height={100} />
-                    <p>感動の瞬間<br />80秒</p>
-                  </div>
-                  <div className="clip-item">
-                    <Image src="/images/thumb6.jpg" alt="切り抜き3" width={150} height={100} />
-                    <p>神回まとめ<br />120秒</p>
-                  </div>
-                </div>
-                <div className="result-stats">
-                  <p><FontAwesomeIcon icon={faChartLine} />バズ率 400%向上</p>
-                  <p><FontAwesomeIcon icon={faUsers} />新規フォロワー 2000人獲得</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* 他のサンプルも同様にコメントアウト */}
+          {/* サンプル追加時は上記のコメントアウトを外して使用 */}
+        {/*
         </div>
+        */}
 
         <div className="sample-cta">
-          <p className="sample-note">※上記は制作サンプルです。実際の動画や画像は仮のものを使用しています。</p>
           <p className="action-btn"><Link href="/order">切り抜き動画を作成する</Link></p>
         </div>
       </section>

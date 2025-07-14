@@ -2822,3 +2822,58 @@ section + section::before {
 		font-size: 1.1rem;
 	}
 }
+
+
+/*Coming Soon セクション
+---------------------------------------------------------------------------*/
+.coming-soon-container {
+	padding: 4rem 2rem;
+	text-align: center;
+	background: var(--base-color);
+	border: 2px dashed #ddd;
+	border-radius: 10px;
+	margin: 2rem 0;
+}
+
+.coming-soon-content h3 {
+	font-size: 1.5rem;
+	color: var(--primary-color);
+	margin-bottom: 1rem;
+}
+
+.coming-soon-text {
+	font-size: 2rem;
+	font-weight: bold;
+	color: var(--accent-color);
+	margin: 1rem 0;
+	font-family: 'Oswald', sans-serif;
+	letter-spacing: 2px;
+}
+
+.coming-soon-description {
+	font-size: 1rem;
+	color: var(--base-inverse-color);
+	line-height: 1.8;
+	opacity: 0.8;
+}
+
+	/*画面幅700px以上の追加指定*/
+	@media screen and (min-width:700px) {
+
+	.coming-soon-container {
+		padding: 6rem 4rem;
+	}
+
+	.coming-soon-content h3 {
+		font-size: 2rem;
+	}
+
+	.coming-soon-text {
+		font-size: 3rem;
+	}
+
+	.coming-soon-description {
+		font-size: 1.2rem;
+	}
+
+	}/*追加指定ここまで*/
