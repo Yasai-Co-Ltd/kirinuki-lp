@@ -176,8 +176,8 @@ async function processProjectCompletion(payload: VizardWebhookPayload): Promise<
         customerName: matchingRow.customerName,
         customerEmail: matchingRow.customerEmail,
         paymentIntentId: matchingRow.paymentIntentId,
-        videoTitle: `プロジェクト ${payload.projectId} (${payload.videos.length}個の動画)`,
-        downloadUrl: payload.shareLink, // 共有リンクを使用
+        videoTitle: `切り抜き動画 (${payload.videos.length}本)`,
+        downloadUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/download/${matchingRow.paymentIntentId}`,
         originalUrl: '', // 元動画URLは別途取得が必要
       };
 

@@ -195,7 +195,7 @@ export async function sendCustomerOrderConfirmationEmail(orderData: OrderEmailDa
             <li style="margin-bottom: 8px;">動画の分析・切り抜き箇所の選定</li>
             <li style="margin-bottom: 8px;">切り抜き動画の制作</li>
             <li style="margin-bottom: 8px;">品質チェック${orderData.qualityOption === 'human_review' ? '（人の目による確認）' : ''}</li>
-            <li>完成動画のお届け（メール添付またはダウンロードリンク）</li>
+            <li>完成動画のお届け（専用ダウンロードページでのお受け取り）</li>
           </ol>
         </div>
 
@@ -611,8 +611,8 @@ export async function sendVideoCompletionEmail(data: VideoCompletionEmailData): 
 
           <div style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: white; border-radius: 8px; padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 16px 0; font-size: 18px;">📥 動画をダウンロード</h3>
-            <a href="${data.downloadUrl}" target="_blank" style="display: inline-block; background-color: white; color: #1e40af; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 16px;">
-              ダウンロードする
+            <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/download/${data.paymentIntentId}" target="_blank" style="display: inline-block; background-color: white; color: #1e40af; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 16px;">
+              ダウンロードページを開く
             </a>
           </div>
         </div>
