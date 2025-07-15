@@ -109,7 +109,7 @@ async function handleOrderCompletion(paymentIntent: Stripe.PaymentIntent) {
     subtitleSwitch: parseInt(metadata.subtitleSwitch || '1'),
     headlineSwitch: parseInt(metadata.headlineSwitch || '1'),
     specialRequests: metadata.specialRequests,
-    amount: paymentIntent.amount / 100, // Stripeは金額をセント単位で保存するため100で割る
+    amount: paymentIntent.amount, // Stripeは金額をセント単位で保存するため100で割る
     estimatedDeliveryDays: parseInt(metadata.estimatedDeliveryDays || '3'),
     createdAt: new Date(),
   };
