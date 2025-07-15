@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPendingVideoUrls, updateRowStatus, recordVideoGenerationResult } from '@/lib/sheets';
-import { createVideoGeneration, DEFAULT_VIDEO_SETTINGS } from '@/lib/vizard';
+import { createVizardProject, createVideoGeneration, DEFAULT_VIZARD_PROJECT_SETTINGS, DEFAULT_VIDEO_SETTINGS, createVizardRequestFromFormData } from '@/lib/vizard';
 
 // Vercel cron jobで実行される動画処理エンドポイント
 export async function GET(request: NextRequest) {
@@ -50,19 +50,19 @@ export async function GET(request: NextRequest) {
         for (const videoUrl of row.videoUrls) {
           try {
             console.log(`🎥 動画生成開始: ${videoUrl}`);
+            console.log(`📋 フォームデータ:`, row.formData);
 
-            // Webhook URLを設定（完了通知を受け取るため）
-            const webhookUrl = `${process.env.NEXTAUTH_URL || 'https://your-domain.vercel.app'}/api/webhook/vizard`;
+            // フォームデータからVizardリクエストを生成
+            const vizardRequest = createVizardRequestFromFormData(
+              videoUrl,
+              row.formData,
+              row.customerName
+            );
 
-            // Vizard.ai APIで動画生成を開始
-            const generationResult = await createVideoGeneration({
-              url: videoUrl,
-              webhook_url: webhookUrl,
-              settings: {
-                ...DEFAULT_VIDEO_SETTINGS,
-                // 必要に応じて設定をカスタマイズ
-              }
-            });
+            console.log(`🔧 Vizardリクエスト:`, vizardRequest);
+
+            // 新しいAPI仕様でプロジェクトを作成
+            const generationResult = await createVizardProject(vizardRequest);
 
             results.push({
               originalUrl: videoUrl,

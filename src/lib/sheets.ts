@@ -229,6 +229,12 @@ export async function getPendingVideoUrls(): Promise<{
   videoUrls: string[];
   customerName: string;
   customerEmail: string;
+  formData: {
+    format: 'default' | 'separate' | 'zoom';
+    preferLength: number;
+    subtitleSwitch: number;
+    headlineSwitch: number;
+  };
 }[]> {
   if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
     throw new Error('Google Sheets スプレッドシートIDが設定されていません');
@@ -254,6 +260,12 @@ export async function getPendingVideoUrls(): Promise<{
       videoUrls: string[];
       customerName: string;
       customerEmail: string;
+      formData: {
+        format: 'default' | 'separate' | 'zoom';
+        preferLength: number;
+        subtitleSwitch: number;
+        headlineSwitch: number;
+      };
     }[] = [];
 
     // ヘッダー行をスキップして処理
@@ -267,17 +279,43 @@ export async function getPendingVideoUrls(): Promise<{
         const customerName = row[2]; // C列（顧客名）
         const customerEmail = row[3]; // D列（メールアドレス）
         const videoUrlsString = row[8]; // I列（動画URL）
+        const formatString = row[9]; // J列（フォーマット）
+        const preferLengthString = row[11]; // L列（優先クリップ長）
+        const subtitleString = row[13]; // N列（字幕）
+        const headlineString = row[14]; // O列（タイトル）
 
         if (videoUrlsString) {
           const videoUrls = videoUrlsString.split(' | ').filter((url: string) => url.trim());
           
           if (videoUrls.length > 0) {
+            // フォーマットを英語形式に変換
+            let format: 'default' | 'separate' | 'zoom' = 'default';
+            if (formatString === '2分割') format = 'separate';
+            else if (formatString === 'ズーム') format = 'zoom';
+
+            // 優先クリップ長を数値に変換
+            let preferLength = 0;
+            if (preferLengthString === '〜30秒') preferLength = 1;
+            else if (preferLengthString === '30秒〜60秒') preferLength = 2;
+            else if (preferLengthString === '60秒〜90秒') preferLength = 3;
+            else if (preferLengthString === '90秒〜3分') preferLength = 4;
+
+            // 字幕・タイトルのスイッチを数値に変換
+            const subtitleSwitch = subtitleString === 'あり' ? 1 : 0;
+            const headlineSwitch = headlineString === 'あり' ? 1 : 0;
+
             pendingRows.push({
               rowIndex: i + 1, // スプレッドシートの行番号（1ベース）
               paymentIntentId,
               videoUrls,
               customerName,
               customerEmail,
+              formData: {
+                format,
+                preferLength,
+                subtitleSwitch,
+                headlineSwitch,
+              },
             });
           }
         }

@@ -386,7 +386,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                       {formData.preferLength === 4 && '90秒〜3分'}
                     </span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="text-gray-600">アスペクト比:</span>
                     <span className="font-medium text-gray-900">
                       {formData.aspectRatio === 1 && '9:16 (縦型)'}
@@ -394,7 +394,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                       {formData.aspectRatio === 3 && '4:5 (ポートレート)'}
                       {formData.aspectRatio === 4 && '16:9 (横型)'}
                     </span>
-                  </div>
+                  </div> */}
                   <div className="flex justify-between">
                     <span className="text-gray-600">字幕:</span>
                     <span className="font-medium text-gray-900">{formData.subtitleSwitch ? 'あり' : 'なし'}</span>
@@ -1034,7 +1034,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
             </div>
 
             {/* アスペクト比 */}
-            <div className="md:col-span-2">
+            {/* <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-4">
                 アスペクト比
               </label>
@@ -1120,7 +1120,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               {errors.aspectRatio && (
                 <p className="text-red-600 text-sm mt-2">{errors.aspectRatio.message}</p>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* 追加オプション */}
