@@ -103,7 +103,7 @@ export async function createVizardProject(request: VizardCreateProjectRequest): 
   // デフォルト値を設定
   const projectRequest: VizardCreateProjectRequest = {
     lang: request.lang || 'ja',
-    preferLength: request.preferLength || [60],
+    preferLength: request.preferLength || [0],
     videoUrl: request.videoUrl,
     videoType: request.videoType || 2,
     ratioOfClip: request.ratioOfClip || 1,
@@ -193,12 +193,12 @@ export const DEFAULT_VIDEO_SETTINGS = {
 // デフォルトのVizardプロジェクト設定（新しいAPI用）
 export const DEFAULT_VIZARD_PROJECT_SETTINGS: Partial<VizardCreateProjectRequest> = {
   lang: 'ja',
-  preferLength: [60],
+  preferLength: [0],
   videoType: 2,
   ratioOfClip: 1,
   templateId: 64976905,
   removeSilenceSwitch: 0,
-  maxClipNumber: 5,
+  maxClipNumber: 50,
   keyword: '',
   subtitleSwitch: 1,
   headlineSwitch: 1,
@@ -236,13 +236,13 @@ export function createVizardRequestFromFormData(
 ): VizardCreateProjectRequest {
   return {
     lang: 'ja',
-    preferLength: convertPreferLengthToArray(formData.preferLength),
+    preferLength: [formData.preferLength],
     videoUrl: videoUrl,
     videoType: 2,
     ratioOfClip: 1,
     templateId: FORMAT_TO_TEMPLATE_ID[formData.format] || FORMAT_TO_TEMPLATE_ID['default'],
     removeSilenceSwitch: 0,
-    maxClipNumber: 5,
+    maxClipNumber: 50,
     keyword: '',
     subtitleSwitch: formData.subtitleSwitch,
     headlineSwitch: formData.headlineSwitch,
