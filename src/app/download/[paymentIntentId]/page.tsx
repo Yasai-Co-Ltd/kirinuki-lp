@@ -113,6 +113,54 @@ export default function DownloadPage() {
     }));
   };
 
+  // ファイルをダウンロードする共通関数
+  const downloadFile = async (video: VideoFile) => {
+    try {
+      console.log(`📥 ダウンロード開始: ${video.fileName}`);
+      
+      // プロキシAPIを使用してファイルを取得
+      const response = await fetch('/api/download/file', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          downloadUrl: video.downloadUrl,
+          fileName: video.fileName,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`HTTP error! status: ${response.status} - ${errorData.error || 'Unknown error'}`);
+      }
+      
+      // Blobとして取得
+      const blob = await response.blob();
+      
+      // Blobからダウンロード用URLを作成
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      // ダウンロード実行
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = video.fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // メモリ解放
+      window.URL.revokeObjectURL(blobUrl);
+      
+      console.log(`✅ ダウンロード完了: ${video.fileName}`);
+      
+    } catch (error) {
+      console.error(`❌ ダウンロードエラー (${video.fileName}):`, error);
+      throw error;
+    }
+  };
+
   // 選択された動画をまとめてダウンロード
   const downloadSelectedVideos = async () => {
     const selectedVideos = data.videos.filter(video => video.selected);
@@ -126,38 +174,34 @@ export default function DownloadPage() {
     setDownloadProgress({});
 
     try {
-      if (selectedVideos.length === 1) {
-        // 単一ファイルの場合は直接ダウンロード
-        const video = selectedVideos[0];
-        const link = document.createElement('a');
-        link.href = video.downloadUrl;
-        link.download = video.fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        // 複数ファイルの場合は順次ダウンロード
-        for (let i = 0; i < selectedVideos.length; i++) {
-          const video = selectedVideos[i];
+      for (let i = 0; i < selectedVideos.length; i++) {
+        const video = selectedVideos[i];
+        
+        try {
+          // 進行状況を更新
+          setDownloadProgress(prev => ({
+            ...prev,
+            [video.id]: 0
+          }));
           
-          try {
-            // 少し間隔を空けてダウンロード
-            if (i > 0) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-            
-            const link = document.createElement('a');
-            link.href = video.downloadUrl;
-            link.download = video.fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            console.log(`✅ ダウンロード開始: ${video.fileName}`);
-            
-          } catch (error) {
-            console.error(`❌ ダウンロードエラー (${video.fileName}):`, error);
+          // ダウンロード実行
+          await downloadFile(video);
+          
+          // 完了状況を更新
+          setDownloadProgress(prev => ({
+            ...prev,
+            [video.id]: 100
+          }));
+          
+          // 複数ファイルの場合は少し間隔を空ける
+          if (i < selectedVideos.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
+          
+        } catch (error) {
+          console.error(`❌ ダウンロードエラー (${video.fileName}):`, error);
+          // エラーが発生しても他のファイルのダウンロードは続行
+          alert(`${video.fileName}のダウンロードに失敗しました。`);
         }
       }
 
@@ -171,13 +215,13 @@ export default function DownloadPage() {
   };
 
   // 個別ダウンロード
-  const downloadSingleVideo = (video: VideoFile) => {
-    const link = document.createElement('a');
-    link.href = video.downloadUrl;
-    link.download = video.fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadSingleVideo = async (video: VideoFile) => {
+    try {
+      await downloadFile(video);
+    } catch (error) {
+      console.error(`個別ダウンロードエラー (${video.fileName}):`, error);
+      alert(`${video.fileName}のダウンロードに失敗しました。しばらく時間をおいて再度お試しください。`);
+    }
   };
 
   // ローディング表示
