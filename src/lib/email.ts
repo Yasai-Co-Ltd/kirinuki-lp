@@ -72,6 +72,9 @@ const getAspectRatioName = (aspectRatio: number): string => {
 
 // 時間を分:秒形式に変換
 const formatDuration = (seconds: number): string => {
+  if (!seconds || seconds <= 0) {
+    return '不明';
+  }
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
@@ -85,22 +88,23 @@ export async function sendCustomerOrderConfirmationEmail(orderData: OrderEmailDa
     throw new Error(error);
   }
 
-  const totalDurationMinutes = Math.ceil(
-    orderData.videoInfos.reduce((sum, info) => sum + info.duration, 0) / 60
-  );
+  const totalDurationMinutes = orderData.videoInfos.length > 0
+    ? Math.ceil(orderData.videoInfos.reduce((sum, info) => sum + (info.duration || 0), 0) / 60)
+    : 0;
 
-  const videoListHtml = orderData.videoInfos.map((video, index) => `
-    <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; background-color: #f9fafb;">
-      <div style="display: flex; gap: 16px; align-items: flex-start;">
-        <img src="${video.thumbnailUrl}" alt="${video.title}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 6px;">
-        <div style="flex: 1;">
-          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #111827; line-height: 1.4;">${video.title}</h4>
-          <p style="margin: 0 0 4px 0; font-size: 12px; color: #6b7280;">${video.channelTitle}</p>
-          <p style="margin: 0; font-size: 12px; color: #6b7280;">長さ: ${formatDuration(video.duration)}</p>
+  const videoListHtml = orderData.videoInfos.length > 0
+    ? orderData.videoInfos.map((video, index) => `
+      <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; background-color: #f9fafb;">
+        <div style="display: flex; gap: 16px; align-items: flex-start;">
+          <img src="${video.thumbnailUrl || '/images/thumb1.jpg'}" alt="${video.title || '動画タイトル'}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 6px;">
+          <div style="flex: 1;">
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #111827; line-height: 1.4;">${video.title || `動画 ${index + 1}`}</h4>
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">長さ: ${formatDuration(video.duration)}</p>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `).join('')
+    : '<p style="color: #6b7280; font-style: italic;">動画情報を取得中です...</p>';
 
   const msg = {
     to: orderData.customerEmail,
@@ -128,7 +132,7 @@ export async function sendCustomerOrderConfirmationEmail(orderData: OrderEmailDa
           
           <div style="margin-bottom: 20px;">
             <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1f2937;">
-              📹 注文動画 (${orderData.videoInfos.length}本・合計${totalDurationMinutes}分)
+              📹 注文動画 (${orderData.videoInfos.length || 0}本・合計${totalDurationMinutes}分)
             </h3>
             ${videoListHtml}
           </div>
@@ -234,23 +238,30 @@ export async function sendAdminOrderNotificationEmail(orderData: OrderEmailData)
     throw new Error(error);
   }
 
-  const totalDurationMinutes = Math.ceil(
-    orderData.videoInfos.reduce((sum, info) => sum + info.duration, 0) / 60
-  );
+  const totalDurationMinutes = orderData.videoInfos.length > 0
+    ? Math.ceil(orderData.videoInfos.reduce((sum, info) => sum + (info.duration || 0), 0) / 60)
+    : 0;
 
-  const videoListHtml = orderData.videoInfos.map((video, index) => `
-    <tr>
-      <td style="padding: 8px; border: 1px solid #e5e7eb; font-size: 12px;">
-        <img src="${video.thumbnailUrl}" alt="${video.title}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px; display: block; margin-bottom: 4px;">
-        <div style="font-weight: 600; margin-bottom: 2px;">${video.title}</div>
-        <div style="color: #6b7280;">${video.channelTitle}</div>
-        <div style="color: #6b7280;">長さ: ${formatDuration(video.duration)}</div>
-      </td>
-      <td style="padding: 8px; border: 1px solid #e5e7eb; font-size: 12px;">
-        <a href="${orderData.videoUrls[index]}" target="_blank" style="color: #3b82f6; text-decoration: none;">動画を開く</a>
-      </td>
-    </tr>
-  `).join('');
+  const videoListHtml = orderData.videoInfos.length > 0
+    ? orderData.videoInfos.map((video, index) => `
+      <tr>
+        <td style="padding: 8px; border: 1px solid #e5e7eb; font-size: 12px;">
+          <img src="${video.thumbnailUrl || '/images/thumb1.jpg'}" alt="${video.title || '動画タイトル'}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px; display: block; margin-bottom: 4px;">
+          <div style="font-weight: 600; margin-bottom: 2px;">${video.title || `動画 ${index + 1}`}</div>
+          <div style="color: #6b7280;">長さ: ${formatDuration(video.duration)}</div>
+        </td>
+        <td style="padding: 8px; border: 1px solid #e5e7eb; font-size: 12px;">
+          <a href="${orderData.videoUrls[index] || '#'}" target="_blank" style="color: #3b82f6; text-decoration: none;">動画を開く</a>
+        </td>
+      </tr>
+    `).join('')
+    : `
+      <tr>
+        <td colspan="2" style="padding: 16px; border: 1px solid #e5e7eb; font-size: 12px; text-align: center; color: #6b7280; font-style: italic;">
+          動画情報を取得中です...
+        </td>
+      </tr>
+    `;
 
   const msg = {
     to: process.env.ADMIN_EMAIL!,
@@ -287,7 +298,7 @@ export async function sendAdminOrderNotificationEmail(orderData: OrderEmailData)
 
         <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
           <h2 style="margin: 0 0 20px 0; font-size: 18px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 8px;">
-            📹 注文動画 (${orderData.videoInfos.length}本・合計${totalDurationMinutes}分)
+            📹 注文動画 (${orderData.videoInfos.length || 0}本・合計${totalDurationMinutes}分)
           </h2>
           <table style="width: 100%; border-collapse: collapse;">
             <thead>

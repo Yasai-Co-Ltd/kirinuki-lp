@@ -45,10 +45,18 @@ export async function saveOrderToSheet(orderData: OrderEmailData): Promise<void>
     const sheets = await getSheetsClient();
 
     // 動画情報を文字列に変換
-    const videoTitles = orderData.videoInfos.map(info => info.title).join(' | ');
-    const videoUrls = orderData.videoUrls.join(' | ');
-    const videoChannels = orderData.videoInfos.map(info => info.channelTitle).join(' | ');
-    const videoDurations = orderData.videoInfos.map(info => `${Math.ceil(info.duration / 60)}分`).join(' | ');
+    const videoTitles = orderData.videoInfos.length > 0
+      ? orderData.videoInfos.map((info, index) => info.title || `動画 ${index + 1}`).join(' | ')
+      : '動画情報取得中';
+    const videoUrls = orderData.videoUrls.length > 0
+      ? orderData.videoUrls.join(' | ')
+      : '';
+    const videoDurations = orderData.videoInfos.length > 0
+      ? orderData.videoInfos.map((info, index) => {
+          const duration = info.duration || 0;
+          return duration > 0 ? `${Math.ceil(duration / 60)}分` : '不明';
+        }).join(' | ')
+      : '不明';
 
     // フォーマット名を日本語に変換
     const formatName = {
@@ -86,9 +94,8 @@ export async function saveOrderToSheet(orderData: OrderEmailData): Promise<void>
       orderData.paymentIntentId, // 決済ID
       orderData.customerName, // 顧客名
       orderData.customerEmail, // メールアドレス
-      orderData.videoInfos.length, // 動画数
+      orderData.videoInfos.length || 0, // 動画数
       videoTitles, // 動画タイトル
-      videoChannels, // チャンネル名
       videoDurations, // 動画時間
       videoUrls, // 動画URL
       formatName, // フォーマット
@@ -106,7 +113,7 @@ export async function saveOrderToSheet(orderData: OrderEmailData): Promise<void>
     // スプレッドシートに行を追加
     await sheets.spreadsheets.values.append({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A:V', // A列からV列まで（22列）
+      range: 'A:U', // A列からU列まで（21列、チャンネル名削除により1列減）
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [rowData],
@@ -142,7 +149,6 @@ export async function initializeSheetHeaders(): Promise<void> {
       'メールアドレス',
       '動画数',
       '動画タイトル',
-      'チャンネル名',
       '動画時間',
       '動画URL',
       'フォーマット',
@@ -163,7 +169,7 @@ export async function initializeSheetHeaders(): Promise<void> {
     // A1セルからヘッダーを設定
     await sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A1:V1',
+      range: 'A1:U1',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [headers],
@@ -182,7 +188,7 @@ export async function initializeSheetHeaders(): Promise<void> {
                 startRowIndex: 0,
                 endRowIndex: 1,
                 startColumnIndex: 0,
-                endColumnIndex: 22,
+                endColumnIndex: 21,
               },
               cell: {
                 userEnteredFormat: {
@@ -249,7 +255,7 @@ export async function getPendingVideoUrls(): Promise<{
     // スプレッドシートからデータを取得
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A:S', // A列からS列まで
+      range: 'A:R', // A列からR列まで（チャンネル名削除により1列減）
     });
 
     const rows = response.data.values;
@@ -274,18 +280,18 @@ export async function getPendingVideoUrls(): Promise<{
     // ヘッダー行をスキップして処理
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
-      const status = row[18]; // S列（ステータス）
+      const status = row[17]; // R列（ステータス）
 
       // ステータスが「未着手」の行を対象とする
       if (status === '未着手') {
         const paymentIntentId = row[1]; // B列（決済ID）
         const customerName = row[2]; // C列（顧客名）
         const customerEmail = row[3]; // D列（メールアドレス）
-        const videoUrlsString = row[8]; // I列（動画URL）
-        const formatString = row[9]; // J列（フォーマット）
-        const preferLengthString = row[11]; // L列（優先クリップ長）
-        const subtitleString = row[13]; // N列（字幕）
-        const headlineString = row[14]; // O列（タイトル）
+        const videoUrlsString = row[7]; // H列（動画URL）
+        const formatString = row[8]; // I列（フォーマット）
+        const preferLengthString = row[10]; // K列（優先クリップ長）
+        const subtitleString = row[12]; // M列（字幕）
+        const headlineString = row[13]; // N列（タイトル）
 
         if (videoUrlsString) {
           const videoUrls = videoUrlsString.split(' | ').filter((url: string) => url.trim());
@@ -346,7 +352,7 @@ export async function updateRowStatus(rowIndex: number, status: string, note?: s
     // ステータス列（S列）を更新
     await sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: `S${rowIndex}`,
+      range: `R${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[status]],
@@ -357,7 +363,7 @@ export async function updateRowStatus(rowIndex: number, status: string, note?: s
     if (note) {
       await sheets.spreadsheets.values.update({
         spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-        range: `T${rowIndex}`,
+        range: `S${rowIndex}`,
         valueInputOption: 'USER_ENTERED',
         requestBody: {
           values: [[note]],
@@ -405,7 +411,7 @@ export async function recordVideoGenerationResult(
     // U列に動画生成結果を記録
     await sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: `U${rowIndex}`,
+      range: `T${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[resultString]],
@@ -436,7 +442,7 @@ export async function recordProjectIdMapping(
     // V列にprojectIdを記録
     await sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: `V${rowIndex}`,
+      range: `U${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[projectId.toString()]],
@@ -468,7 +474,7 @@ export async function findPaymentIntentIdByProjectId(projectId: number): Promise
     // スプレッドシートの全データを取得
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A:V', // A列からV列まで
+      range: 'A:U', // A列からU列まで
     });
 
     const rows = response.data.values;
@@ -479,7 +485,7 @@ export async function findPaymentIntentIdByProjectId(projectId: number): Promise
     // ヘッダー行をスキップして検索
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
-      const storedProjectId = row[21]; // V列（0ベースで21番目）
+      const storedProjectId = row[20]; // U列（0ベースで20番目）
       
       if (storedProjectId && parseInt(storedProjectId) === projectId) {
         return {
