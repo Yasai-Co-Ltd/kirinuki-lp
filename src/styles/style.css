@@ -87,7 +87,7 @@ body {
 	-webkit-text-size-adjust: none;
 	background: var(--base-color);		/*varは背景色のことで冒頭のbase-colorを読み込みます。*/
 	color: var(--base-inverse-color);	/*文字色。冒頭で指定しているbase-inverse-colorを読み込みます。*/
-	line-height: 2;		/*行間*/
+	line-height: 1.8;		/*行間（スマホで読みやすく調整）*/
 }
 
 /*リセット他*/
@@ -110,20 +110,20 @@ video {max-width: 100%;}
 iframe {width: 100%;}
 
 /*input*/
-input {font-size: 1rem;}
+input {font-size: 1.1rem;}	/*スマホ用に大きく*/
 
 /*フォーム要素の統一スタイル*/
 input[type="text"],
 input[type="email"],
 input[type="tel"],
 textarea {
-	font-size: 1rem;
-	padding: 0.75rem;
+	font-size: 1.1rem;	/*スマホ用に大きく*/
+	padding: 1rem;		/*スマホ用に大きく*/
 	border: 2px solid #ddd;
 	border-radius: 4px;
 	transition: border-color 0.3s ease, box-shadow 0.3s ease;
 	font-family: inherit;
-	line-height: 1.5;
+	line-height: 1.6;	/*行間を広く*/
 }
 
 input[type="text"]:focus,
@@ -547,7 +547,7 @@ header nav ul ul a {
 /*テキストのブロック*/
 #hero-section p {margin: 0;}
 #hero-section .hero-text {
-	font-size: 24px;	/*文字サイズ。*/
+	font-size: 28px;	/*文字サイズ（スマホ用に大きく）*/
 	font-weight: 800;	/*太字に*/
 	line-height: 1.8;	/*行間*/
 	text-align: center;	/*テキストをセンタリング*/
@@ -566,7 +566,7 @@ header nav ul ul a {
 
 /*ボタン*/
 #hero-section .hero-buttons {
-	font-size: 1rem;	/*文字サイズ*/
+	font-size: 1.1rem;	/*文字サイズ（スマホ用に大きく）*/
 	font-weight: 600;	/*少し太字に*/
 	margin-top: 3vw;	/*上のテキストとボタンの間のスペース。*/
 	display: flex;
@@ -675,7 +675,7 @@ main {
 /*h2見出し（共通）*/
 main h2 {
 	margin: 0;padding: 0;
-	font-size: 1.4rem;		/*文字サイズ。240%。*/
+	font-size: 1.8rem;		/*文字サイズ（スマホ用に大きく）*/
 	font-weight: 800;		/*太字に*/
 	margin-bottom: 5vw;		/*下にスペースを空ける*/
 	display: flex;
@@ -701,7 +701,7 @@ main h2.c {
 
 /*h2内のspan（小文字）*/
 main h2 span {
-	font-size: 0.85rem;	/*文字サイズ85%*/
+	font-size: 1rem;	/*文字サイズ（スマホ用に大きく）*/
 	opacity: 0.5;		/*透明度。色を50%だけ出す。*/
 	font-weight: normal;	/*太字ではなく標準にする*/
 }
@@ -822,10 +822,10 @@ footer nav ul li {
 footer nav ul li a {
 	color: var(--primary-inverse-color);
 	text-decoration: none;
-	font-size: 0.95rem;
+	font-size: 1rem;	/*スマホ用に大きく*/
 	transition: all 0.3s ease;
 	opacity: 0.9;
-	padding: 0.3rem 0;
+	padding: 0.4rem 0;	/*スマホ用に大きく*/
 	border-bottom: 1px solid transparent;
 }
 
@@ -879,8 +879,8 @@ footer .logo {
 
 /*連絡先情報*/
 footer .contact-info {
-	font-size: 0.9rem;
-	line-height: 1.6;
+	font-size: 1rem;	/*スマホ用に大きく*/
+	line-height: 1.7;	/*行間を広く*/
 	opacity: 0.8;
 }
 
@@ -891,7 +891,7 @@ footer .contact-info p {
 /*Copyright部分*/
 footer small {
 	display: block;
-	font-size: 0.8rem;
+	font-size: 0.9rem;	/*スマホ用に大きく*/
 	opacity: 0.7;
 	margin-top: 1rem;
 }
@@ -996,7 +996,7 @@ footer small {
 	@media screen and (min-width:700px) {
 
 	.faq {
-		font-size: 1.2rem;	/*文字サイズを120%*/
+		font-size: 1.3rem;	/*文字サイズを130%（スマホ用に大きく）*/
 	}
 
 	}/*追加指定ここまで*/
@@ -1142,8 +1142,8 @@ footer small {
 	text-shadow: none;display: block;text-decoration: none;
 	background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));		/*グラデーション背景*/
 	color: var(--primary-inverse-color);	/*文字色。冒頭のprimary-inverse-colorを読み込みます。*/
-	font-size: 1.2rem;		/*文字サイズ。140%に。*/
-	padding: 0.8rem 2.5rem;	/*ボタン内の余白。上下、左右へ。*/
+	font-size: 1.3rem;		/*文字サイズ（スマホ用に大きく）*/
+	padding: 1rem 2.5rem;	/*ボタン内の余白（スマホ用に大きく）*/
 	border-radius: 50px;	/*角を丸くする*/
 	text-align: center;		/*テキストをセンタリング*/
 	position: relative;
@@ -1406,7 +1406,7 @@ footer small {
 
 /*ボックス内のh4見出し*/
 .feature-cards .feature-card h4 {
-	font-size: 1.4rem;	/*文字サイズを140%に*/
+	font-size: 1.5rem;	/*文字サイズ（スマホ用に大きく）*/
 	line-height: 1.6;	/*行間*/
 	margin-bottom: 1rem;	/*下に１文字分のスペースを空ける*/
 	position: relative;
@@ -1415,8 +1415,8 @@ footer small {
 
 /*ボックス内のp要素*/
 .feature-cards .feature-card p {
-	font-size: 0.9rem;	/*文字サイズを90%に*/
-	line-height: 1.6;	/*行間*/
+	font-size: 1rem;	/*文字サイズ（スマホ用に大きく）*/
+	line-height: 1.7;	/*行間（スマホ用に広く）*/
 	font-weight: normal;
 }
 
