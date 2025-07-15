@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/process-videos",
-      "schedule": "35 17 * * *"
+      "schedule": "0 9 * * *"
     }
   ]
 }
