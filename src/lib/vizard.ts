@@ -8,7 +8,7 @@ const VIZARD_API_KEY = process.env.VIZARD_API_KEY;
 const vizardClient = axios.create({
   baseURL: VIZARD_API_BASE_URL,
   headers: {
-    'Authorization': `Bearer ${VIZARD_API_KEY}`,
+    'VIZARDAI_API_KEY': VIZARD_API_KEY,
     'Content-Type': 'application/json',
   },
 });
