@@ -163,9 +163,9 @@ async function getVideoFilesFromGCS(paymentIntentId: string, projectId: string) 
 // ダウンロードページのデータを取得
 export async function GET(
   request: NextRequest,
-  { params }: { params: { paymentIntentId: string } }
+  { params }: { params: Promise<{ paymentIntentId: string }> }
 ) {
-  const { paymentIntentId } = params;
+  const { paymentIntentId } = await params;
 
   console.log(`📥 ダウンロードデータ取得リクエスト: ${paymentIntentId}`);
 
