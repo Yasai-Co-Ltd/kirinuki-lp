@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { VizardWebhookPayload, VizardVideoClip } from '@/lib/vizard';
-import { updateRowStatus, getPendingVideoUrls } from '@/lib/sheets';
+import { updateRowStatus, getPendingVideoUrls, findPaymentIntentIdByProjectId } from '@/lib/sheets';
 import { sendVideoCompletionEmail, VideoCompletionEmailData } from '@/lib/email';
 import { saveVideoToGCS, generateSafeFileName } from '@/lib/storage';
 
@@ -160,15 +160,11 @@ async function processProjectCompletion(payload: VizardWebhookPayload): Promise<
   try {
     console.log(`🎬 プロジェクト完了処理開始: ${payload.projectId}`);
 
-    // TODO: projectIdから該当するスプレッドシート行を特定する必要がある
-    // 現在の実装では元動画URLベースで検索していたが、新しい構造では別の方法が必要
-    const pendingRows = await getPendingVideoUrls();
-    
-    // 暫定的に最初の保留中の行を使用（実際の実装では適切な検索ロジックが必要）
-    const matchingRow = pendingRows[0];
+    // projectIdから該当するスプレッドシート行を特定
+    const matchingRow = await findPaymentIntentIdByProjectId(payload.projectId);
 
     if (!matchingRow) {
-      console.log('⚠️ 該当するスプレッドシート行が見つかりませんでした');
+      console.log(`⚠️ プロジェクトID ${payload.projectId} に該当するスプレッドシート行が見つかりませんでした`);
       return;
     }
 
@@ -182,7 +178,7 @@ async function processProjectCompletion(payload: VizardWebhookPayload): Promise<
         paymentIntentId: matchingRow.paymentIntentId,
         videoTitle: `プロジェクト ${payload.projectId} (${payload.videos.length}個の動画)`,
         downloadUrl: payload.shareLink, // 共有リンクを使用
-        originalUrl: matchingRow.videoUrls[0] || '', // 最初の動画URLを使用
+        originalUrl: '', // 元動画URLは別途取得が必要
       };
 
       await sendVideoCompletionEmail(emailData);
@@ -213,14 +209,11 @@ async function processProjectFailure(payload: VizardWebhookPayload): Promise<voi
   try {
     console.log(`❌ プロジェクト失敗処理開始: ${payload.projectId} (コード: ${payload.code})`);
 
-    // TODO: projectIdから該当するスプレッドシート行を特定する必要がある
-    const pendingRows = await getPendingVideoUrls();
-    
-    // 暫定的に最初の保留中の行を使用（実際の実装では適切な検索ロジックが必要）
-    const matchingRow = pendingRows[0];
+    // projectIdから該当するスプレッドシート行を特定
+    const matchingRow = await findPaymentIntentIdByProjectId(payload.projectId);
 
     if (!matchingRow) {
-      console.log('⚠️ 該当するスプレッドシート行が見つかりませんでした');
+      console.log(`⚠️ プロジェクトID ${payload.projectId} に該当するスプレッドシート行が見つかりませんでした`);
       return;
     }
 

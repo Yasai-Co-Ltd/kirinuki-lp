@@ -106,7 +106,7 @@ export async function saveOrderToSheet(orderData: OrderEmailData): Promise<void>
     // スプレッドシートに行を追加
     await sheets.spreadsheets.values.append({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A:S', // A列からS列まで（19列）
+      range: 'A:V', // A列からV列まで（22列）
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [rowData],
@@ -154,13 +154,16 @@ export async function initializeSheetHeaders(): Promise<void> {
       '特別な要望',
       '金額',
       '納期',
-      'ステータス'
+      'ステータス',
+      '備考',
+      '動画生成結果',
+      'プロジェクトID'
     ];
 
     // A1セルからヘッダーを設定
     await sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A1:S1',
+      range: 'A1:V1',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [headers],
@@ -179,7 +182,7 @@ export async function initializeSheetHeaders(): Promise<void> {
                 startRowIndex: 0,
                 endRowIndex: 1,
                 startColumnIndex: 0,
-                endColumnIndex: 19,
+                endColumnIndex: 22,
               },
               cell: {
                 userEnteredFormat: {
@@ -413,6 +416,85 @@ export async function recordVideoGenerationResult(
 
   } catch (error) {
     console.error('動画生成結果の記録中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+// projectIdとpaymentIntentIdの関連付けを記録
+export async function recordProjectIdMapping(
+  rowIndex: number,
+  projectId: number,
+  paymentIntentId: string
+): Promise<void> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // V列にprojectIdを記録
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: `V${rowIndex}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[projectId.toString()]],
+      },
+    });
+
+    console.log(`行${rowIndex}にprojectId ${projectId}を記録しました (paymentIntentId: ${paymentIntentId})`);
+
+  } catch (error) {
+    console.error('projectIdマッピングの記録中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+// projectIdからpaymentIntentIdを検索
+export async function findPaymentIntentIdByProjectId(projectId: number): Promise<{
+  rowIndex: number;
+  paymentIntentId: string;
+  customerName: string;
+  customerEmail: string;
+} | null> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // スプレッドシートの全データを取得
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: 'A:V', // A列からV列まで
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length <= 1) {
+      return null;
+    }
+
+    // ヘッダー行をスキップして検索
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const storedProjectId = row[21]; // V列（0ベースで21番目）
+      
+      if (storedProjectId && parseInt(storedProjectId) === projectId) {
+        return {
+          rowIndex: i + 1, // スプレッドシートの行番号（1ベース）
+          paymentIntentId: row[1] || '', // B列
+          customerName: row[2] || '', // C列
+          customerEmail: row[3] || '', // D列
+        };
+      }
+    }
+
+    return null;
+
+  } catch (error) {
+    console.error('projectIdによる検索中にエラーが発生しました:', error);
     throw error;
   }
 }

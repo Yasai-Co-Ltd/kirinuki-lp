@@ -41,7 +41,15 @@ export interface VideoGenerationRequest {
   };
 }
 
-// 動画生成レスポンスの型定義
+// Vizard API プロジェクト作成レスポンスの型定義
+export interface VizardCreateProjectResponse {
+  code: number;
+  projectId: number;
+  shareLink: string;
+  errMsg: string;
+}
+
+// 従来の動画生成レスポンスの型定義（後方互換性のため保持）
 export interface VideoGenerationResponse {
   id: string;
   status: 'processing' | 'completed' | 'failed';
@@ -87,7 +95,7 @@ export interface LegacyVizardWebhookPayload {
 }
 
 // 新しいAPI仕様でプロジェクトを作成
-export async function createVizardProject(request: VizardCreateProjectRequest): Promise<VideoGenerationResponse> {
+export async function createVizardProject(request: VizardCreateProjectRequest): Promise<VizardCreateProjectResponse> {
   if (!VIZARD_API_KEY) {
     throw new Error('Vizard API キーが設定されていません (VIZARD_API_KEY)');
   }
@@ -110,7 +118,14 @@ export async function createVizardProject(request: VizardCreateProjectRequest): 
 
   try {
     const response = await vizardClient.post('/project/create', projectRequest);
-    return response.data;
+    const data: VizardCreateProjectResponse = response.data;
+    
+    // エラーレスポンスの場合は例外を投げる
+    if (data.code !== 2000) {
+      throw new Error(`Vizard API エラー: コード ${data.code} - ${data.errMsg || '不明なエラー'}`);
+    }
+    
+    return data;
   } catch (error) {
     console.error('Vizard API エラー:', error);
     if (axios.isAxiosError(error)) {

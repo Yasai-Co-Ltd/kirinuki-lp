@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPendingVideoUrls, updateRowStatus, recordVideoGenerationResult } from '@/lib/sheets';
-import { createVizardProject, createVideoGeneration, DEFAULT_VIZARD_PROJECT_SETTINGS, DEFAULT_VIDEO_SETTINGS, createVizardRequestFromFormData } from '@/lib/vizard';
+import { getPendingVideoUrls, updateRowStatus, recordVideoGenerationResult, recordProjectIdMapping } from '@/lib/sheets';
+import { createVizardProject, createVideoGeneration, DEFAULT_VIZARD_PROJECT_SETTINGS, DEFAULT_VIDEO_SETTINGS, createVizardRequestFromFormData, VizardCreateProjectResponse } from '@/lib/vizard';
 
 // Vercel cron jobで実行される動画処理エンドポイント
 export async function GET(request: NextRequest) {
@@ -62,16 +62,19 @@ export async function GET(request: NextRequest) {
             console.log(`🔧 Vizardリクエスト:`, vizardRequest);
 
             // 新しいAPI仕様でプロジェクトを作成
-            const generationResult = await createVizardProject(vizardRequest);
+            const generationResult: VizardCreateProjectResponse = await createVizardProject(vizardRequest);
+
+            // projectIdとpaymentIntentIdの関連付けを記録
+            await recordProjectIdMapping(row.rowIndex, generationResult.projectId, row.paymentIntentId);
 
             results.push({
               originalUrl: videoUrl,
-              vizardId: generationResult.id,
-              status: generationResult.status,
-              downloadUrl: generationResult.download_url,
+              vizardId: generationResult.projectId.toString(),
+              status: 'processing' as const, // プロジェクト作成成功時は処理中
+              downloadUrl: generationResult.shareLink,
             });
 
-            console.log(`✅ 動画生成リクエスト送信完了: ${generationResult.id}`);
+            console.log(`✅ 動画生成リクエスト送信完了: プロジェクトID ${generationResult.projectId}`);
 
           } catch (videoError) {
             console.error(`❌ 動画生成エラー (${videoUrl}):`, videoError);
@@ -88,7 +91,7 @@ export async function GET(request: NextRequest) {
         await recordVideoGenerationResult(row.rowIndex, results);
 
         // 全ての動画が失敗した場合は「エラー」、一部でも成功した場合は「処理中」
-        const hasSuccess = results.some(r => r.status === 'processing' || r.status === 'completed');
+        const hasSuccess = results.some(r => r.status === 'processing');
         const newStatus = hasSuccess ? '処理中' : 'エラー';
         
         await updateRowStatus(
