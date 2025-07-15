@@ -4,9 +4,10 @@ import axios from 'axios';
 // Google Cloud Storageの設定
 const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE, // サービスアカウントキーファイルのパス
-  // または、環境変数から直接認証情報を設定する場合：
-  // credentials: process.env.GOOGLE_CLOUD_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS) : undefined,
+  // 環境変数から直接認証情報を設定（本番環境推奨）
+  credentials: process.env.GOOGLE_CLOUD_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS) : undefined,
+  // または、キーファイルを使用する場合：
+  // keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE,
 });
 
 const BUCKET_NAME = process.env.GOOGLE_CLOUD_STORAGE_BUCKET_NAME;
