@@ -1,7 +1,7 @@
 # 切り抜き動画発注機能 セットアップガイド
 
 ## 概要
-このプロジェクトに切り抜き動画の発注機能が追加されました。ユーザーはYouTube動画のURLを入力し、オンラインで決済して切り抜き動画を注文できます。
+このプロジェクトに切り抜き動画の発注機能が追加されました。ユーザーはYouTube動画のURLを入力し、オンラインで決済して切り抜き動画を注文できます。さらに、Vercel cron jobとVizard.ai APIを使用した自動動画生成システムも実装されています。
 
 ## 機能
 - YouTube動画URL入力と動画情報自動取得
@@ -9,6 +9,10 @@
 - 動画の長さに基づく自動見積もり
 - Stripeによるクレジットカード決済
 - 決済完了後の自動メール送信（設定次第）
+- **Google Sheetsでの注文管理**
+- **Vercel cron jobによる自動動画生成**
+- **Vizard.ai APIを使用した動画処理**
+- **Webhookによる完了通知**
 
 ## 必要な設定
 
@@ -24,12 +28,25 @@ STRIPE_WEBHOOK_SECRET=whsec_your_actual_webhook_secret_here
 # YouTube API設定（必須）
 YOUTUBE_API_KEY=your_actual_youtube_api_key_here
 
+# Vizard.ai API設定（動画生成機能用）
+VIZARD_API_KEY=your_vizard_api_key_here
+VIZARD_WEBHOOK_SECRET=your_vizard_webhook_secret_here
+
+# Google Sheets設定（注文管理用）
+GOOGLE_SHEETS_SPREADSHEET_ID=your_spreadsheet_id
+GOOGLE_SHEETS_CLIENT_EMAIL=your_service_account_email
+GOOGLE_SHEETS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+
+# Cron Job設定（自動動画生成用）
+CRON_SECRET=your_random_secret_string
+
 # メール設定（オプション）
 SENDGRID_API_KEY=your_sendgrid_api_key_here
 FROM_EMAIL=your_email@example.com
 
 # アプリケーション設定
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXTAUTH_URL=https://your-domain.vercel.app
 ```
 
 ### 2. Stripeの設定
@@ -137,6 +154,17 @@ npm run dev
 3. **Webhookが動作しない**
    - Webhook URLが正しく設定されているか確認
    - Webhook署名シークレットが正しいか確認
+
+## 自動動画生成システム
+
+Vizard.ai APIを使用した自動動画生成システムの詳細な設定については、[VIZARD_SETUP.md](VIZARD_SETUP.md)をご参照ください。
+
+このシステムでは：
+- 毎日午前9時にcron jobが実行
+- スプレッドシートから「未着手」の注文を自動取得
+- Vizard.ai APIで動画生成を開始
+- 完了時にWebhookで通知を受信
+- 結果をスプレッドシートに自動記録
 
 ## サポート
 

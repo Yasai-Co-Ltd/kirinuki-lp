@@ -556,3 +556,100 @@ export async function sendContactEmail(contactData: ContactEmailData): Promise<v
     throw error;
   }
 }
+
+// 動画完了通知メール用のデータ型
+export interface VideoCompletionEmailData {
+  customerName: string;
+  customerEmail: string;
+  paymentIntentId: string;
+  videoTitle: string;
+  downloadUrl: string;
+  originalUrl: string;
+}
+
+// 顧客向け動画完了通知メールを送信
+export async function sendVideoCompletionEmail(data: VideoCompletionEmailData): Promise<void> {
+  if (!process.env.SENDGRID_API_KEY || !process.env.FROM_EMAIL) {
+    const error = 'SendGrid設定が不完全です (SENDGRID_API_KEY または FROM_EMAIL が設定されていません)';
+    console.error(error);
+    throw new Error(error);
+  }
+
+  const msg = {
+    to: data.customerEmail,
+    from: process.env.FROM_EMAIL!,
+    subject: '【切り抜き動画制作】動画が完成しました！',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>動画完成通知</title>
+      </head>
+      <body style="font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+          <h1 style="margin: 0; font-size: 24px; font-weight: bold;">🎉 動画が完成しました！</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">切り抜き動画の制作が完了いたしました</p>
+        </div>
+
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+          <h2 style="margin: 0 0 20px 0; font-size: 18px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 8px;">
+            📹 完成動画情報
+          </h2>
+          
+          <div style="background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1f2937;">動画タイトル</h3>
+            <p style="margin: 0 0 16px 0; font-size: 14px; color: #374151; background-color: #f9fafb; padding: 12px; border-radius: 6px;">${data.videoTitle}</p>
+            
+            <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1f2937;">元動画URL</h3>
+            <p style="margin: 0; font-size: 14px;">
+              <a href="${data.originalUrl}" target="_blank" style="color: #3b82f6; text-decoration: none;">元動画を確認する</a>
+            </p>
+          </div>
+
+          <div style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: white; border-radius: 8px; padding: 20px; text-align: center;">
+            <h3 style="margin: 0 0 16px 0; font-size: 18px;">📥 動画をダウンロード</h3>
+            <a href="${data.downloadUrl}" target="_blank" style="display: inline-block; background-color: white; color: #1e40af; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 16px;">
+              ダウンロードする
+            </a>
+          </div>
+        </div>
+
+        <div style="background-color: #ecfdf5; border: 1px solid #10b981; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+          <h2 style="margin: 0 0 16px 0; font-size: 18px; color: #065f46;">✅ ご利用について</h2>
+          <ul style="margin: 0; padding-left: 20px; color: #047857;">
+            <li style="margin-bottom: 8px;">動画は高品質でダウンロードいただけます</li>
+            <li style="margin-bottom: 8px;">SNSでの投稿や配信にご自由にお使いください</li>
+            <li style="margin-bottom: 8px;">ダウンロードリンクは30日間有効です</li>
+            <li>追加のご要望がございましたらお気軽にお問い合わせください</li>
+          </ul>
+        </div>
+
+        <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #92400e;">📞 お問い合わせ</h3>
+          <p style="margin: 0; font-size: 14px; color: #92400e;">
+            ご不明な点やご感想がございましたら、このメールに返信するか、お問い合わせフォームよりご連絡ください。<br>
+            今後ともどうぞよろしくお願いいたします。
+          </p>
+        </div>
+
+        <div style="text-align: center; padding: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
+          <p style="margin: 0;">このメールは自動送信されています。</p>
+          <p style="margin: 4px 0 0 0;">注文ID: ${data.paymentIntentId}</p>
+        </div>
+
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log('動画完了通知メールを送信しました:', data.customerEmail);
+  } catch (error) {
+    console.error('動画完了通知メール送信エラー:', error);
+    throw error;
+  }
+}

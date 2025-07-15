@@ -221,3 +221,160 @@ export function checkSheetsConfiguration(): { configured: boolean; missing: stri
     missing
   };
 }
+
+// スプレッドシートから処理待ちのYouTube URLを取得
+export async function getPendingVideoUrls(): Promise<{
+  rowIndex: number;
+  paymentIntentId: string;
+  videoUrls: string[];
+  customerName: string;
+  customerEmail: string;
+}[]> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // スプレッドシートからデータを取得
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: 'A:S', // A列からS列まで
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length <= 1) {
+      return []; // ヘッダー行のみまたはデータなし
+    }
+
+    const pendingRows: {
+      rowIndex: number;
+      paymentIntentId: string;
+      videoUrls: string[];
+      customerName: string;
+      customerEmail: string;
+    }[] = [];
+
+    // ヘッダー行をスキップして処理
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const status = row[18]; // S列（ステータス）
+
+      // ステータスが「未着手」の行を対象とする
+      if (status === '未着手') {
+        const paymentIntentId = row[1]; // B列（決済ID）
+        const customerName = row[2]; // C列（顧客名）
+        const customerEmail = row[3]; // D列（メールアドレス）
+        const videoUrlsString = row[8]; // I列（動画URL）
+
+        if (videoUrlsString) {
+          const videoUrls = videoUrlsString.split(' | ').filter((url: string) => url.trim());
+          
+          if (videoUrls.length > 0) {
+            pendingRows.push({
+              rowIndex: i + 1, // スプレッドシートの行番号（1ベース）
+              paymentIntentId,
+              videoUrls,
+              customerName,
+              customerEmail,
+            });
+          }
+        }
+      }
+    }
+
+    console.log(`処理待ちの動画URLを${pendingRows.length}件取得しました`);
+    return pendingRows;
+
+  } catch (error) {
+    console.error('スプレッドシートからの処理待ちURL取得中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+// スプレッドシートのステータスを更新
+export async function updateRowStatus(rowIndex: number, status: string, note?: string): Promise<void> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // ステータス列（S列）を更新
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: `S${rowIndex}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[status]],
+      },
+    });
+
+    // 備考がある場合は追加の列に記録（T列を使用）
+    if (note) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+        range: `T${rowIndex}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [[note]],
+        },
+      });
+    }
+
+    console.log(`行${rowIndex}のステータスを「${status}」に更新しました`);
+
+  } catch (error) {
+    console.error('スプレッドシートのステータス更新中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+// 動画生成結果をスプレッドシートに記録
+export async function recordVideoGenerationResult(
+  rowIndex: number,
+  results: {
+    originalUrl: string;
+    vizardId: string;
+    status: 'processing' | 'completed' | 'failed';
+    downloadUrl?: string;
+    error?: string;
+  }[]
+): Promise<void> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // 結果を文字列に変換
+    const resultString = results.map(result => {
+      const statusText = {
+        'processing': '処理中',
+        'completed': '完了',
+        'failed': '失敗'
+      }[result.status];
+      
+      return `${result.originalUrl}: ${statusText}${result.error ? ` (${result.error})` : ''}`;
+    }).join(' | ');
+
+    // U列に動画生成結果を記録
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: `U${rowIndex}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[resultString]],
+      },
+    });
+
+    console.log(`行${rowIndex}に動画生成結果を記録しました`);
+
+  } catch (error) {
+    console.error('動画生成結果の記録中にエラーが発生しました:', error);
+    throw error;
+  }
+}
