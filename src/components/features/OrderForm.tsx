@@ -780,6 +780,21 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               </p>
             )}
           </div>
+          
+          {/* 動画制限に関する注意事項 */}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div className="text-sm text-blue-800">
+                <p className="font-semibold mb-1">動画の制限について</p>
+                <p>・動画の長さは<strong>{ADMIN_CONFIG.videoLimits.minDurationMinutes}分以上</strong>である必要があります</p>
+                <p>・YouTube動画のURLを入力してください</p>
+                <p>・複数の動画を一度に注文することができます</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 動画情報表示 */}
@@ -812,25 +827,25 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           <label className="block text-lg font-bold text-orange-900 mb-6">
             フォーマット選択 *
           </label>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+            <label className={`flex flex-col p-2 md:p-6 border-2 rounded-xl cursor-pointer transition-all group ${
               watchedFormat === 'default'
                 ? 'border-orange-500 bg-orange-50'
                 : 'border-orange-300 hover:border-orange-400 bg-white'
             }`}>
-              <div className="flex items-start mb-4">
+              <div className="flex items-start md:mb-4 flex-col md:flex-row">
                 <input
                   type="radio"
                   value="default"
                   {...register('format', { required: 'フォーマットを選択してください' })}
                   className="mt-1 mr-4 text-orange-500 w-5 h-5"
                 />
-                <div className="flex-1">
+                <div className="flex-1 py-1">
                   <div className="flex flex-col items-start mb-2">
                     <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">おすすめ</span>
-                    <span className="font-bold text-gray-900 text-lg mr-2">デフォルト</span>
+                    <span className="font-bold text-gray-900 text-sm md:text-lg mr-2">デフォルト</span>
                   </div>
-                  <div className="text-sm text-gray-600">標準的なレイアウト</div>
+                  <div className="text-xs md:text-sm text-gray-600">標準的なレイアウト</div>
                 </div>
               </div>
               <div className="mt-4 border-t border-gray-200 pt-4">

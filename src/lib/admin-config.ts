@@ -8,6 +8,13 @@ export const ADMIN_CONFIG = {
     displayPrice: 180, // 表示価格（基本料金100円 + 追加料金80円）
   },
   
+  // 動画制限設定
+  videoLimits: {
+    minDurationSeconds: 600, // 最小動画長（秒）- 10分
+    minDurationMinutes: 10, // 最小動画長（分）- 表示用
+    durationErrorMessage: "動画の長さが10分未満です。10分以上の動画をご利用ください。", // エラーメッセージ
+  },
+  
   // 受付状況管理
   orderStatus: {
     isAcceptingOrders: true, // true: 受付中, false: 受付停止

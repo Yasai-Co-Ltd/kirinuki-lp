@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractVideoId, getVideoInfo } from '@/lib/youtube';
+import { ADMIN_CONFIG } from '@/lib/admin-config';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,6 +32,14 @@ export async function POST(request: NextRequest) {
       if (!videoInfo) {
         console.error('Failed to get video info for videoId:', videoId);
         errors.push(`動画${i + 1}: 動画情報を取得できませんでした`);
+        continue;
+      }
+
+      // 動画の長さをチェック（設定ファイルの最小時間以上）
+      if (videoInfo.duration < ADMIN_CONFIG.videoLimits.minDurationSeconds) {
+        const minutes = Math.floor(videoInfo.duration / 60);
+        const seconds = videoInfo.duration % 60;
+        errors.push(`動画${i + 1}: 動画の長さが${ADMIN_CONFIG.videoLimits.minDurationMinutes}分未満です（現在: ${minutes}分${seconds}秒）。${ADMIN_CONFIG.videoLimits.minDurationMinutes}分以上の動画をご利用ください。`);
         continue;
       }
 
