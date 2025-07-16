@@ -1763,7 +1763,7 @@ section > .bg-slideup:first-child {
 /*料金プランセクション専用のcontent-item*/
 .bg1.bg-pattern1 .content-blocks .content-item {
 	/* background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); */
-	background: rgb(243, 243, 243);
+	background: rgb(255, 255, 255);
 	color: white;
 	/* border: 2px solid var(--accent-color); */
 	/* box-shadow: 0 10px 30px rgba(231, 76, 60, 0.2); */
@@ -1778,12 +1778,13 @@ section > .bg-slideup:first-child {
 	left: 0;
 	right: 0;
 	height: 4px;
-	background: linear-gradient(90deg, var(--accent-color), #ff6b6b);
+	/* background: linear-gradient(90deg, var(--accent-color), #ff6b6b); */
 }
 
 .bg1.bg-pattern1 .content-blocks .content-item h4 {
 	color: #ff6b6b;
 	font-weight: 800;
+	margin-top: 15px;
 	/* text-shadow: 0 2px 4px rgba(0,0,0,0.3); */
 }
 

@@ -329,7 +329,7 @@ export default function Home() {
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4>本あたりの価格（1時間動画の場合）</h4>
+              <h4>1本あたりの価格（1時間動画の場合）</h4>
               <div className="per-clip-pricing">
                 <div className="per-clip-card highlight-card">
                   <div className="per-clip-header">
@@ -397,21 +397,21 @@ export default function Home() {
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faVideo} />動画の長さと内容について</h4>
+              <h4>動画の長さと内容について</h4>
               <p>AIが動画内の音声を分析し、会話を検出します。最適な結果を得るには、動画に会話が含まれていることを確認してください。長い動画（15分以上を推奨）では、より多くのコンテンツが提供され、より鮮明で多様なコンテンツは、AIが適切な切り抜きポイントを見つけるのに役立ちます。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faClock} />切り抜き動画の長さ設定について</h4>
+              <h4>切り抜き動画の長さ設定について</h4>
               <p>「自動」またはより長い時間（「60～90秒」など）を選択すると、切り抜き動画の数が少なくなり、切り抜き動画が長くなります。より多くの切り抜き動画をご希望の場合は、アップロード前に切り抜き動画の長さとして「30秒未満」を選択してください。</p>
             </div>
           </div>
 
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faChartBar} />コンテンツの適合性について</h4>
+              <h4>コンテンツの適合性について</h4>
               <p>AIはインタビュー形式の動画など、特定のコンテンツタイプで優れたパフォーマンスを発揮します。コンテンツが一致しない場合は、生成される切り抜き動画の数が少なくなる可能性があります。動画に十分なコンテンツがない場合、AIは切り抜き動画を生成しません。</p>
             </div>
           </div>
