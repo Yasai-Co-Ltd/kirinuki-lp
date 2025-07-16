@@ -27,6 +27,37 @@ export default function OrderForm({ onSuccess }: OrderFormProps) {
 function OrderFormContent({ onSuccess }: OrderFormProps) {
   const [step, setStep] = useState<'form' | 'confirm' | 'payment' | 'processing'>('form');
 
+  // フォーマット選択肢の定義
+  const formatOptions = [
+    {
+      value: 'default',
+      label: 'デフォルト',
+      description: '標準的なレイアウト(人物)',
+      image: '/images/format-sample/default.png',
+      imageAlt: 'デフォルトサンプル',
+      isRecommended: true,
+      isDefault: true
+    },
+    {
+      value: 'separate',
+      label: '2分割',
+      description: '画面を2つに分割(人物)',
+      image: '/images/format-sample/sepalate.png',
+      imageAlt: '2分割サンプル',
+      isRecommended: false,
+      isDefault: false
+    },
+    {
+      value: 'zoom',
+      label: 'ズーム',
+      description: '拡大表示で迫力アップ(人物)',
+      image: '/images/format-sample/zoom.png',
+      imageAlt: 'ズームサンプル',
+      isRecommended: false,
+      isDefault: false
+    }
+  ];
+
   // ステップバー用の設定
   const steps = [
     {
@@ -827,88 +858,49 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           <label className="block text-lg font-bold text-orange-900 mb-6">
             フォーマット選択 *
           </label>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-            <label className={`flex flex-col p-2 md:p-6 border-2 rounded-xl cursor-pointer transition-all group ${
-              watchedFormat === 'default'
-                ? 'border-orange-500 bg-orange-50'
-                : 'border-orange-300 hover:border-orange-400 bg-white'
-            }`}>
-              <div className="flex items-start md:mb-4 flex-col md:flex-row">
-                <input
-                  type="radio"
-                  value="default"
-                  {...register('format', { required: 'フォーマットを選択してください' })}
-                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
-                />
-                <div className="flex-1 py-1">
-                  <div className="flex flex-col items-start mb-2">
-                    <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">おすすめ</span>
-                    <span className="font-bold text-gray-900 text-sm md:text-lg mr-2">デフォルト</span>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
+            {formatOptions.map((format) => (
+              <label
+                key={format.value}
+                className={`flex flex-col p-2 md:p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+                  watchedFormat === format.value
+                    ? 'border-orange-500 bg-orange-50'
+                    : 'border-gray-200 hover:border-orange-300 bg-white/50'
+                }`}
+              >
+                <div className={`flex items-start md:mb-4 flex-col md:flex-row relative`}>
+                  <input
+                    type="radio"
+                    value={format.value}
+                    {...register('format', { required: 'フォーマットを選択してください' })}
+                    className="mt-1 mr-4 text-orange-500 w-5 h-5"
+                  />
+                  <div className={`flex-1 py-1`}>
+                    {format.isDefault ? (
+                      <div className="flex flex-col items-start mb-2">
+                        {format.isRecommended && (
+                          <span className="absolute right-0 top-0 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">おすすめ</span>
+                        )}
+                        <span className="font-bold text-gray-900 text-sm md:text-lg mr-2">{format.label}</span>
+                      </div>
+                    ) : (
+                      <div className="font-bold text-gray-900 text-sm md:text-lg mr-2  mb-2">{format.label}</div>
+                    )}
+                    <div className={`text-xs md:text-sm text-gray-600`}>
+                      {format.description}
+                    </div>
                   </div>
-                  <div className="text-xs md:text-sm text-gray-600">標準的なレイアウト</div>
                 </div>
-              </div>
-              <div className="mt-4 border-t border-gray-200 pt-4">
-                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
-                <img
-                  src="/images/format-sample/default.png"
-                  alt="デフォルトサンプル"
-                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
-                />
-              </div>
-            </label>
-            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
-              watchedFormat === 'separate'
-                ? 'border-orange-500 bg-orange-50'
-                : 'border-gray-200 hover:border-orange-300 bg-white/50'
-            }`}>
-              <div className="flex items-start mb-4">
-                <input
-                  type="radio"
-                  value="separate"
-                  {...register('format', { required: 'フォーマットを選択してください' })}
-                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
-                />
-                <div className="flex-1">
-                  <div className="font-bold text-gray-900 text-lg mb-2">2分割</div>
-                  <div className="text-sm text-gray-600">画面を2つに分割</div>
+                <div className="mt-1 md:mt-4 border-t border-gray-200 pt-1 md:pt-4">
+                  {/* <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div> */}
+                  <img
+                    src={format.image}
+                    alt={format.imageAlt}
+                    className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
+                  />
                 </div>
-              </div>
-              <div className="mt-4 border-t border-gray-200 pt-4">
-                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
-                <img
-                  src="/images/format-sample/sepalate.png"
-                  alt="2分割サンプル"
-                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
-                />
-              </div>
-            </label>
-            <label className={`flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all group ${
-              watchedFormat === 'zoom'
-                ? 'border-orange-500 bg-orange-50'
-                : 'border-gray-200 hover:border-orange-300 bg-white/50'
-            }`}>
-              <div className="flex items-start mb-4">
-                <input
-                  type="radio"
-                  value="zoom"
-                  {...register('format', { required: 'フォーマットを選択してください' })}
-                  className="mt-1 mr-4 text-orange-500 w-5 h-5"
-                />
-                <div className="flex-1">
-                  <div className="font-bold text-gray-900 text-lg mb-2">ズーム</div>
-                  <div className="text-sm text-gray-600">拡大表示で迫力アップ</div>
-                </div>
-              </div>
-              <div className="mt-4 border-t border-gray-200 pt-4">
-                <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div>
-                <img
-                  src="/images/format-sample/zoom.png"
-                  alt="ズームサンプル"
-                  className="w-full h-auto rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-shadow"
-                />
-              </div>
-            </label>
+              </label>
+            ))}
           </div>
           {errors.format && (
             <p className="text-red-600 font-medium mt-3">{errors.format.message}</p>
