@@ -113,6 +113,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       aspectRatio: 1, // 9:16 (縦型) を初期値に設定
       subtitleSwitch: 1,
       headlineSwitch: 1,
+      language: 'japanese', // 日本語を初期値に設定
     }
   });
 
@@ -120,6 +121,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   const watchedFormat = watch('format');
   const watchedQualityOption = watch('qualityOption');
   const watchedAspectRatio = watch('aspectRatio');
+  const watchedLanguage = watch('language');
 
   // 複数動画情報を取得
   const fetchVideoInfos = async (videoUrls: string[]) => {
@@ -400,6 +402,15 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                   <div className="flex justify-between">
                     <span className="text-gray-600">納期:</span>
                     <span className="font-medium text-gray-900">約{estimate.estimatedDeliveryDays}営業日</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">言語:</span>
+                    <span className="font-medium text-gray-900">
+                      {formData.language === 'japanese' && '日本語'}
+                      {formData.language === 'english' && '英語'}
+                      {formData.language === 'chinese' && '中国語'}
+                      {formData.language === 'korean' && '韓国語'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1006,6 +1017,93 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           )}
         </div>
 
+        {/* 言語選択 */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 md:p-8">
+          <label className="block text-lg font-bold text-purple-900 mb-6">
+            字幕・タイトルの言語 *
+          </label>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <label className={`flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedLanguage === 'japanese'
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-purple-200 hover:border-purple-300 bg-white'
+            }`}>
+              <input
+                type="radio"
+                value="japanese"
+                defaultChecked
+                {...register('language', { required: '言語を選択してください' })}
+                className="sr-only"
+              />
+              <div className="text-2xl mb-2">🇯🇵</div>
+              <span className="font-semibold text-gray-900 text-sm">日本語</span>
+              <span className="text-xs text-gray-600 mt-1">Japanese</span>
+            </label>
+            
+            <label className={`flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedLanguage === 'english'
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-purple-200 hover:border-purple-300 bg-white'
+            }`}>
+              <input
+                type="radio"
+                value="english"
+                {...register('language', { required: '言語を選択してください' })}
+                className="sr-only"
+              />
+              <div className="text-2xl mb-2">🇺🇸</div>
+              <span className="font-semibold text-gray-900 text-sm">英語</span>
+              <span className="text-xs text-gray-600 mt-1">English</span>
+            </label>
+            
+            <label className={`flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedLanguage === 'chinese'
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-purple-200 hover:border-purple-300 bg-white'
+            }`}>
+              <input
+                type="radio"
+                value="chinese"
+                {...register('language', { required: '言語を選択してください' })}
+                className="sr-only"
+              />
+              <div className="text-2xl mb-2">🇨🇳</div>
+              <span className="font-semibold text-gray-900 text-sm">中国語</span>
+              <span className="text-xs text-gray-600 mt-1">Chinese</span>
+            </label>
+            
+            <label className={`flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all group ${
+              watchedLanguage === 'korean'
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-purple-200 hover:border-purple-300 bg-white'
+            }`}>
+              <input
+                type="radio"
+                value="korean"
+                {...register('language', { required: '言語を選択してください' })}
+                className="sr-only"
+              />
+              <div className="text-2xl mb-2">🇰🇷</div>
+              <span className="font-semibold text-gray-900 text-sm">韓国語</span>
+              <span className="text-xs text-gray-600 mt-1">Korean</span>
+            </label>
+          </div>
+          {errors.language && (
+            <p className="text-red-600 font-medium mt-3">{errors.language.message}</p>
+          )}
+          <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-xl">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div className="text-sm text-purple-800">
+                <p className="font-semibold mb-1">言語設定について</p>
+                <p>正確な字幕やタイトルを挿入するために重要な設定です。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 切り抜き生成設定 */}
         <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
           <div className="border-b pb-4 mb-6">
@@ -1025,6 +1123,9 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 優先的な切り抜き動画の長さ（秒）
               </label>
+              <div className="text-xs my-2 text-red-700">
+                <p>※選択する切り抜き動画の長さによって、生成される動画の本数が変わります。</p>
+              </div>
               <select
                 {...register('preferLength', { required: '優先クリップ長を選択してください' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"

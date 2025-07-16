@@ -20,6 +20,7 @@ export interface OrderFormData {
   aspectRatio: number; // 1: 9:16, 2: 1:1, 3: 4:5, 4: 16:9
   subtitleSwitch: number; // 0: なし, 1: あり
   headlineSwitch: number; // 0: なし, 1: あり
+  language: 'japanese' | 'english' | 'chinese' | 'korean'; // 言語選択
   customerName: string;
   customerEmail: string;
   specialRequests?: string;

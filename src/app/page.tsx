@@ -329,7 +329,7 @@ export default function Home() {
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faCut} />1本あたりの価格（1時間動画の場合）</h4>
+              <h4>本あたりの価格（1時間動画の場合）</h4>
               <div className="per-clip-pricing">
                 <div className="per-clip-card highlight-card">
                   <div className="per-clip-header">
@@ -344,7 +344,7 @@ export default function Home() {
                 <div className="per-clip-card highlight-card">
                   <div className="per-clip-header">
                     <h5>高品質プラン</h5>
-                    <p className="total-price">総額 {formatPrice(10800)}</p>
+                    <p className="total-price">総額 {formatPrice(18000)}</p>
                   </div>
                   <div className="per-clip-breakdown">
                     <p className="clip-count">20〜30本の切り抜き動画</p>
@@ -363,7 +363,7 @@ export default function Home() {
         <div className="content-blocks">
           <div className="content-item up">
             <div className="text">
-              <h4><FontAwesomeIcon icon={faCalculator} />料金例</h4>
+              <h4>料金例</h4>
               <div className="pricing-examples">
                 <div className="pricing-example-card">
                   <h5>15分動画（AIのみ）</h5>

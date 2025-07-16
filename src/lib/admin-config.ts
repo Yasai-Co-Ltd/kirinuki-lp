@@ -4,8 +4,8 @@
 export const ADMIN_CONFIG = {
   // 価格設定（人の目で確認プラン）
   pricing: {
-    humanReviewSurcharge: 80, // 1分あたりの追加料金（円）
-    displayPrice: 180, // 表示価格（基本料金100円 + 追加料金80円）
+    humanReviewSurcharge: 200, // 1分あたりの追加料金（円）
+    displayPrice: 300, // 表示価格（基本料金100円 + 追加料金80円）
   },
   
   // 動画制限設定
