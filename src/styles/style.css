@@ -163,7 +163,7 @@ input[type="submit"]:active {
 section {
 	overflow-x: hidden;
 	/* padding: var(--space-large);	 */
-	padding: 15px;	
+	padding: 40px 15px;	
 }
 
 @media screen and (min-width:700px) {
@@ -302,6 +302,7 @@ header nav ul {display: none;}
 	header > nav > ul {
 		margin-right: 100px;	/*ハンバーガーアイコンに重ならないように余白*/
 		display: flex;			/*横並びにする*/
+		align-items: center;
 	}
 
 	/*メニュー１個あたりの設定*/
@@ -314,6 +315,28 @@ header nav ul {display: none;}
 	/*ドロップダウンメニュー冒頭の矢印アイコン*/
 	header nav i {
 		padding-right: 0.5rem;	/*右に空ける余白*/
+	}
+
+	/*今すぐ注文ボタンのスタイリング（デスクトップ）*/
+	header nav .order-button-nav {
+		margin-left: 1rem;	/*他のメニューとの間隔*/
+	}
+
+	header nav .order-button {
+		background: var(--accent-color) !important;	/*アクセントカラー（赤系）*/
+		color: white !important;
+		border-radius: 25px;	/*角を丸くする*/
+		padding: 0.7rem 1.5rem !important;	/*ボタン内の余白を調整*/
+		font-weight: 600;	/*太字*/
+		transition: all 0.3s ease;	/*ホバー時のアニメーション*/
+		border: 2px solid var(--accent-color);
+	}
+
+	header nav .order-button:hover {
+		background: white !important;
+		color: var(--accent-color) !important;
+		transform: translateY(-2px);	/*ホバー時に少し浮き上がる*/
+		box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);	/*影を追加*/
 	}
 
 	}/*追加設定ここまで*/
@@ -407,6 +430,29 @@ header nav ul ul a {
 	color: var(--base-inverse-color);	/*文字色。冒頭のbase-inverse-colorを読み込みます。*/
 	border: 1px solid var(--base-inverse-color);	/*枠線の幅、線種、varは色の指定で冒頭のbase-inverse-colorを読み込みます。*/
 	margin-left: 2rem;	/*左に空けるスペース*/
+}
+
+/*モバイルメニュー内の今すぐ注文ボタンのスタイリング*/
+.small-screen #menubar .order-button-nav {
+	margin: 2rem 0 1rem 0;	/*上下に余白を追加*/
+}
+
+.small-screen #menubar .order-button {
+	background: var(--accent-color) !important;	/*アクセントカラー（赤系）*/
+	color: white !important;
+	border-radius: 25px;	/*角を丸くする*/
+	font-weight: 600;	/*太字*/
+	text-align: center;	/*テキストを中央揃え*/
+	transition: all 0.3s ease;	/*アニメーション*/
+	border: 2px solid var(--accent-color) !important;
+	padding: 1.2rem 2rem !important;	/*ボタン内の余白を調整*/
+}
+
+.small-screen #menubar .order-button:hover {
+	background: white !important;
+	color: var(--accent-color) !important;
+	transform: translateY(-2px);	/*ホバー時に少し浮き上がる*/
+	box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);	/*影を追加*/
 }
 
 

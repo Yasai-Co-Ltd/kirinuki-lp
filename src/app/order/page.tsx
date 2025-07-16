@@ -4,7 +4,7 @@ import Layout from '@/components/layout/Layout';
 export default function OrderPage() {
   return (
     <Layout>
-      <div className="min-h-screen bg-[gradient-to-br from-orange-50 via-white to-red-50] pt-24">
+      <div className="min-h-screen bg-[gradient-to-br from-orange-50 via-white to-red-50] pt-20 md:pt-24">
         {/* ヒーローセクション */}
         <div className="bg-[#3498db] text-white py-16">
           <div className="container mx-auto px-4 max-w-6xl">

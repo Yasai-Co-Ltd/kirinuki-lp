@@ -22,6 +22,9 @@ export default function Header() {
             <li><Link href="/#faq">よくある質問</Link></li>
             <li><Link href="/#flow">制作の流れ</Link></li>
             <li><Link href="/contact">お問い合わせ</Link></li>
+            <li className="order-button-nav">
+              <Link href="/order" className="order-button">今すぐ注文</Link>
+            </li>
           </ul>
         </nav>
       </header>
@@ -46,6 +49,9 @@ export default function Header() {
             <li><Link href="/#faq">よくある質問</Link></li>
             <li><Link href="/#flow">制作の流れ</Link></li>
             <li><Link href="/contact">お問い合わせ</Link></li>
+            <li className="order-button-nav">
+              <Link href="/order" className="order-button">今すぐ注文</Link>
+            </li>
           </ul>
         </nav>
       </div>
