@@ -676,6 +676,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
                 <CardElement
                   options={{
+                    hidePostalCode: true,
                     style: {
                       base: {
                         fontSize: '18px',
