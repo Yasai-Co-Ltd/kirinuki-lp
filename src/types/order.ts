@@ -53,3 +53,18 @@ export interface Order {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface PricingBreakdownItem {
+  label: string;
+  amount: number;
+  isTotal?: boolean;
+  isMinimumCharge?: boolean;
+  note?: string;
+}
+
+export interface PricingBreakdown {
+  baseAmount: number;
+  qualitySurcharge: number;
+  totalAmount: number;
+  breakdown: PricingBreakdownItem[];
+}

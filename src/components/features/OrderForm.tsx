@@ -492,12 +492,51 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           <div className="bg-white rounded-xl p-6 border border-orange-200">
             <div className="space-y-3">
               {breakdown.breakdown.map((item, index) => (
-                <div key={index} className={`flex justify-between items-center ${item.isTotal ? 'font-bold text-xl border-t border-orange-300 pt-4 mt-4 text-orange-900' : 'text-orange-800'}`}>
-                  <span>{item.label}</span>
-                  <span className={item.isTotal ? 'text-2xl' : ''}>{formatPrice(item.amount)}</span>
+                <div key={index}>
+                  <div className={`flex justify-between items-center ${
+                    item.isTotal
+                      ? 'font-bold text-xl border-t border-orange-300 pt-4 mt-4 text-orange-900'
+                      : item.isMinimumCharge
+                        ? 'text-blue-800 font-medium'
+                        : 'text-orange-800'
+                  }`}>
+                    <div className="flex flex-col">
+                      <span className={item.isMinimumCharge ? 'flex items-center gap-2' : ''}>
+                        {item.isMinimumCharge && (
+                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        {item.label}
+                      </span>
+                      {item.note && (
+                        <span className="text-xs text-gray-600 mt-1">{item.note}</span>
+                      )}
+                    </div>
+                    <span className={item.isTotal ? 'text-2xl' : ''}>{formatPrice(item.amount)}</span>
+                  </div>
                 </div>
               ))}
             </div>
+            
+            {/* 最低料金についての説明を追加 */}
+            {breakdown.breakdown.some(item => item.isMinimumCharge) && (
+              <div className="mt-4 pt-4 border-t border-orange-200">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-blue-900 font-medium text-sm mb-1">最低料金について</p>
+                      <p className="text-blue-800 text-sm leading-relaxed">
+                        動画の長さが10分以内の場合、品質を保つため最低料金{formatPrice(1000)}を設定させていただいております。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
