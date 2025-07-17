@@ -503,8 +503,15 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
         {error && (
           <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl mb-6">
-            <p className="font-semibold">エラーが発生しました</p>
-            <p>{error}</p>
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="font-semibold mb-1">エラーが発生しました</p>
+                <p>{error}</p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -650,8 +657,15 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
         {error && (
           <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl mb-6">
-            <p className="font-semibold">エラーが発生しました</p>
-            <p>{error}</p>
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="font-semibold mb-1">エラーが発生しました</p>
+                <p>{error}</p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -769,6 +783,9 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                       setVideos(newVideos);
                       setValue('videos', newVideos);
                       
+                      // エラーメッセージをクリア
+                      setError('');
+                      
                       // 全ての有効なURLを取得して動画情報を更新
                       const validUrls = newVideos.filter(v => v.videoUrl.trim() !== '').map(v => v.videoUrl);
                       if (validUrls.length > 0) {
@@ -847,6 +864,21 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
             </div>
           </div>
         </div>
+
+        {/* エラーメッセージ表示 */}
+        {error && (
+          <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="font-semibold mb-1">エラーが発生しました</p>
+                <p>{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 動画情報表示 */}
         {videoInfos.length > 0 && (
@@ -1432,8 +1464,15 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
 
         {error && (
           <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl">
-            <p className="font-semibold">エラーが発生しました</p>
-            <p>{error}</p>
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="font-semibold mb-1">エラーが発生しました</p>
+                <p>{error}</p>
+              </div>
+            </div>
           </div>
         )}
 
