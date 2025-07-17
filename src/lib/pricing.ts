@@ -25,17 +25,14 @@ export function calculateEstimate(
   const durationMinutesArray = durations.map(seconds => Math.ceil(seconds / 60));
   const totalVideoDurationMinutes = durationMinutesArray.reduce((sum, minutes) => sum + minutes, 0);
   
-  // 料金計算（各動画に最低料金を適用）
+  // 料金計算（合計金額に最低料金を適用）
   const basePricePerMinute = PRICING_CONFIG.basePricePerMinute;
   const qualitySurcharge = PRICING_CONFIG.qualityOptions[qualityOption];
   const totalPricePerMinute = basePricePerMinute + qualitySurcharge;
   
-  // 各動画ごとに最低料金を適用してから合計
-  const totalPrice = durationMinutesArray.reduce((sum, minutes) => {
-    const effectiveMinutes = Math.max(minutes, PRICING_CONFIG.maxFreeMinutes);
-    const videoPrice = Math.max(effectiveMinutes * totalPricePerMinute, PRICING_CONFIG.minimumCharge);
-    return sum + videoPrice;
-  }, 0);
+  // 全動画の合計分数で料金計算し、最後に最低料金を適用
+  const calculatedPrice = totalVideoDurationMinutes * totalPricePerMinute;
+  const totalPrice = Math.max(calculatedPrice, PRICING_CONFIG.minimumCharge);
   
   // 納期計算（品質オプションに応じて統一）
   // AIのみの場合：当日〜2営業日、人が確認する場合：1〜3営業日
@@ -75,62 +72,53 @@ export function getPricingBreakdown(
   
   const breakdown: PricingBreakdownItem[] = [];
   
-  // 動画数と総分数を表示
-  if (videoCount > 1) {
+  // 統一された料金計算ロジック（単一・複数動画共通）
+  const basePricePerMinute = PRICING_CONFIG.basePricePerMinute;
+  const qualitySurcharge = PRICING_CONFIG.qualityOptions[qualityOption];
+  const totalPricePerMinute = basePricePerMinute + qualitySurcharge;
+  
+  const calculatedBasePrice = totalMinutes * basePricePerMinute;
+  const calculatedQualityPrice = totalMinutes * qualitySurcharge;
+  const calculatedTotalPrice = totalMinutes * totalPricePerMinute;
+  
+  const isMinimumChargeApplied = calculatedTotalPrice < PRICING_CONFIG.minimumCharge;
+  
+  if (isMinimumChargeApplied) {
     breakdown.push({
-      label: `動画制作料金 (${videoCount}本・合計${totalMinutes}分)`,
-      amount: estimate.totalPrice - (estimate.totalPrice - Math.floor(estimate.totalPrice / estimate.basePricePerMinute) * estimate.basePricePerMinute)
+      label: `基本料金 (${videoCount > 1 ? `${videoCount}本・` : ''}${totalMinutes}分)`,
+      amount: calculatedBasePrice,
+      note: `${totalMinutes}分 × ${formatPrice(basePricePerMinute)}/分`
+    });
+    
+    // 品質オプション料金（最低料金適用前）
+    if (qualityOption === 'human_review' && calculatedQualityPrice > 0) {
+      breakdown.push({
+        label: `${qualityLabels[qualityOption]}オプション`,
+        amount: calculatedQualityPrice,
+        note: `${totalMinutes}分 × ${formatPrice(qualitySurcharge)}/分`
+      });
+    }
+    
+    breakdown.push({
+      label: `最低料金保証`,
+      amount: PRICING_CONFIG.minimumCharge - calculatedTotalPrice,
+      isMinimumCharge: true,
+      note: `${PRICING_CONFIG.maxFreeMinutes}分以内は最低${formatPrice(PRICING_CONFIG.minimumCharge)}となります`
     });
   } else {
-    const basePricePerMinute = PRICING_CONFIG.basePricePerMinute;
-    const qualitySurcharge = PRICING_CONFIG.qualityOptions[qualityOption];
-    const totalPricePerMinute = basePricePerMinute + qualitySurcharge;
+    breakdown.push({
+      label: `基本料金 (${videoCount > 1 ? `${videoCount}本・` : ''}${totalMinutes}分)`,
+      amount: calculatedBasePrice,
+      note: `${totalMinutes}分 × ${formatPrice(basePricePerMinute)}/分`
+    });
     
-    const calculatedBasePrice = totalMinutes * basePricePerMinute;
-    const calculatedQualityPrice = totalMinutes * qualitySurcharge;
-    const calculatedTotalPrice = totalMinutes * totalPricePerMinute;
-    
-    const isMinimumChargeApplied = calculatedTotalPrice < PRICING_CONFIG.minimumCharge;
-    
-    if (isMinimumChargeApplied) {
+    // 品質オプション料金（通常料金）
+    if (qualityOption === 'human_review' && calculatedQualityPrice > 0) {
       breakdown.push({
-        label: `基本料金 (${totalMinutes}分)`,
-        amount: calculatedBasePrice,
-        note: `${totalMinutes}分 × ${formatPrice(basePricePerMinute)}/分`
+        label: `${qualityLabels[qualityOption]}オプション`,
+        amount: calculatedQualityPrice,
+        note: `${totalMinutes}分 × ${formatPrice(qualitySurcharge)}/分`
       });
-      
-      // 品質オプション料金（最低料金適用前）
-      if (qualityOption === 'human_review' && calculatedQualityPrice > 0) {
-        breakdown.push({
-          label: `${qualityLabels[qualityOption]}オプション`,
-          amount: calculatedQualityPrice,
-          note: `${totalMinutes}分 × ${formatPrice(qualitySurcharge)}/分`
-        });
-      }
-      
-      breakdown.push({
-        label: `最低料金保証`,
-        amount: PRICING_CONFIG.minimumCharge - calculatedTotalPrice,
-        isMinimumCharge: true,
-        note: `10分以内は最低${formatPrice(PRICING_CONFIG.minimumCharge)}となります`
-      });
-    } else {
-      const effectiveMinutes = Math.max(totalMinutes, PRICING_CONFIG.maxFreeMinutes);
-      breakdown.push({
-        label: `基本料金 (${effectiveMinutes}分)`,
-        amount: effectiveMinutes * basePricePerMinute
-      });
-      
-      // 品質オプション料金（通常料金）
-      if (qualityOption === 'human_review') {
-        const qualitySurchargeAmount = totalMinutes * qualitySurcharge * videoCount;
-        if (qualitySurchargeAmount > 0) {
-          breakdown.push({
-            label: `${qualityLabels[qualityOption]}オプション`,
-            amount: qualitySurchargeAmount
-          });
-        }
-      }
     }
   }
   
