@@ -10,9 +10,9 @@ export const ADMIN_CONFIG = {
   
   // 動画制限設定
   videoLimits: {
-    minDurationSeconds: 600, // 最小動画長（秒）- 10分
-    minDurationMinutes: 10, // 最小動画長（分）- 表示用
-    durationErrorMessage: "動画の長さが10分未満です。10分以上の動画をご利用ください。", // エラーメッセージ
+    minDurationSeconds: 300, // 最小動画長（秒）- 5分
+    minDurationMinutes: 5, // 最小動画長（分）- 表示用
+    durationErrorMessage: "動画の長さが5分未満です。5分以上の動画をご利用ください。", // エラーメッセージ
   },
   
   // 受付状況管理
