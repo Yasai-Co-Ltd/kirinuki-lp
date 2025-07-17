@@ -14,7 +14,7 @@ const PRICING_CONFIG = {
 
 export function calculateEstimate(
   durationSeconds: number | number[],
-  format: 'default' | 'separate' | 'zoom',
+  format: 'default' | 'separate' | 'zoom' | 'screen',
   qualityOption: 'ai_only' | 'human_review' = 'ai_only'
 ): OrderEstimate {
   // 複数動画対応
@@ -62,7 +62,7 @@ export function formatPrice(price: number): string {
 
 export function getPricingBreakdown(
   estimate: OrderEstimate,
-  format: 'default' | 'separate' | 'zoom',
+  format: 'default' | 'separate' | 'zoom' | 'screen',
   qualityOption: 'ai_only' | 'human_review' = 'ai_only'
 ) {
   const totalMinutes = estimate.totalVideoDurationMinutes;

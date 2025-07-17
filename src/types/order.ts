@@ -13,7 +13,7 @@ export interface VideoOrderItem {
 
 export interface OrderFormData {
   videos: VideoOrderItem[]; // 複数動画対応
-  format: 'default' | 'separate' | 'zoom';
+  format: 'default' | 'separate' | 'zoom' | 'screen';
   qualityOption: 'ai_only' | 'human_review'; // 品質オプション
   // 切り抜き設定
   preferLength: number; // 0: 自動, 1: ~30秒, 2: 30-60秒, 3: 60-90秒, 4: 90秒-3分
@@ -44,7 +44,7 @@ export interface Order {
     email: string;
   };
   videoInfo: VideoInfo;
-  format: 'default' | 'separate' | 'zoom';
+  format: 'default' | 'separate' | 'zoom' | 'screen';
   qualityOption: 'ai_only' | 'human_review';
   estimate: OrderEstimate;
   specialRequests?: string;

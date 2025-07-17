@@ -209,6 +209,7 @@ export const FORMAT_TO_TEMPLATE_ID: Record<string, number> = {
   'default': 64976905,  // デフォルト
   'separate': 64977436, // ２分割
   'zoom': 64977280,     // ズーム
+  'screen': 64976211,     // 画面キャプチャ
 };
 
 // 優先クリップ長の設定をpreferLengthに変換
@@ -227,7 +228,7 @@ export function convertPreferLengthToArray(preferLength: number): number[] {
 export function createVizardRequestFromFormData(
   videoUrl: string,
   formData: {
-    format: 'default' | 'separate' | 'zoom';
+    format: 'default' | 'separate' | 'zoom' | 'screen';
     preferLength: number;
     subtitleSwitch: number;
     headlineSwitch: number;

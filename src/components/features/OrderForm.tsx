@@ -55,6 +55,15 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       imageAlt: 'ズームサンプル',
       isRecommended: false,
       isDefault: false
+    },
+    {
+      value: 'screen',
+      label: '画面キャプチャ',
+      description: '画面録画の場合はこちらを選択',
+      image: '/images/format-sample/screen.png', // 画面キャプチャ用の画像がない場合はデフォルトを使用
+      imageAlt: '画面キャプチャサンプル',
+      isRecommended: false,
+      isDefault: false
     }
   ];
 
@@ -869,17 +878,17 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
           <label className="block text-lg font-bold text-orange-900 mb-6">
             フォーマット選択 *
           </label>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {formatOptions.map((format) => (
               <label
                 key={format.value}
-                className={`flex flex-col p-2 md:p-6 border-2 rounded-xl cursor-pointer transition-all group ${
+                className={`flex flex-col p-2 md:p-4 border-2 rounded-xl cursor-pointer transition-all group ${
                   watchedFormat === format.value
                     ? 'border-orange-500 bg-orange-50'
                     : 'border-gray-200 hover:border-orange-300 bg-white/50'
                 }`}
               >
-                <div className={`flex items-start md:mb-4 flex-col md:flex-row relative`}>
+                <div className={`flex items-start md:mb-2 flex-col relative`}>
                   <input
                     type="radio"
                     value={format.value}
@@ -902,7 +911,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                     </div>
                   </div>
                 </div>
-                <div className="mt-1 md:mt-4 border-t border-gray-200 pt-1 md:pt-4">
+                <div className="mt-1 md:mt-2 border-t border-gray-200 pt-1 md:pt-2">
                   {/* <div className="text-sm font-medium text-gray-700 mb-2">サンプル:</div> */}
                   <img
                     src={format.image}
