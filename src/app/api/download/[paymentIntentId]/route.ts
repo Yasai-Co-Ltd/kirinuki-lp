@@ -43,7 +43,7 @@ async function getOrderVideosByPaymentIntentId(paymentIntentId: string) {
     // スプレッドシートの全データを取得
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A:V', // A列からV列まで
+      range: 'A:U', // U列からV列まで
     });
 
     const rows = response.data.values;
@@ -57,7 +57,7 @@ async function getOrderVideosByPaymentIntentId(paymentIntentId: string) {
       const storedPaymentIntentId = row[1]; // B列（決済ID）
       
       if (storedPaymentIntentId === paymentIntentId) {
-        const status = row[18]; // S列（ステータス）
+        const status = row[17]; // R列（ステータス）
         
         // 完了状態の注文のみ対象とする
         if (status !== '完了') {
@@ -79,11 +79,11 @@ async function getOrderVideosByPaymentIntentId(paymentIntentId: string) {
           customerEmail: row[3] || '', // D列
           videoCount: parseInt(row[4]) || 0, // E列
           videoTitles: row[5] || '', // F列
-          videoChannels: row[6] || '', // G列
-          videoDurations: row[7] || '', // H列
-          videoUrls: row[8] || '', // I列
-          projectId: row[21] || '', // V列
-          note: row[19] || '', // T列（備考）
+          // videoChannels: row[6] || '', // G列
+          videoDurations: row[6] || '', // G列
+          videoUrls: row[7] || '', // H列
+          projectId: row[20] || '', // U列
+          note: row[18] || '', // S列（備考）
         };
       }
     }
@@ -217,7 +217,7 @@ export async function GET(
       totalCount: videoFiles.length,
       orderInfo: {
         videoTitles: orderInfo.videoTitles,
-        videoChannels: orderInfo.videoChannels,
+        // videoChannels: orderInfo.videoChannels,
         projectId: orderInfo.projectId,
       }
     });
