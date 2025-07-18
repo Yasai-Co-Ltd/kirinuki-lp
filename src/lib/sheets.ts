@@ -243,6 +243,7 @@ export async function getPendingVideoUrls(): Promise<{
     preferLength: number;
     subtitleSwitch: number;
     headlineSwitch: number;
+    qualityOption: 'ai_only' | 'human_review';
   };
 }[]> {
   if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
@@ -274,6 +275,7 @@ export async function getPendingVideoUrls(): Promise<{
         preferLength: number;
         subtitleSwitch: number;
         headlineSwitch: number;
+        qualityOption: 'ai_only' | 'human_review';
       };
     }[] = [];
 
@@ -289,9 +291,16 @@ export async function getPendingVideoUrls(): Promise<{
         const customerEmail = row[3]; // D列（メールアドレス）
         const videoUrlsString = row[7]; // H列（動画URL）
         const formatString = row[8]; // I列（フォーマット）
+        const qualityOptionString = row[9]; // J列（品質オプション）
         const preferLengthString = row[10]; // K列（優先クリップ長）
         const subtitleString = row[12]; // M列（字幕）
         const headlineString = row[13]; // N列（タイトル）
+
+        // 品質オプションが「AIのみ」の場合のみ処理対象とする
+        if (qualityOptionString !== 'AIのみ') {
+          console.log(`スキップ: 決済ID ${paymentIntentId} - 品質オプション「${qualityOptionString}」はcron処理対象外`);
+          continue;
+        }
 
         if (videoUrlsString) {
           const videoUrls = videoUrlsString.split(' | ').filter((url: string) => url.trim());
@@ -313,6 +322,9 @@ export async function getPendingVideoUrls(): Promise<{
             const subtitleSwitch = subtitleString === 'あり' ? 1 : 0;
             const headlineSwitch = headlineString === 'あり' ? 1 : 0;
 
+            // 品質オプションを英語形式に変換
+            const qualityOption: 'ai_only' | 'human_review' = qualityOptionString === 'AIのみ' ? 'ai_only' : 'human_review';
+
             pendingRows.push({
               rowIndex: i + 1, // スプレッドシートの行番号（1ベース）
               paymentIntentId,
@@ -324,6 +336,7 @@ export async function getPendingVideoUrls(): Promise<{
                 preferLength,
                 subtitleSwitch,
                 headlineSwitch,
+                qualityOption,
               },
             });
           }

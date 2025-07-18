@@ -232,6 +232,7 @@ export function createVizardRequestFromFormData(
     preferLength: number;
     subtitleSwitch: number;
     headlineSwitch: number;
+    qualityOption: 'ai_only' | 'human_review';
   },
   customerName: string
 ): VizardCreateProjectRequest {
