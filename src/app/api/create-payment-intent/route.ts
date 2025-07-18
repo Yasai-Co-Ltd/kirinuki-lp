@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    const requestData: OrderFormData & { videoDurations: number[] } = await request.json();
+    const requestData: OrderFormData & { videoDurations: number[]; videoInfos?: any[] } = await request.json();
 
     if (!requestData.videos || requestData.videos.length === 0 || !requestData.format || !requestData.qualityOption || !requestData.customerName || !requestData.customerEmail) {
       return NextResponse.json(
@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
     // 動画URLリストを作成
     const videoUrls = requestData.videos.map(video => video.videoUrl);
     
-    // 動画情報を取得（videoInfoがある場合）
-    const videoInfos = requestData.videos.map(video => video.videoInfo).filter(info => info !== undefined);
+    // 動画情報を取得（リクエストデータから直接取得）
+    const videoInfos = requestData.videoInfos || [];
     
     // トータル分数を計算
     const totalMinutes = Math.ceil(requestData.videoDurations.reduce((sum, duration) => sum + duration, 0) / 60);

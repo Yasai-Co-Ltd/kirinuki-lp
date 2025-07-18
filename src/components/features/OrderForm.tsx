@@ -211,6 +211,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
       const requestData = {
         ...data,
         videoDurations: durations,
+        videoInfos: videoInfos, // 動画情報を追加
       };
 
       console.log('APIリクエストデータ:', requestData);
