@@ -129,15 +129,26 @@ export function checkStorageConfiguration(): { configured: boolean; missing: str
 }
 
 // ファイル名を生成（動画タイトルから安全なファイル名を作成）
-export function generateSafeFileName(title: string, extension: string = 'mp4'): string {
-  // 日本語文字や特殊文字を安全な文字に変換
+export function generateSafeFileName(title: string, extension: string = 'mp4', uniqueId?: string | number): string {
+  // 日本語文字を保持しつつ、ファイルシステムで問題となる文字のみを変換
   const safeTitle = title
-    .replace(/[^\w\s-]/g, '') // 英数字、スペース、ハイフン以外を削除
+    .replace(/[<>:"/\\|?*]/g, '') // ファイルシステムで禁止されている文字を削除
     .replace(/\s+/g, '_') // スペースをアンダースコアに変換
-    .substring(0, 50); // 長さを制限
+    .trim() // 前後の空白を削除
+    .substring(0, 80); // 長さを制限（uniqueIdの分を考慮して短めに）
   
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  return `${safeTitle}_${timestamp}.${extension}`;
+  // タイトルが空の場合のフォールバック
+  if (!safeTitle) {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    return `video_${timestamp}.${extension}`;
+  }
+  
+  // ユニークIDがある場合は追加（重複防止）
+  if (uniqueId) {
+    return `${safeTitle}_${uniqueId}.${extension}`;
+  }
+  
+  return `${safeTitle}.${extension}`;
 }
 
 // バケットが存在するかチェック（オプション）

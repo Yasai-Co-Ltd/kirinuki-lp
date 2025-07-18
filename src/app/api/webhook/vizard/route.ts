@@ -138,7 +138,7 @@ async function processVideoClip(video: VizardVideoClip, payload: VizardWebhookPa
     // 動画をクラウドストレージに保存
     let gcsUrl: string | null = null;
     try {
-      const fileName = generateSafeFileName(video.title);
+      const fileName = generateSafeFileName(video.title, 'mp4', video.videoId);
       // TODO: projectIdから該当するpaymentIntentIdを取得する必要がある
       const paymentIntentId = `project_${payload.projectId}`;
       gcsUrl = await saveVideoToGCS(video.videoUrl, fileName, paymentIntentId);
