@@ -102,7 +102,7 @@ export const sampleData: ProductionSample[] = [
       description: ''
     },
     results: {
-      totalClips: 4,
+      totalClips: 19,
       clips: [
         {
           id: 'clip-003-1',

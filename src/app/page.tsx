@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Layout from '../components/layout/Layout'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faScissors, faClock, faChartLine, faEye, faHeart, faBriefcase, faArrowRight, faPlay, faStar, faUsers, faRobot, faCalculator, faInfo, faInfoCircle, faVideo, faChartBar, faGamepad, faShare, faUpload, faE, faDownload, faCut } from "@fortawesome/free-solid-svg-icons";
-import { calculatePricePerClip, generatePricePerClipText, formatPrice } from '../lib/pricing';
+import { calculatePricePerClip, generatePricePerClipText, formatPrice, calculateEstimate } from '../lib/pricing';
 import { ADMIN_CONFIG } from '../lib/admin-config';
 import AdminPanel from '../components/admin/AdminPanel';
 import { getSamplePageData, formatDuration, formatNumber } from '../lib/sampleData';
@@ -272,7 +272,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              
+
               {/* 注文内容の詳細 */}
               <div className="sample-order-details">
                 <h5>注文内容</h5>
@@ -304,17 +304,34 @@ export default function Home() {
                     <strong>タイトル:</strong> {sample.orderDetails.headlineSwitch ? 'あり' : 'なし'}
                   </span>
                 </div>
-                <div className="result-stats">
-                  <p>切り抜き動画 {sample.results.totalClips}本作成</p>
+              </div>
+
+              {/* 価格とお得感の表示 */}
+              <div className="sample-pricing-highlight">
+                <div className="pricing-badge">
+                  <div className="total-cost">
+                    <span className="cost-label">制作費用</span>
+                    <span className="cost-amount">
+                      {formatPrice(calculateEstimate(sample.originalVideo.duration, sample.orderDetails.format, sample.orderDetails.qualityOption).totalPrice)}
+                    </span>
+                  </div>
+                  <div className="per-clip-cost">
+                    <span className="per-clip-label">1本あたり</span>
+                    <span className="per-clip-amount">
+                      {(() => {
+                        const totalCost = calculateEstimate(sample.originalVideo.duration, sample.orderDetails.format, sample.orderDetails.qualityOption).totalPrice;
+                        const pricePerClip = Math.floor(totalCost / sample.results.totalClips);
+                        return formatPrice(pricePerClip);
+                      })()}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="sample-cta">
-          <p className="action-btn"><Link href="/order">切り抜き動画を作成する</Link></p>
-        </div>
+        <p className="action-btn"><Link href="/order">切り抜き動画を作成する</Link></p>
       </section>
 
       {/* 料金プラン */}
