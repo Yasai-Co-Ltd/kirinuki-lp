@@ -591,3 +591,70 @@ export async function findAllProjectIdsByPaymentIntentId(paymentIntentId: string
     throw error;
   }
 }
+
+// projectIdから動画完成メール用の詳細情報を取得
+export async function findVideoInfoByProjectId(projectId: number): Promise<{
+  rowIndex: number;
+  paymentIntentId: string;
+  customerName: string;
+  customerEmail: string;
+  videoTitles: string[];
+  videoUrls: string[];
+} | null> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // スプレッドシートの全データを取得
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: 'A:U', // A列からU列まで
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length <= 1) {
+      return null;
+    }
+
+    // ヘッダー行をスキップして検索
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const storedProjectIds = row[20]; // U列（プロジェクトID）
+      
+      if (storedProjectIds) {
+        // パイプ区切りのプロジェクトIDを分割して検索
+        const projectIdStrings = storedProjectIds.split('|').map((id: string) => id.trim()).filter((id: string) => id);
+        
+        for (const projectIdStr of projectIdStrings) {
+          const storedProjectId = parseInt(projectIdStr);
+          if (storedProjectId === projectId) {
+            // 動画タイトルと動画URLを取得
+            const videoTitlesString = row[5] || ''; // F列（動画タイトル）
+            const videoUrlsString = row[7] || ''; // H列（動画URL）
+            
+            const videoTitles = videoTitlesString ? videoTitlesString.split(' | ').filter((title: string) => title.trim()) : [];
+            const videoUrls = videoUrlsString ? videoUrlsString.split(' | ').filter((url: string) => url.trim()) : [];
+            
+            return {
+              rowIndex: i + 1, // スプレッドシートの行番号（1ベース）
+              paymentIntentId: row[1] || '', // B列
+              customerName: row[2] || '', // C列
+              customerEmail: row[3] || '', // D列
+              videoTitles,
+              videoUrls,
+            };
+          }
+        }
+      }
+    }
+
+    return null;
+
+  } catch (error) {
+    console.error('projectIdによる動画情報検索中にエラーが発生しました:', error);
+    throw error;
+  }
+}
