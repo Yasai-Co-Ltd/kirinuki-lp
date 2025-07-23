@@ -16,8 +16,7 @@ export default function Header() {
         <nav>
           <ul>
             <li><Link href="/#services">サービス詳細</Link></li>
-            <li><Link href="/#products">制作サンプル</Link>
-            </li>
+            <li><Link href="/samples">制作サンプル</Link></li>
             <li><Link href="/#plan">料金プラン</Link></li>
             <li><Link href="/#faq">よくある質問</Link></li>
             <li><Link href="/#flow">制作の流れ</Link></li>
@@ -44,7 +43,7 @@ export default function Header() {
           <ul>
             <li><Link href="/">ホーム</Link></li>
             <li><Link href="/#services">サービス詳細</Link></li>
-            <li><Link href="/#products">制作サンプル</Link></li>
+            <li><Link href="/samples">制作サンプル</Link></li>
             <li><Link href="/#plan">料金プラン</Link></li>
             <li><Link href="/#faq">よくある質問</Link></li>
             <li><Link href="/#flow">制作の流れ</Link></li>

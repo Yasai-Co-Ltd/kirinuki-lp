@@ -4,12 +4,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Layout from '../components/layout/Layout'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faScissors, faClock, faChartLine, faEye, faHeart, faBriefcase, faArrowRight, faStar, faUsers, faRobot, faCalculator, faInfo, faInfoCircle, faVideo, faChartBar, faGamepad, faShare, faUpload, faE, faDownload, faCut } from "@fortawesome/free-solid-svg-icons";
+import { faScissors, faClock, faChartLine, faEye, faHeart, faBriefcase, faArrowRight, faPlay, faStar, faUsers, faRobot, faCalculator, faInfo, faInfoCircle, faVideo, faChartBar, faGamepad, faShare, faUpload, faE, faDownload, faCut } from "@fortawesome/free-solid-svg-icons";
 import { calculatePricePerClip, generatePricePerClipText, formatPrice } from '../lib/pricing';
 import { ADMIN_CONFIG } from '../lib/admin-config';
 import AdminPanel from '../components/admin/AdminPanel';
+import { getSamplePageData, formatDuration, formatNumber } from '../lib/sampleData';
 
 export default function Home() {
+  const samplePageData = getSamplePageData();
+  const featuredSamples = samplePageData.featuredSamples.slice(0, 3); // 最大2つのおすすめサンプルを表示
+
   return (
     <Layout>
       {/* メイン画像 */}
@@ -207,76 +211,106 @@ export default function Home() {
           </div>
         </h2>
 
-        <div className="sample-intro">
-          <p className="c">高品質な切り抜き動画の制作サンプルを準備中です</p>
-        </div>
-
-        {/* Coming Soon表示 */}
-        <div className="coming-soon-container">
-          <div className="coming-soon-content">
-            <h3>制作サンプル</h3>
-            <p className="coming-soon-text">Coming Soon...</p>
-            <p className="coming-soon-description">
-              現在、様々なジャンルの切り抜き動画サンプルを制作中です。<br />
-              完成次第、こちらに掲載いたします。
-            </p>
-          </div>
-        </div>
-
-        {/* サンプル追加用のコメントアウト部分 - 後で簡単に有効化できるように */}
-        {/*
         <div className="production-samples">
-          {/* サンプル1: ゲーム実況 */}
-          {/*
-          <div className="sample-item up">
-            <div className="sample-header">
-              <h3><FontAwesomeIcon icon={faGamepad} />ゲーム実況動画の制作例</h3>
-            </div>
-            <div className="before-after-container">
-              <div className="before-section">
-                <h4>Before（元動画）</h4>
-                <div className="video-placeholder">
-                  <Image src="/images/thumb1.jpg" alt="元動画サムネイル" width={300} height={200} />
-                  <div className="video-info">
-                    <p><FontAwesomeIcon icon={faClock} />2時間30分の配信動画</p>
-                    <p><FontAwesomeIcon icon={faEye} />視聴者の離脱が多い長時間配信</p>
+          {featuredSamples.map((sample, index) => (
+            <div key={sample.id} className="sample-item">
+              <div className="sample-header">
+                <h3 className='text-white'>
+                  {sample.title}
+                </h3>
+              </div>
+              <div className="before-after-container">
+                <div className="before-section">
+                  <h4>Before（元動画）</h4>
+                  <div className="original-video-info">
+                    <div className="original-video-thumbnail">
+                      <Image
+                        src={sample.originalVideo.thumbnailUrl}
+                        alt={sample.originalVideo.title}
+                        width={300}
+                        height={200}
+                        className="original-thumbnail"
+                      />
+                    </div>
+                    <div className="original-video-details">
+                      <h5>{sample.originalVideo.title}</h5>
+                      <div className="video-duration">
+                        <FontAwesomeIcon icon={faClock} />
+                        <span>動画時間: {formatDuration(sample.originalVideo.duration)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="arrow-section">
+                  <FontAwesomeIcon icon={faArrowRight} />
+                  <span>AI切り抜き</span>
+                </div>
+                <div className="after-section">
+                  <h4>After（切り抜き動画サンプル）</h4>
+                  <div className="sample-video-single">
+                    <div className="sample-video-item">
+                      <div className="video-container">
+                        <video
+                          width="300"
+                          height="200"
+                          // poster={sample.results.clips[0].thumbnailUrl}
+                          controls
+                          preload="metadata"
+                          className="sample-video-player"
+                        >
+                          <source src={sample.results.clips[0].videoUrl} type="video/mp4" />
+                          お使いのブラウザは動画の再生に対応していません。
+                        </video>
+                      </div>
+                      <div className="sample-video-info">
+                        <h6>{sample.results.clips[0].title}</h6>
+                        <div className="video-stats">
+                          <span><FontAwesomeIcon icon={faClock} />{formatDuration(sample.results.clips[0].duration)}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="arrow-section">
-                <FontAwesomeIcon icon={faArrowRight} />
-                <span>AI分析・編集</span>
-              </div>
-              <div className="after-section">
-                <h4>After（切り抜き動画）</h4>
-                <div className="clips-grid">
-                  <div className="clip-item">
-                    <Image src="/images/thumb2.jpg" alt="切り抜き1" width={150} height={100} />
-                    <p>神プレイシーン<br />90秒</p>
-                  </div>
-                  <div className="clip-item">
-                    <Image src="/images/thumb3.jpg" alt="切り抜き2" width={150} height={100} />
-                    <p>面白リアクション<br />60秒</p>
-                  </div>
-                  <div className="clip-item">
-                    <Image src="/images/thumb4.jpg" alt="切り抜き3" width={150} height={100} />
-                    <p>攻略解説<br />120秒</p>
-                  </div>
+              
+              {/* 注文内容の詳細 */}
+              <div className="sample-order-details">
+                <h5>注文内容</h5>
+                <div className="order-details-summary">
+                  <span className="detail-item">
+                    <strong>フォーマット:</strong>
+                    {sample.orderDetails.format === 'default' && 'デフォルト'}
+                    {sample.orderDetails.format === 'separate' && '2分割'}
+                    {sample.orderDetails.format === 'zoom' && 'ズーム'}
+                    {sample.orderDetails.format === 'screen' && '画面キャプチャ'}
+                  </span>
+                  <span className="detail-item">
+                    <strong>品質:</strong>
+                    {sample.orderDetails.qualityOption === 'ai_only' && 'AIのみ'}
+                    {sample.orderDetails.qualityOption === 'human_review' && '人の目で確認'}
+                  </span>
+                  <span className="detail-item">
+                    <strong>優先クリップ長:</strong>
+                    {sample.orderDetails.preferLength === 0 && '自動'}
+                    {sample.orderDetails.preferLength === 1 && '〜30秒'}
+                    {sample.orderDetails.preferLength === 2 && '30秒〜60秒'}
+                    {sample.orderDetails.preferLength === 3 && '60秒〜90秒'}
+                    {sample.orderDetails.preferLength === 4 && '90秒〜3分'}
+                  </span>
+                  <span className="detail-item">
+                    <strong>字幕:</strong> {sample.orderDetails.subtitleSwitch ? 'あり' : 'なし'}
+                  </span>
+                  <span className="detail-item">
+                    <strong>タイトル:</strong> {sample.orderDetails.headlineSwitch ? 'あり' : 'なし'}
+                  </span>
                 </div>
                 <div className="result-stats">
-                  <p><FontAwesomeIcon icon={faChartLine} />再生数 5倍アップ</p>
-                  <p><FontAwesomeIcon icon={faHeart} />エンゲージメント率 300%向上</p>
+                  <p>切り抜き動画 {sample.results.totalClips}本作成</p>
                 </div>
               </div>
             </div>
-          </div>
-          */}
-
-          {/* 他のサンプルも同様にコメントアウト */}
-          {/* サンプル追加時は上記のコメントアウトを外して使用 */}
-        {/*
+          ))}
         </div>
-        */}
 
         <div className="sample-cta">
           <p className="action-btn"><Link href="/order">切り抜き動画を作成する</Link></p>
