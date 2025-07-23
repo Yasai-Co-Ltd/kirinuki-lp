@@ -96,8 +96,8 @@ async function getOrderVideosByPaymentIntentId(paymentIntentId: string) {
   }
 }
 
-// Google Cloud Storageから複数プロジェクトIDの動画ファイル一覧を取得
-async function getVideoFilesFromMultipleProjects(projectIds: number[]) {
+// Google Cloud Storageから複数プロジェクトIDの動画ファイル一覧を取得（グループ化対応）
+async function getVideoFilesFromMultipleProjects(projectIds: number[], orderInfo: any) {
   try {
     const { Storage } = require('@google-cloud/storage');
     
@@ -112,10 +112,16 @@ async function getVideoFilesFromMultipleProjects(projectIds: number[]) {
     }
 
     const bucket = storage.bucket(bucketName);
-    const allVideoFiles: any[] = [];
+    
+    // 元動画の情報を取得
+    const originalVideoTitles = orderInfo.videoTitles ? orderInfo.videoTitles.split(' | ') : [];
+    const originalVideoUrls = orderInfo.videoUrls ? orderInfo.videoUrls.split(' | ') : [];
+    
+    const videoGroups: any[] = [];
     
     // 各プロジェクトIDのフォルダから動画ファイルを取得
-    for (const projectId of projectIds) {
+    for (let i = 0; i < projectIds.length; i++) {
+      const projectId = projectIds[i];
       const prefix = `videos/project_${projectId}/`;
       console.log(`📁 プロジェクトフォルダを検索中: ${prefix}`);
       
@@ -142,14 +148,14 @@ async function getVideoFilesFromMultipleProjects(projectIds: number[]) {
 
               return {
                 id: `project_${projectId}_video_${index + 1}`,
-                title: metadata.metadata?.['original-title'] || file.name.split('/').pop()?.replace(/\.[^/.]+$/, '') || `動画 ${index + 1}`,
+                title: metadata.metadata?.['original-title'] || file.name.split('/').pop()?.replace(/\.[^/.]+$/, '') || `切り抜き動画 ${index + 1}`,
                 fileName: file.name.split('/').pop() || `video_${index + 1}.mp4`,
                 downloadUrl,
                 fileSize: formatFileSize(metadata.size || 0),
                 duration: metadata.metadata?.['duration'] || undefined,
                 viralScore: metadata.metadata?.['viral-score'] || undefined,
                 uploadedAt: metadata.timeCreated,
-                projectId: projectId, // プロジェクトIDを追加
+                projectId: projectId,
               };
             } catch (error) {
               console.error(`ファイル ${file.name} の処理エラー:`, error);
@@ -159,17 +165,41 @@ async function getVideoFilesFromMultipleProjects(projectIds: number[]) {
         );
 
         const validVideoFiles = videoFiles.filter(file => file !== null);
-        allVideoFiles.push(...validVideoFiles);
-        console.log(`📹 プロジェクト ${projectId}: ${validVideoFiles.length}個のファイルを取得`);
+        
+        // 元動画の情報と組み合わせてグループを作成
+        const originalTitle = originalVideoTitles[i] || `元動画 ${i + 1}`;
+        const originalUrl = originalVideoUrls[i] || '';
+        
+        videoGroups.push({
+          groupId: `group_${i + 1}`,
+          originalTitle,
+          originalUrl,
+          projectId,
+          videos: validVideoFiles,
+          videoCount: validVideoFiles.length
+        });
+        
+        console.log(`📹 プロジェクト ${projectId} (${originalTitle}): ${validVideoFiles.length}個のファイルを取得`);
         
       } catch (error) {
         console.error(`プロジェクト ${projectId} のファイル取得エラー:`, error);
         // エラーが発生しても他のプロジェクトの処理は続行
+        videoGroups.push({
+          groupId: `group_${i + 1}`,
+          originalTitle: originalVideoTitles[i] || `元動画 ${i + 1}`,
+          originalUrl: originalVideoUrls[i] || '',
+          projectId,
+          videos: [],
+          videoCount: 0,
+          error: 'ファイル取得エラー'
+        });
       }
     }
 
-    console.log(`📊 合計 ${allVideoFiles.length}個の動画ファイルを取得しました`);
-    return allVideoFiles;
+    const totalVideos = videoGroups.reduce((sum, group) => sum + group.videoCount, 0);
+    console.log(`📊 ${videoGroups.length}グループ、合計 ${totalVideos}個の動画ファイルを取得しました`);
+    
+    return videoGroups;
 
   } catch (error) {
     console.error('Google Cloud Storageからの動画ファイル取得エラー:', error);
@@ -226,10 +256,10 @@ export async function GET(
 
     console.log(`📋 ${projectIds.length}個のプロジェクトIDを取得: ${projectIds.join(', ')}`);
 
-    // 複数プロジェクトIDから動画ファイル一覧を取得
-    const videoFiles = await getVideoFilesFromMultipleProjects(projectIds);
+    // 複数プロジェクトIDから動画ファイル一覧を取得（グループ化）
+    const videoGroups = await getVideoFilesFromMultipleProjects(projectIds, orderInfo);
 
-    if (videoFiles.length === 0) {
+    if (videoGroups.length === 0) {
       console.log(`⚠️ 動画ファイルが見つかりません: ${paymentIntentId}`);
       return NextResponse.json(
         { error: '動画ファイルが見つかりません。サポートにお問い合わせください。' },
@@ -237,19 +267,21 @@ export async function GET(
       );
     }
 
-    console.log(`📹 ${videoFiles.length}個の動画ファイルを取得しました`);
+    const totalVideos = videoGroups.reduce((sum, group) => sum + group.videoCount, 0);
+    console.log(`📹 ${videoGroups.length}グループ、合計 ${totalVideos}個の動画ファイルを取得しました`);
 
     return NextResponse.json({
       success: true,
       paymentIntentId,
       customerName: orderInfo.customerName,
       customerEmail: orderInfo.customerEmail,
-      videos: videoFiles,
-      totalCount: videoFiles.length,
+      videoGroups: videoGroups,
+      totalCount: totalVideos,
+      groupCount: videoGroups.length,
       orderInfo: {
         videoTitles: orderInfo.videoTitles,
-        // videoChannels: orderInfo.videoChannels,
-        projectId: orderInfo.projectId,
+        videoUrls: orderInfo.videoUrls,
+        projectIds: projectIds,
       }
     });
 

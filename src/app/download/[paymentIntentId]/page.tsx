@@ -13,12 +13,25 @@ interface VideoFile {
   duration?: string;
   viralScore?: string;
   selected: boolean;
+  projectId?: number;
+}
+
+interface VideoGroup {
+  groupId: string;
+  originalTitle: string;
+  originalUrl: string;
+  projectId: number;
+  videos: VideoFile[];
+  videoCount: number;
+  error?: string;
 }
 
 interface DownloadPageData {
   customerName: string;
   paymentIntentId: string;
-  videos: VideoFile[];
+  videoGroups: VideoGroup[];
+  totalCount: number;
+  groupCount: number;
   status: 'loading' | 'ready' | 'error' | 'not_found';
   errorMessage?: string;
 }
@@ -30,7 +43,9 @@ export default function DownloadPage() {
   const [data, setData] = useState<DownloadPageData>({
     customerName: '',
     paymentIntentId: paymentIntentId,
-    videos: [],
+    videoGroups: [],
+    totalCount: 0,
+    groupCount: 0,
     status: 'loading'
   });
 
@@ -69,13 +84,21 @@ export default function DownloadPage() {
         return;
       }
 
+      // videoGroupsの各動画にselectedプロパティを追加
+      const videoGroupsWithSelection = result.videoGroups.map((group: any) => ({
+        ...group,
+        videos: group.videos.map((video: any) => ({
+          ...video,
+          selected: true // デフォルトで全て選択
+        }))
+      }));
+
       setData({
         customerName: result.customerName,
         paymentIntentId: result.paymentIntentId,
-        videos: result.videos.map((video: any) => ({
-          ...video,
-          selected: true // デフォルトで全て選択
-        })),
+        videoGroups: videoGroupsWithSelection,
+        totalCount: result.totalCount,
+        groupCount: result.groupCount,
         status: 'ready'
       });
 
@@ -93,23 +116,50 @@ export default function DownloadPage() {
   const toggleVideoSelection = (videoId: string) => {
     setData(prev => ({
       ...prev,
-      videos: prev.videos.map(video => 
-        video.id === videoId 
-          ? { ...video, selected: !video.selected }
-          : video
-      )
+      videoGroups: prev.videoGroups.map(group => ({
+        ...group,
+        videos: group.videos.map(video =>
+          video.id === videoId
+            ? { ...video, selected: !video.selected }
+            : video
+        )
+      }))
     }));
   };
 
   // 全選択/全解除
   const toggleAllSelection = () => {
-    const allSelected = data.videos.every(video => video.selected);
+    const allVideos = data.videoGroups.flatMap(group => group.videos);
+    const allSelected = allVideos.every(video => video.selected);
     setData(prev => ({
       ...prev,
-      videos: prev.videos.map(video => ({
-        ...video,
-        selected: !allSelected
+      videoGroups: prev.videoGroups.map(group => ({
+        ...group,
+        videos: group.videos.map(video => ({
+          ...video,
+          selected: !allSelected
+        }))
       }))
+    }));
+  };
+
+  // グループ内の全選択/全解除
+  const toggleGroupSelection = (groupId: string) => {
+    setData(prev => ({
+      ...prev,
+      videoGroups: prev.videoGroups.map(group => {
+        if (group.groupId === groupId) {
+          const allSelected = group.videos.every(video => video.selected);
+          return {
+            ...group,
+            videos: group.videos.map(video => ({
+              ...video,
+              selected: !allSelected
+            }))
+          };
+        }
+        return group;
+      })
     }));
   };
 
@@ -163,7 +213,7 @@ export default function DownloadPage() {
 
   // 選択された動画をまとめてダウンロード
   const downloadSelectedVideos = async () => {
-    const selectedVideos = data.videos.filter(video => video.selected);
+    const selectedVideos = data.videoGroups.flatMap(group => group.videos).filter(video => video.selected);
     
     if (selectedVideos.length === 0) {
       alert('ダウンロードする動画を選択してください。');
@@ -261,7 +311,8 @@ export default function DownloadPage() {
     );
   }
 
-  const selectedCount = data.videos.filter(video => video.selected).length;
+  const selectedCount = data.videoGroups.flatMap(group => group.videos).filter(video => video.selected).length;
+  const allVideos = data.videoGroups.flatMap(group => group.videos);
 
   return (
     <Layout>
@@ -283,14 +334,15 @@ export default function DownloadPage() {
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-500">動画数</p>
-                <p className="text-2xl font-bold text-blue-600">{data.videos.length}本</p>
+                <p className="text-2xl font-bold text-blue-600">{data.totalCount}本</p>
+                <p className="text-xs text-gray-400">{data.groupCount}つの元動画から</p>
               </div>
             </div>
           </div>
 
-          {/* 動画リスト */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
+          {/* 全体操作 */}
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">
                 📹 完成動画一覧
               </h2>
@@ -299,54 +351,98 @@ export default function DownloadPage() {
                   onClick={toggleAllSelection}
                   className="text-sm text-blue-600 hover:text-blue-700"
                 >
-                  {data.videos.every(video => video.selected) ? '全て解除' : '全て選択'}
+                  {allVideos.every(video => video.selected) ? '全て解除' : '全て選択'}
                 </button>
                 <span className="text-sm text-gray-500">
                   {selectedCount}本選択中
                 </span>
               </div>
             </div>
+          </div>
 
-            <div className="space-y-3">
-              {data.videos.map((video) => (
-                <div
-                  key={video.id}
-                  className={`border rounded-lg p-4 transition-colors ${
-                    video.selected 
-                      ? 'border-blue-200 bg-blue-50' 
-                      : 'border-gray-200 bg-white'
-                  }`}
-                >
+          {/* 動画グループリスト */}
+          <div className="space-y-6">
+            {data.videoGroups.map((group) => (
+              <div key={group.groupId} className="bg-white rounded-lg shadow-sm p-6">
+                {/* グループヘッダー */}
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                      🎥 {group.originalTitle}
+                    </h3>
+                    {group.originalUrl && (
+                      <a
+                        href={group.originalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-700 underline"
+                      >
+                        元動画を見る
+                      </a>
+                    )}
+                  </div>
                   <div className="flex items-center gap-4">
-                    <input
-                      type="checkbox"
-                      checked={video.selected}
-                      onChange={() => toggleVideoSelection(video.id)}
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                    />
-                    
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 mb-1">
-                        {video.title}
-                      </h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span>📁 {video.fileName}</span>
-                        {video.fileSize && <span>📊 {video.fileSize}</span>}
-                        {video.duration && <span>⏱️ {video.duration}</span>}
-                        {video.viralScore && <span>🔥 スコア: {video.viralScore}/10</span>}
-                      </div>
-                    </div>
-
                     <button
-                      onClick={() => downloadSingleVideo(video)}
-                      className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                      onClick={() => toggleGroupSelection(group.groupId)}
+                      className="text-sm text-blue-600 hover:text-blue-700"
                     >
-                      個別DL
+                      {group.videos.every(video => video.selected) ? 'グループ解除' : 'グループ選択'}
                     </button>
+                    <span className="text-sm text-gray-500">
+                      {group.videos.filter(video => video.selected).length}/{group.videoCount}本選択
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
+
+                {/* グループ内動画リスト */}
+                {group.error ? (
+                  <div className="text-center py-4 text-red-600">
+                    ⚠️ {group.error}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {group.videos.map((video) => (
+                      <div
+                        key={video.id}
+                        className={`border rounded-lg p-4 transition-colors ${
+                          video.selected
+                            ? 'border-blue-200 bg-blue-50'
+                            : 'border-gray-200 bg-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <input
+                            type="checkbox"
+                            checked={video.selected}
+                            onChange={() => toggleVideoSelection(video.id)}
+                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                          />
+                          
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900 mb-1">
+                              {video.title}
+                            </h4>
+                            <div className="flex items-center gap-4 text-sm text-gray-500">
+                              <span>📁 {video.fileName}</span>
+                              {video.fileSize && <span>📊 {video.fileSize}</span>}
+                              {video.duration && <span>⏱️ {video.duration}</span>}
+                              {video.viralScore && <span>🔥 スコア: {video.viralScore}/10</span>}
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => downloadSingleVideo(video)}
+                            className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                          >
+                            個別DL
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
 
           {/* ダウンロードボタン */}
