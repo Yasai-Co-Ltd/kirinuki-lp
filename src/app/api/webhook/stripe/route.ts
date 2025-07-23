@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { sendOrderConfirmationEmails, OrderEmailData } from '@/lib/email';
 import { saveOrderToSheet } from '@/lib/sheets';
+import { extractVideoId, getVideoInfo } from '@/lib/youtube';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-06-30.basil',
@@ -94,7 +95,30 @@ async function handleOrderCompletion(paymentIntent: Stripe.PaymentIntent) {
   
   // メタデータから注文情報を構築
   const videoUrls = metadata.videoUrls ? JSON.parse(metadata.videoUrls) : [metadata.videoUrl];
-  const videoInfos = metadata.videoInfos ? JSON.parse(metadata.videoInfos) : [];
+  
+  // 動画URLから完全な動画情報を再取得
+  const videoInfos = [];
+  for (const videoUrl of videoUrls) {
+    const videoId = extractVideoId(videoUrl);
+    if (videoId) {
+      const videoInfo = await getVideoInfo(videoId);
+      if (videoInfo) {
+        videoInfos.push(videoInfo);
+      } else {
+        // 動画情報が取得できない場合はデフォルト値を使用
+        videoInfos.push({
+          id: videoId,
+          title: 'タイトル取得中',
+          duration: 0,
+          thumbnailUrl: '',
+          channelTitle: 'チャンネル名取得中'
+        });
+      }
+    }
+  }
+  
+  // 圧縮された設定を展開
+  const settings = metadata.settings ? metadata.settings.split(',') : ['0', '1', '0', '0'];
   
   const orderEmailData: OrderEmailData = {
     paymentIntentId: paymentIntent.id,
@@ -104,13 +128,13 @@ async function handleOrderCompletion(paymentIntent: Stripe.PaymentIntent) {
     videoInfos: videoInfos,
     format: (metadata.format as 'default' | 'separate' | 'zoom') || 'default',
     qualityOption: (metadata.qualityOption as 'ai_only' | 'human_review') || 'ai_only',
-    preferLength: parseInt(metadata.preferLength || '0'),
-    aspectRatio: parseInt(metadata.aspectRatio || '1'),
-    subtitleSwitch: parseInt(metadata.subtitleSwitch || '1'),
-    headlineSwitch: parseInt(metadata.headlineSwitch || '1'),
-    specialRequests: metadata.specialRequests,
+    preferLength: parseInt(settings[0] || '0'),
+    aspectRatio: parseInt(settings[1] || '1'),
+    subtitleSwitch: parseInt(settings[2] || '0'),
+    headlineSwitch: parseInt(settings[3] || '0'),
+    specialRequests: '', // メタデータから除外したため空文字
     amount: paymentIntent.amount, // 日本円の場合は円単位でそのまま使用
-    estimatedDeliveryDays: parseInt(metadata.estimatedDeliveryDays || '3'),
+    estimatedDeliveryDays: parseInt(metadata.deliveryDays || '3'),
     createdAt: new Date(),
   };
 

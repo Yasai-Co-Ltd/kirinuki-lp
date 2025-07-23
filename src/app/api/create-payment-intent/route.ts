@@ -31,6 +31,22 @@ export async function POST(request: NextRequest) {
     // 動画情報を取得（リクエストデータから直接取得）
     const videoInfos = requestData.videoInfos || [];
     
+    // 動画数制限チェック（Stripeメタデータ制限対策）
+    const MAX_VIDEOS = 3; // 安全な上限
+    if (requestData.videos.length > MAX_VIDEOS) {
+      return NextResponse.json(
+        { error: `一度に注文できる動画数は${MAX_VIDEOS}本までです` },
+        { status: 400 }
+      );
+    }
+    
+    // 動画情報を必要最小限に削減（メタデータの文字数制限対策）
+    const compactVideoInfos = videoInfos.map(info => ({
+      id: info.id,
+      title: info.title.length > 30 ? info.title.substring(0, 30) + '...' : info.title, // さらに短縮
+      duration: info.duration
+    }));
+    
     // トータル分数を計算
     const totalMinutes = Math.ceil(requestData.videoDurations.reduce((sum, duration) => sum + duration, 0) / 60);
     const videoCount = requestData.videos.length;
@@ -44,20 +60,16 @@ export async function POST(request: NextRequest) {
         customerName: requestData.customerName,
         customerEmail: requestData.customerEmail,
         videoUrls: JSON.stringify(videoUrls), // 複数URLをJSON形式で保存
-        videoInfos: JSON.stringify(videoInfos), // 動画情報をJSON形式で保存
         videoCount: videoCount.toString(),
         totalDurationMinutes: totalMinutes.toString(),
         format: requestData.format,
         qualityOption: requestData.qualityOption,
         videoDurations: JSON.stringify(requestData.videoDurations),
-        specialRequests: requestData.specialRequests || '',
-        // 切り抜き設定
-        preferLength: requestData.preferLength?.toString() || '0',
-        aspectRatio: requestData.aspectRatio?.toString() || '1',
-        subtitleSwitch: requestData.subtitleSwitch?.toString() || '0',
-        headlineSwitch: requestData.headlineSwitch?.toString() || '0',
+        // 切り抜き設定を圧縮（4つの値を1つの文字列に）
+        settings: `${requestData.preferLength || 0},${requestData.aspectRatio || 1},${requestData.subtitleSwitch || 0},${requestData.headlineSwitch || 0}`,
         // 見積もり情報
-        estimatedDeliveryDays: estimate.estimatedDeliveryDays.toString(),
+        deliveryDays: estimate.estimatedDeliveryDays.toString(),
+        // 特別要望は文字数制限のため除外（必要に応じて別途保存）
       },
       receipt_email: requestData.customerEmail,
       description: `切り抜き動画制作 - ${videoCount}本 (合計${totalMinutes}分) - ${

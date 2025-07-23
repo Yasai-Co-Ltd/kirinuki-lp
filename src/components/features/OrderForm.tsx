@@ -875,17 +875,28 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                 setVideos(newVideos);
                 setValue('videos', newVideos);
               }}
-              className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              disabled={videos.length >= 3}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                videos.length >= 3
+                  ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                  : 'text-blue-600 hover:bg-blue-50'
+              }`}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              動画を追加
+              動画を追加 ({videos.length}/3)
             </button>
             
-            {videos.length > 1 && (
+            {videos.length > 1 && videos.length < 3 && (
               <p className="text-sm text-blue-700">
                 複数動画の一括制作で効率的に！
+              </p>
+            )}
+            
+            {videos.length >= 3 && (
+              <p className="text-sm text-orange-600">
+                最大3本まで同時注文可能です
               </p>
             )}
           </div>
@@ -900,7 +911,8 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                 <p className="font-semibold mb-1">動画の制限について</p>
                 <p>・動画の長さは<strong>{ADMIN_CONFIG.videoLimits.minDurationMinutes}分以上</strong>である必要があります</p>
                 <p>・YouTube動画のURLを入力してください</p>
-                <p>・複数の動画を一度に注文することができます</p>
+                <p>・一度に注文できる動画数は<strong>最大3本</strong>までです</p>
+                <p>・複数の動画を一括制作で効率的に処理できます</p>
               </div>
             </div>
           </div>
