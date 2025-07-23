@@ -139,9 +139,9 @@ async function processVideoClip(video: VizardVideoClip, payload: VizardWebhookPa
     let gcsUrl: string | null = null;
     try {
       const fileName = generateSafeFileName(video.title, 'mp4', video.videoId);
-      // TODO: projectIdから該当するpaymentIntentIdを取得する必要がある
-      const paymentIntentId = `project_${payload.projectId}`;
-      gcsUrl = await saveVideoToGCS(video.videoUrl, fileName, paymentIntentId);
+      // プロジェクトIDベースのフォルダ構造を使用
+      const projectFolderName = `project_${payload.projectId}`;
+      gcsUrl = await saveVideoToGCS(video.videoUrl, fileName, projectFolderName);
       console.log(`✅ 動画クリップをGoogle Cloud Storageに保存しました: ${gcsUrl}`);
     } catch (storageError) {
       console.error('❌ Google Cloud Storage保存エラー:', storageError);

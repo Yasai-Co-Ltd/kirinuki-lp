@@ -439,11 +439,12 @@ export async function recordVideoGenerationResult(
   }
 }
 
-// projectIdとpaymentIntentIdの関連付けを記録
+// projectIdとpaymentIntentIdの関連付けを記録（複数プロジェクトID対応）
 export async function recordProjectIdMapping(
   rowIndex: number,
   projectId: number,
-  paymentIntentId: string
+  paymentIntentId: string,
+  append: boolean = false
 ): Promise<void> {
   if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
     throw new Error('Google Sheets スプレッドシートIDが設定されていません');
@@ -452,17 +453,40 @@ export async function recordProjectIdMapping(
   try {
     const sheets = await getSheetsClient();
 
-    // V列にprojectIdを記録
+    let projectIds: string[] = [];
+
+    if (append) {
+      // 既存のプロジェクトIDを取得
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+        range: `U${rowIndex}`,
+      });
+
+      if (response.data.values?.[0]?.[0]) {
+        // 既存のプロジェクトIDをパース（パイプ区切り）
+        projectIds = response.data.values[0][0].split('|').map((id: string) => id.trim()).filter((id: string) => id);
+      }
+    }
+
+    // 新しいプロジェクトIDを追加（重複チェック）
+    const newProjectIdStr = projectId.toString();
+    if (!projectIds.includes(newProjectIdStr)) {
+      projectIds.push(newProjectIdStr);
+    }
+
+    // パイプ区切りで保存
+    const projectIdValue = projectIds.join(' | ');
     await sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
       range: `U${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[projectId.toString()]],
+        values: [[projectIdValue]],
       },
     });
 
-    console.log(`行${rowIndex}にprojectId ${projectId}を記録しました (paymentIntentId: ${paymentIntentId})`);
+    console.log(`行${rowIndex}にprojectId ${projectId}を${append ? '追加' : '記録'}しました (paymentIntentId: ${paymentIntentId})`);
+    console.log(`現在のプロジェクトID: ${projectIdValue}`);
 
   } catch (error) {
     console.error('projectIdマッピングの記録中にエラーが発生しました:', error);
@@ -514,6 +538,56 @@ export async function findPaymentIntentIdByProjectId(projectId: number): Promise
 
   } catch (error) {
     console.error('projectIdによる検索中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+// paymentIntentIdに関連する全てのプロジェクトIDを取得（パイプ区切り対応）
+export async function findAllProjectIdsByPaymentIntentId(paymentIntentId: string): Promise<number[]> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // スプレッドシートの全データを取得
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: 'A:U', // A列からU列まで
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length <= 1) {
+      return [];
+    }
+
+    const projectIds: number[] = [];
+
+    // ヘッダー行をスキップして検索
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const storedPaymentIntentId = row[1]; // B列（決済ID）
+      const storedProjectIds = row[20]; // U列（プロジェクトID）
+      
+      if (storedPaymentIntentId === paymentIntentId && storedProjectIds) {
+        // パイプ区切りのプロジェクトIDを分割して処理
+        const projectIdStrings = storedProjectIds.split('|').map((id: string) => id.trim()).filter((id: string) => id);
+        
+        for (const projectIdStr of projectIdStrings) {
+          const projectId = parseInt(projectIdStr);
+          if (!isNaN(projectId) && !projectIds.includes(projectId)) {
+            projectIds.push(projectId);
+          }
+        }
+      }
+    }
+
+    console.log(`paymentIntentId ${paymentIntentId} に関連するプロジェクトID: ${projectIds.join(', ')}`);
+    return projectIds;
+
+  } catch (error) {
+    console.error('paymentIntentIdによるプロジェクトID検索中にエラーが発生しました:', error);
     throw error;
   }
 }

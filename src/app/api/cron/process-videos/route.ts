@@ -47,9 +47,10 @@ export async function GET(request: NextRequest) {
         const results = [];
         
         // 各動画URLに対してVizard.ai APIを呼び出し
-        for (const videoUrl of row.videoUrls) {
+        for (let index = 0; index < row.videoUrls.length; index++) {
+          const videoUrl = row.videoUrls[index];
           try {
-            console.log(`🎥 動画生成開始: ${videoUrl}`);
+            console.log(`🎥 動画生成開始 (${index + 1}/${row.videoUrls.length}): ${videoUrl}`);
             console.log(`📋 フォームデータ:`, row.formData);
 
             // フォームデータからVizardリクエストを生成
@@ -65,7 +66,9 @@ export async function GET(request: NextRequest) {
             const generationResult: VizardCreateProjectResponse = await createVizardProject(vizardRequest);
 
             // projectIdとpaymentIntentIdの関連付けを記録
-            await recordProjectIdMapping(row.rowIndex, generationResult.projectId, row.paymentIntentId);
+            // 最初の動画は新規作成、2つ目以降は追加モード
+            const isAppend = index > 0;
+            await recordProjectIdMapping(row.rowIndex, generationResult.projectId, row.paymentIntentId, isAppend);
 
             results.push({
               originalUrl: videoUrl,
@@ -74,7 +77,7 @@ export async function GET(request: NextRequest) {
               downloadUrl: generationResult.shareLink,
             });
 
-            console.log(`✅ 動画生成リクエスト送信完了: プロジェクトID ${generationResult.projectId}`);
+            console.log(`✅ 動画生成リクエスト送信完了: プロジェクトID ${generationResult.projectId} (${isAppend ? '追加' : '新規'})`);
 
           } catch (videoError) {
             console.error(`❌ 動画生成エラー (${videoUrl}):`, videoError);

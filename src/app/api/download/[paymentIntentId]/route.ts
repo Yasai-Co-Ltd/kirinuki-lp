@@ -96,8 +96,8 @@ async function getOrderVideosByPaymentIntentId(paymentIntentId: string) {
   }
 }
 
-// Google Cloud Storageから動画ファイル一覧を取得
-async function getVideoFilesFromGCS(paymentIntentId: string, projectId: string) {
+// Google Cloud Storageから複数プロジェクトIDの動画ファイル一覧を取得
+async function getVideoFilesFromMultipleProjects(projectIds: number[]) {
   try {
     const { Storage } = require('@google-cloud/storage');
     
@@ -112,47 +112,64 @@ async function getVideoFilesFromGCS(paymentIntentId: string, projectId: string) 
     }
 
     const bucket = storage.bucket(bucketName);
-    // 実際のフォルダ構造: project_[projectId]/
-    const prefix = `videos/project_${projectId}/`;
+    const allVideoFiles: any[] = [];
     
-    const [files] = await bucket.getFiles({ prefix });
-    
-    const videoFiles = await Promise.all(
-      files.map(async (file: any, index: number) => {
-        try {
-          // ファイルのメタデータを取得
-          const [metadata] = await file.getMetadata();
-          
-          // 署名付きURLを生成（24時間有効）
-          const downloadUrl = await generateSignedDownloadUrl(file.name, 86400);
-          
-          // ファイルサイズを人間が読みやすい形式に変換
-          const formatFileSize = (bytes: number) => {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-          };
+    // 各プロジェクトIDのフォルダから動画ファイルを取得
+    for (const projectId of projectIds) {
+      const prefix = `videos/project_${projectId}/`;
+      console.log(`📁 プロジェクトフォルダを検索中: ${prefix}`);
+      
+      try {
+        const [files] = await bucket.getFiles({ prefix });
+        
+        const videoFiles = await Promise.all(
+          files.map(async (file: any, index: number) => {
+            try {
+              // ファイルのメタデータを取得
+              const [metadata] = await file.getMetadata();
+              
+              // 署名付きURLを生成（24時間有効）
+              const downloadUrl = await generateSignedDownloadUrl(file.name, 86400);
+              
+              // ファイルサイズを人間が読みやすい形式に変換
+              const formatFileSize = (bytes: number) => {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+              };
 
-          return {
-            id: `video_${index + 1}`,
-            title: metadata.metadata?.['original-title'] || file.name.split('/').pop()?.replace(/\.[^/.]+$/, '') || `動画 ${index + 1}`,
-            fileName: file.name.split('/').pop() || `video_${index + 1}.mp4`,
-            downloadUrl,
-            fileSize: formatFileSize(metadata.size || 0),
-            duration: metadata.metadata?.['duration'] || undefined,
-            viralScore: metadata.metadata?.['viral-score'] || undefined,
-            uploadedAt: metadata.timeCreated,
-          };
-        } catch (error) {
-          console.error(`ファイル ${file.name} の処理エラー:`, error);
-          return null;
-        }
-      })
-    );
+              return {
+                id: `project_${projectId}_video_${index + 1}`,
+                title: metadata.metadata?.['original-title'] || file.name.split('/').pop()?.replace(/\.[^/.]+$/, '') || `動画 ${index + 1}`,
+                fileName: file.name.split('/').pop() || `video_${index + 1}.mp4`,
+                downloadUrl,
+                fileSize: formatFileSize(metadata.size || 0),
+                duration: metadata.metadata?.['duration'] || undefined,
+                viralScore: metadata.metadata?.['viral-score'] || undefined,
+                uploadedAt: metadata.timeCreated,
+                projectId: projectId, // プロジェクトIDを追加
+              };
+            } catch (error) {
+              console.error(`ファイル ${file.name} の処理エラー:`, error);
+              return null;
+            }
+          })
+        );
 
-    return videoFiles.filter(file => file !== null);
+        const validVideoFiles = videoFiles.filter(file => file !== null);
+        allVideoFiles.push(...validVideoFiles);
+        console.log(`📹 プロジェクト ${projectId}: ${validVideoFiles.length}個のファイルを取得`);
+        
+      } catch (error) {
+        console.error(`プロジェクト ${projectId} のファイル取得エラー:`, error);
+        // エラーが発生しても他のプロジェクトの処理は続行
+      }
+    }
+
+    console.log(`📊 合計 ${allVideoFiles.length}個の動画ファイルを取得しました`);
+    return allVideoFiles;
 
   } catch (error) {
     console.error('Google Cloud Storageからの動画ファイル取得エラー:', error);
@@ -195,8 +212,22 @@ export async function GET(
 
     console.log(`✅ 注文情報を取得しました: ${orderInfo.customerName}様 (${orderInfo.videoCount}本)`);
 
-    // Google Cloud Storageから動画ファイル一覧を取得
-    const videoFiles = await getVideoFilesFromGCS(paymentIntentId, orderInfo.projectId);
+    // paymentIntentIdに関連する全てのプロジェクトIDを取得
+    const { findAllProjectIdsByPaymentIntentId } = await import('@/lib/sheets');
+    const projectIds = await findAllProjectIdsByPaymentIntentId(paymentIntentId);
+    
+    if (projectIds.length === 0) {
+      console.log(`⚠️ プロジェクトIDが見つかりません: ${paymentIntentId}`);
+      return NextResponse.json(
+        { error: 'プロジェクトIDが見つかりません。動画の処理が完了していない可能性があります。' },
+        { status: 404 }
+      );
+    }
+
+    console.log(`📋 ${projectIds.length}個のプロジェクトIDを取得: ${projectIds.join(', ')}`);
+
+    // 複数プロジェクトIDから動画ファイル一覧を取得
+    const videoFiles = await getVideoFilesFromMultipleProjects(projectIds);
 
     if (videoFiles.length === 0) {
       console.log(`⚠️ 動画ファイルが見つかりません: ${paymentIntentId}`);
