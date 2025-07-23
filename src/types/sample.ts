@@ -35,6 +35,8 @@ export interface ProductionSample {
   results: {
     totalClips: number;
     clips: SampleVideo[];
+    totalViews?: number; // 総再生数（オプショナル）
+    engagementRate?: number; // エンゲージメント率（オプショナル）
   };
   
   // 制作統計

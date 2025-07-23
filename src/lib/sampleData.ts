@@ -23,6 +23,8 @@ export const sampleData: ProductionSample[] = [
     },
     results: {
       totalClips: 32,
+      totalViews: 125000,
+      engagementRate: 8.5,
       clips: [
         {
           id: 'clip-001-1',
@@ -63,6 +65,8 @@ export const sampleData: ProductionSample[] = [
     },
     results: {
       totalClips: 4,
+      totalViews: 45000,
+      engagementRate: 6.2,
       clips: [
         {
           id: 'clip-002-1',
@@ -103,6 +107,8 @@ export const sampleData: ProductionSample[] = [
     },
     results: {
       totalClips: 19,
+      totalViews: 78000,
+      engagementRate: 7.8,
       clips: [
         {
           id: 'clip-003-1',
