@@ -372,7 +372,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                 注文動画 ({videoInfos.length}本・合計{formatDuration(videoInfos.reduce((sum, info) => sum + info.duration, 0))})
               </h5>
               <div className="space-y-4">
-                {videoInfos.map((videoInfo, index) => (
+                {videoInfos.slice(0, 3).map((videoInfo, index) => (
                   <div key={index} className="flex flex-col lg:flex-row gap-4 p-4 bg-gray-50 rounded-lg">
                     <img
                       src={videoInfo.thumbnailUrl}
@@ -386,6 +386,11 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                     </div>
                   </div>
                 ))}
+                {videoInfos.length > 3 && (
+                  <div className="p-4 bg-gray-50 rounded-lg text-center">
+                    <p className="text-gray-500 text-sm">他{videoInfos.length - 3}本</p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -624,7 +629,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                 注文動画 ({videoInfos.length}本・合計{Math.ceil(videoInfos.reduce((sum, info) => sum + info.duration, 0) / 60)}分)
               </h4>
               <div className="space-y-2">
-                {videoInfos.slice(0, 2).map((videoInfo, index) => (
+                {videoInfos.slice(0, 3).map((videoInfo, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <img
                       src={videoInfo.thumbnailUrl}
@@ -637,8 +642,8 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                     </div>
                   </div>
                 ))}
-                {videoInfos.length > 2 && (
-                  <p className="text-gray-500 text-xs">他{videoInfos.length - 2}本</p>
+                {videoInfos.length > 3 && (
+                  <p className="text-gray-500 text-xs">他{videoInfos.length - 3}本</p>
                 )}
               </div>
               <div className="mt-3 pt-3 border-t border-gray-200">
