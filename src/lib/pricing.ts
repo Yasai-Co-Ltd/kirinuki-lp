@@ -9,7 +9,7 @@ const PRICING_CONFIG = {
     human_review: ADMIN_CONFIG.pricing.humanReviewSurcharge, // 人の目で確認: 管理設定から取得
   },
   minimumCharge: 1000, // 最低料金
-  maxFreeMinutes: 5,   // 5分以下は最低料金
+  maxFreeMinutes: 10,  // 10分未満は最低料金
 };
 
 export function calculateEstimate(
@@ -21,9 +21,9 @@ export function calculateEstimate(
   const durations = Array.isArray(durationSeconds) ? durationSeconds : [durationSeconds];
   const videoCount = durations.length;
   
-  // 各動画の分数を計算
-  const durationMinutesArray = durations.map(seconds => Math.ceil(seconds / 60));
-  const totalVideoDurationMinutes = durationMinutesArray.reduce((sum, minutes) => sum + minutes, 0);
+  // 合計秒数を計算してから分数に変換（切り上げ）
+  const totalDurationSeconds = durations.reduce((sum, seconds) => sum + seconds, 0);
+  const totalVideoDurationMinutes = Math.ceil(totalDurationSeconds / 60);
   
   // 料金計算（合計金額に最低料金を適用）
   const basePricePerMinute = PRICING_CONFIG.basePricePerMinute;
@@ -103,7 +103,7 @@ export function getPricingBreakdown(
       label: `最低料金保証`,
       amount: PRICING_CONFIG.minimumCharge - calculatedTotalPrice,
       isMinimumCharge: true,
-      note: `${PRICING_CONFIG.maxFreeMinutes}分以内は最低${formatPrice(PRICING_CONFIG.minimumCharge)}となります`
+      note: `${PRICING_CONFIG.maxFreeMinutes}分未満は最低${formatPrice(PRICING_CONFIG.minimumCharge)}となります`
     });
   } else {
     breakdown.push({

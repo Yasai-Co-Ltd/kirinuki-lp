@@ -369,7 +369,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
             {/* 動画情報 */}
             <div className="bg-white rounded-xl p-6 border border-blue-200">
               <h5 className="font-semibold text-blue-900 mb-4">
-                注文動画 ({videoInfos.length}本・合計{videoInfos.reduce((sum, info) => sum + Math.ceil(info.duration / 60), 0)}分)
+                注文動画 ({videoInfos.length}本・合計{formatDuration(videoInfos.reduce((sum, info) => sum + info.duration, 0))})
               </h5>
               <div className="space-y-4">
                 {videoInfos.map((videoInfo, index) => (
