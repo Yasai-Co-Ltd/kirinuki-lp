@@ -573,9 +573,10 @@ export interface VideoCompletionEmailData {
   customerName: string;
   customerEmail: string;
   paymentIntentId: string;
-  videoTitle: string;
+  videoTitles: string[];
+  videoUrls: string[];
   downloadUrl: string;
-  originalUrl: string;
+  totalVideos: number;
 }
 
 // 顧客向け動画完了通知メールを送信
@@ -586,10 +587,23 @@ export async function sendVideoCompletionEmail(data: VideoCompletionEmailData): 
     throw new Error(error);
   }
 
+  // 動画情報のHTMLを生成
+  const videoListHtml = data.videoTitles.length > 0
+    ? data.videoTitles.map((title, index) => {
+        const url = data.videoUrls[index] || '';
+        return `
+          <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; background-color: #f9fafb;">
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #111827; line-height: 1.4;">${title || `動画 ${index + 1}`}</h4>
+            ${url ? `<p style="margin: 0; font-size: 12px;"><a href="${url}" target="_blank" style="color: #3b82f6; text-decoration: none;">元動画を確認する</a></p>` : ''}
+          </div>
+        `;
+      }).join('')
+    : '<p style="color: #6b7280; font-style: italic;">動画情報を取得中です...</p>';
+
   const msg = {
     to: data.customerEmail,
     from: process.env.FROM_EMAIL!,
-    subject: '【切り抜き動画制作】動画が完成しました！',
+    subject: `【切り抜き動画制作】${data.totalVideos > 1 ? `${data.totalVideos}本の` : ''}動画が完成しました！`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -601,28 +615,22 @@ export async function sendVideoCompletionEmail(data: VideoCompletionEmailData): 
       <body style="font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
         
         <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
-          <h1 style="margin: 0; font-size: 24px; font-weight: bold;">🎉 動画が完成しました！</h1>
+          <h1 style="margin: 0; font-size: 24px; font-weight: bold;">🎉 ${data.totalVideos > 1 ? `${data.totalVideos}本の` : ''}動画が完成しました！</h1>
           <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">切り抜き動画の制作が完了いたしました</p>
         </div>
 
         <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
           <h2 style="margin: 0 0 20px 0; font-size: 18px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 8px;">
-            📹 完成動画情報
+            📹 完成動画情報 ${data.totalVideos > 1 ? `(${data.totalVideos}本)` : ''}
           </h2>
           
-          <div style="background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-            <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1f2937;">動画タイトル</h3>
-            <p style="margin: 0 0 16px 0; font-size: 14px; color: #374151; background-color: #f9fafb; padding: 12px; border-radius: 6px;">${data.videoTitle}</p>
-            
-            <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1f2937;">元動画URL</h3>
-            <p style="margin: 0; font-size: 14px;">
-              <a href="${data.originalUrl}" target="_blank" style="color: #3b82f6; text-decoration: none;">元動画を確認する</a>
-            </p>
+          <div style="margin-bottom: 20px;">
+            ${videoListHtml}
           </div>
 
           <div style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: white; border-radius: 8px; padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 16px 0; font-size: 18px;">📥 動画をダウンロード</h3>
-            <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/download/${data.paymentIntentId}" target="_blank" style="display: inline-block; background-color: white; color: #1e40af; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 16px;">
+            <h3 style="margin: 0 0 16px 0; font-size: 18px;">📥 ${data.totalVideos > 1 ? '全ての' : ''}動画をダウンロード</h3>
+            <a href="${data.downloadUrl}" target="_blank" style="display: inline-block; background-color: white; color: #1e40af; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 16px;">
               ダウンロードページを開く
             </a>
           </div>
@@ -631,7 +639,7 @@ export async function sendVideoCompletionEmail(data: VideoCompletionEmailData): 
         <div style="background-color: #ecfdf5; border: 1px solid #10b981; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
           <h2 style="margin: 0 0 16px 0; font-size: 18px; color: #065f46;">✅ ご利用について</h2>
           <ul style="margin: 0; padding-left: 20px; color: #047857;">
-            <li style="margin-bottom: 8px;">動画は高品質でダウンロードいただけます</li>
+            <li style="margin-bottom: 8px;">${data.totalVideos > 1 ? '全ての' : ''}動画は高品質でダウンロードいただけます</li>
             <li style="margin-bottom: 8px;">SNSでの投稿や配信にご自由にお使いください</li>
             <li style="margin-bottom: 8px;">ダウンロードリンクは30日間有効です</li>
             <li>追加のご要望がございましたらお気軽にお問い合わせください</li>
@@ -658,7 +666,7 @@ export async function sendVideoCompletionEmail(data: VideoCompletionEmailData): 
 
   try {
     await sgMail.send(msg);
-    console.log('動画完了通知メールを送信しました:', data.customerEmail);
+    console.log(`動画完了通知メールを送信しました (${data.totalVideos}本):`, data.customerEmail);
   } catch (error) {
     console.error('動画完了通知メール送信エラー:', error);
     throw error;

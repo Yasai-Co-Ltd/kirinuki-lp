@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { VizardWebhookPayload, VizardVideoClip } from '@/lib/vizard';
-import { updateRowStatus, getPendingVideoUrls, findPaymentIntentIdByProjectId, findVideoInfoByProjectId } from '@/lib/sheets';
+import { updateRowStatus, getPendingVideoUrls, findPaymentIntentIdByProjectId, findVideoInfoByProjectId, recordCompletedProjectId, checkAllProjectsCompleted } from '@/lib/sheets';
 import { sendVideoCompletionEmail, VideoCompletionEmailData } from '@/lib/email';
 import { saveVideoToGCS, generateSafeFileName } from '@/lib/storage';
 
@@ -171,41 +171,69 @@ async function processProjectCompletion(payload: VizardWebhookPayload): Promise<
     console.log(`📋 該当行を特定しました: 行${videoInfo.rowIndex} (${videoInfo.customerName}様)`);
     console.log(`📹 動画情報: タイトル数=${videoInfo.videoTitles.length}, URL数=${videoInfo.videoUrls.length}`);
 
-    // 顧客にメール通知を送信
+    // 完了したプロジェクトIDを記録
     try {
-      // 動画タイトルを結合（複数ある場合は最初のものを使用、なければデフォルト）
-      const videoTitle = videoInfo.videoTitles.length > 0
-        ? videoInfo.videoTitles[0]
-        : `切り抜き動画 (${payload.videos.length}本)`;
-      
-      // 元動画URLを結合（複数ある場合は最初のものを使用）
-      const originalUrl = videoInfo.videoUrls.length > 0
-        ? videoInfo.videoUrls[0]
-        : '';
-
-      const emailData: VideoCompletionEmailData = {
-        customerName: videoInfo.customerName,
-        customerEmail: videoInfo.customerEmail,
-        paymentIntentId: videoInfo.paymentIntentId,
-        videoTitle: videoTitle,
-        downloadUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/download/${videoInfo.paymentIntentId}`,
-        originalUrl: originalUrl,
-      };
-
-      await sendVideoCompletionEmail(emailData);
-      console.log('✅ 顧客にメール通知を送信しました:', videoInfo.customerEmail);
-      console.log(`📧 メール内容: タイトル="${videoTitle}", 元動画URL="${originalUrl}"`);
-    } catch (emailError) {
-      console.error('❌ メール通知送信エラー:', emailError);
+      await recordCompletedProjectId(videoInfo.rowIndex, payload.projectId);
+      console.log(`✅ 完了プロジェクトID ${payload.projectId} を記録しました`);
+    } catch (recordError) {
+      console.error('❌ 完了プロジェクトID記録エラー:', recordError);
     }
 
-    // スプレッドシートのステータスを「完了」に更新
+    // 全てのプロジェクトが完了したかチェック
     try {
-      const note = `プロジェクト完了: ${payload.videos.length}個の動画生成 | 共有リンク: ${payload.shareLink}`;
-      await updateRowStatus(videoInfo.rowIndex, '完了', note);
-      console.log('✅ スプレッドシートのステータスを「完了」に更新しました');
-    } catch (statusError) {
-      console.error('❌ ステータス更新エラー:', statusError);
+      const completionStatus = await checkAllProjectsCompleted(videoInfo.paymentIntentId);
+      
+      console.log(`📊 注文 ${videoInfo.paymentIntentId} の完了状況:`, {
+        allCompleted: completionStatus.allCompleted,
+        totalProjects: completionStatus.totalProjects,
+        completedProjects: completionStatus.completedProjects
+      });
+
+      if (completionStatus.allCompleted) {
+        console.log('🎉 全てのプロジェクトが完了しました！メール送信を実行します');
+        
+        // 顧客にメール通知を送信（全プロジェクト完了時のみ）
+        try {
+          const emailData: VideoCompletionEmailData = {
+            customerName: completionStatus.customerInfo.name,
+            customerEmail: completionStatus.customerInfo.email,
+            paymentIntentId: videoInfo.paymentIntentId,
+            videoTitles: completionStatus.videoInfo.titles,
+            videoUrls: completionStatus.videoInfo.urls,
+            downloadUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/download/${videoInfo.paymentIntentId}`,
+            totalVideos: completionStatus.totalProjects,
+          };
+
+          await sendVideoCompletionEmail(emailData);
+          console.log('✅ 顧客にメール通知を送信しました:', completionStatus.customerInfo.email);
+          console.log(`📧 メール内容: ${completionStatus.totalProjects}本の動画完成通知`);
+        } catch (emailError) {
+          console.error('❌ メール通知送信エラー:', emailError);
+        }
+
+        // スプレッドシートのステータスを「完了」に更新
+        try {
+          const note = `全プロジェクト完了: ${completionStatus.totalProjects}個のプロジェクト | 共有リンク: ${payload.shareLink}`;
+          await updateRowStatus(completionStatus.rowIndex, '完了', note);
+          console.log('✅ スプレッドシートのステータスを「完了」に更新しました');
+        } catch (statusError) {
+          console.error('❌ ステータス更新エラー:', statusError);
+        }
+      } else {
+        console.log(`⏳ まだ完了していないプロジェクトがあります (${completionStatus.completedProjects}/${completionStatus.totalProjects})`);
+        console.log('📧 メール送信はスキップします');
+        
+        // ステータスを「処理中」に更新
+        try {
+          const note = `プロジェクト ${payload.projectId} 完了 (${completionStatus.completedProjects}/${completionStatus.totalProjects})`;
+          await updateRowStatus(completionStatus.rowIndex, '処理中', note);
+          console.log('✅ スプレッドシートのステータスを「処理中」に更新しました');
+        } catch (statusError) {
+          console.error('❌ ステータス更新エラー:', statusError);
+        }
+      }
+    } catch (checkError) {
+      console.error('❌ プロジェクト完了状況チェックエラー:', checkError);
     }
 
     console.log('🎉 プロジェクト完了処理がすべて完了しました');

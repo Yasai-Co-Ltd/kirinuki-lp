@@ -163,13 +163,14 @@ export async function initializeSheetHeaders(): Promise<void> {
       'ステータス',
       '備考',
       '動画生成結果',
-      'プロジェクトID'
+      'プロジェクトID',
+      '完了プロジェクトID'
     ];
 
     // A1セルからヘッダーを設定
     await sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
-      range: 'A1:U1',
+      range: 'A1:V1',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [headers],
@@ -188,7 +189,7 @@ export async function initializeSheetHeaders(): Promise<void> {
                 startRowIndex: 0,
                 endRowIndex: 1,
                 startColumnIndex: 0,
-                endColumnIndex: 21,
+                endColumnIndex: 22,
               },
               cell: {
                 userEnteredFormat: {
@@ -655,6 +656,147 @@ export async function findVideoInfoByProjectId(projectId: number): Promise<{
 
   } catch (error) {
     console.error('projectIdによる動画情報検索中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+// 完了したプロジェクトIDを記録する関数
+export async function recordCompletedProjectId(
+  rowIndex: number,
+  projectId: number
+): Promise<void> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // 現在の完了プロジェクトIDを取得（V列を使用）
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: `V${rowIndex}`,
+    });
+
+    let completedProjectIds: string[] = [];
+    if (response.data.values?.[0]?.[0]) {
+      // 既存の完了プロジェクトIDをパース（パイプ区切り）
+      completedProjectIds = response.data.values[0][0].split('|').map((id: string) => id.trim()).filter((id: string) => id);
+    }
+
+    // 新しいプロジェクトIDを追加（重複チェック）
+    const newProjectIdStr = projectId.toString();
+    if (!completedProjectIds.includes(newProjectIdStr)) {
+      completedProjectIds.push(newProjectIdStr);
+    }
+
+    // パイプ区切りで保存
+    const completedProjectIdValue = completedProjectIds.join(' | ');
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: `V${rowIndex}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[completedProjectIdValue]],
+      },
+    });
+
+    console.log(`行${rowIndex}に完了プロジェクトID ${projectId}を記録しました`);
+    console.log(`現在の完了プロジェクトID: ${completedProjectIdValue}`);
+
+  } catch (error) {
+    console.error('完了プロジェクトIDの記録中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+// 全てのプロジェクトが完了したかチェックする関数
+export async function checkAllProjectsCompleted(paymentIntentId: string): Promise<{
+  allCompleted: boolean;
+  totalProjects: number;
+  completedProjects: number;
+  rowIndex: number;
+  customerInfo: {
+    name: string;
+    email: string;
+  };
+  videoInfo: {
+    titles: string[];
+    urls: string[];
+  };
+}> {
+  if (!GOOGLE_SHEETS_SPREADSHEET_ID) {
+    throw new Error('Google Sheets スプレッドシートIDが設定されていません');
+  }
+
+  try {
+    const sheets = await getSheetsClient();
+
+    // スプレッドシートの全データを取得
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SHEETS_SPREADSHEET_ID,
+      range: 'A:V', // A列からV列まで（完了プロジェクトID列を含む）
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length <= 1) {
+      throw new Error('該当する注文データが見つかりません');
+    }
+
+    // paymentIntentIdに該当する行を検索
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const storedPaymentIntentId = row[1]; // B列（決済ID）
+      
+      if (storedPaymentIntentId === paymentIntentId) {
+        const allProjectIds = row[20] || ''; // U列（全プロジェクトID）
+        const completedProjectIds = row[21] || ''; // V列（完了プロジェクトID）
+        
+        // プロジェクトIDを配列に変換
+        const totalProjectIdArray = allProjectIds ? allProjectIds.split('|').map((id: string) => id.trim()).filter((id: string) => id) : [];
+        const completedProjectIdArray = completedProjectIds ? completedProjectIds.split('|').map((id: string) => id.trim()).filter((id: string) => id) : [];
+        
+        // 顧客情報と動画情報を取得
+        const customerName = row[2] || ''; // C列
+        const customerEmail = row[3] || ''; // D列
+        const videoTitlesString = row[5] || ''; // F列（動画タイトル）
+        const videoUrlsString = row[7] || ''; // H列（動画URL）
+        
+        const videoTitles = videoTitlesString ? videoTitlesString.split(' | ').filter((title: string) => title.trim()) : [];
+        const videoUrls = videoUrlsString ? videoUrlsString.split(' | ').filter((url: string) => url.trim()) : [];
+        
+        const allCompleted = totalProjectIdArray.length > 0 &&
+                           totalProjectIdArray.every((projectId: string) => completedProjectIdArray.includes(projectId));
+        
+        console.log(`注文 ${paymentIntentId} の完了状況:`, {
+          totalProjects: totalProjectIdArray.length,
+          completedProjects: completedProjectIdArray.length,
+          allCompleted,
+          totalProjectIds: totalProjectIdArray,
+          completedProjectIds: completedProjectIdArray
+        });
+        
+        return {
+          allCompleted,
+          totalProjects: totalProjectIdArray.length,
+          completedProjects: completedProjectIdArray.length,
+          rowIndex: i + 1,
+          customerInfo: {
+            name: customerName,
+            email: customerEmail,
+          },
+          videoInfo: {
+            titles: videoTitles,
+            urls: videoUrls,
+          },
+        };
+      }
+    }
+    
+    throw new Error(`paymentIntentId ${paymentIntentId} に該当する注文が見つかりません`);
+
+  } catch (error) {
+    console.error('プロジェクト完了状況チェック中にエラーが発生しました:', error);
     throw error;
   }
 }
