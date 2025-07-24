@@ -117,7 +117,7 @@ input[type="text"],
 input[type="email"],
 input[type="tel"],
 textarea {
-	font-size: 1.1rem;	/*スマホ用に大きく*/
+	font-size: 16px;	/*スマホ用に大きく*/
 	padding: 1rem;		/*スマホ用に大きく*/
 	border: 2px solid #ddd;
 	border-radius: 4px;
