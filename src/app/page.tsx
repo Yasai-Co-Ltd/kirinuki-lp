@@ -41,7 +41,7 @@ export default function Home() {
       <section className="bg-primary-color marketing-importance">
         <div className="c">
           <h2 className="inline-block relative">
-            切り抜き動画は<span className="highlight">これからのマーケティング</span>に重要！
+            切り抜き動画は<span className="highlight">これからのYoutube</span>には必須！
             {/* <span className="subtitle">今がチャンス！2025年7月15日から収益化がストップ</span> */}
           </h2>
         </div>
@@ -49,7 +49,7 @@ export default function Home() {
         <div className="feature-cards">
           <div className="feature-card">
             <h4><span className="marker">切り抜き動画の市場が急拡大中</span></h4>
-            <p>YouTubeやTikTokでの切り抜き動画の需要が爆発的に増加。短時間で要点を伝える切り抜き動画は、現代の視聴者のニーズに完璧にマッチしています。企業のマーケティング戦略において、もはや必須のツールとなっています。</p>
+            <p>YouTubeやTikTokでの切り抜き動画の需要が爆発的に増加。短時間で要点を伝える切り抜き動画は、現代の視聴者のニーズに完璧にマッチしています。Youtuberや企業の動画マーケティング戦略において、もはや必須のツールとなっています。</p>
           </div>
 
           <div className="feature-card">
