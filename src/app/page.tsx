@@ -253,7 +253,7 @@ export default function Home() {
                         <video
                           width="300"
                           height="200"
-                          // poster={sample.results.clips[0].thumbnailUrl}
+                          poster={sample.results.clips[0].thumbnailUrl}
                           controls
                           preload="metadata"
                           className="sample-video-player"
@@ -313,6 +313,12 @@ export default function Home() {
                     <span className="cost-label">制作費用</span>
                     <span className="cost-amount">
                       {formatPrice(calculateEstimate(sample.originalVideo.duration, sample.orderDetails.format, sample.orderDetails.qualityOption).totalPrice)}
+                    </span>
+                  </div>
+                  <div className="per-clip-cost">
+                    <span className="per-clip-label">動画数</span>
+                    <span className="per-clip-amount">
+                      {sample.results.totalClips}本
                     </span>
                   </div>
                   <div className="per-clip-cost">

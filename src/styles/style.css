@@ -3697,6 +3697,11 @@ section + section::before {
   color: var(--accent-color);
 }
 
+@media (max-width: 768px) {
+	.sample-item + .sample-item {
+		margin-top: 30px;
+	  }
+}
 
 /* トップページの新しいサンプルレイアウト用スタイル
 ---------------------------------------------------------------------------*/
@@ -3837,6 +3842,11 @@ section + section::before {
   .video-container {
     max-width: 100%;
   }
+
+  .sample-video-player {
+	max-width: 120px;
+	margin: 10px auto 0;
+  }
 }
 
 /* Before-Afterコンテナの調整 */
@@ -3853,6 +3863,7 @@ section + section::before {
     grid-template-columns: 1fr;
     gap: 20px;
     text-align: center;
+	margin: 10px 0;
   }
   
   .arrow-section {

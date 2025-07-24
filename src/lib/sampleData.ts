@@ -29,7 +29,7 @@ export const sampleData: ProductionSample[] = [
         {
           id: 'clip-001-1',
           title: '激論勃発！芸能界の現実と市場を語る熱い言葉',
-          thumbnailUrl: '/images/thumb2.jpg',
+          thumbnailUrl: '/images/sample-thumb01.png',
           videoUrl: '/videos/sample01.mp4',
           duration: 95
         }
@@ -71,7 +71,7 @@ export const sampleData: ProductionSample[] = [
         {
           id: 'clip-002-1',
           title: '小倉記念本命はラスカンブレス！勝負の展開予想とは？',
-          thumbnailUrl: '/images/thumb6.jpg',
+          thumbnailUrl: '/images/sample-thumb02.png',
           videoUrl: '/videos/sample02.mp4',
           duration: 91
         },
@@ -113,7 +113,7 @@ export const sampleData: ProductionSample[] = [
         {
           id: 'clip-003-1',
           title: '日本の労働力激減！AIで2倍働く未来を作るしかない',
-          thumbnailUrl: '/images/thumb6.jpg',
+          thumbnailUrl: '/images/sample-thumb03.png',
           videoUrl: '/videos/sample03.mp4',
           duration: 103
         },
