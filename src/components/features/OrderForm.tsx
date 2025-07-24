@@ -821,7 +821,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                     {...register(`videos.${index}.videoUrl` as const, {
                       required: index === 0 ? '最低1つの動画URLは必須です' : false
                     })}
-                    className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all bg-white"
+                    className="w-full text-sm px-4 py-3 border-2 border-blue-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all bg-white"
                     placeholder={`動画${index + 1}のURL: https://www.youtube.com/watch?v=...`}
                     onBlur={(e) => {
                       const newVideos = [...videos];
@@ -1477,7 +1477,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
               <input
                 type="text"
                 {...register('customerName', { required: 'お名前は必須です' })}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
+                className="w-full text-sm px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
                 placeholder="山田太郎"
               />
               {errors.customerName && (
@@ -1498,7 +1498,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
                     message: '有効なメールアドレスを入力してください'
                   }
                 })}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
+                className="w-full text-sm px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all"
                 placeholder="example@email.com"
               />
               {errors.customerEmail && (
@@ -1514,7 +1514,7 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
             <textarea
               {...register('specialRequests')}
               rows={4}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all resize-vertical"
+              className="w-full text-sm px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all resize-vertical"
               placeholder="何かお伝えしたいこと等ございましたらお書きください"
             />
           </div>
