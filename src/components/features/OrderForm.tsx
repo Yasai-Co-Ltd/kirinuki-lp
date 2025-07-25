@@ -1,6 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+
+// Twitter Pixel用の型定義
+declare global {
+  interface Window {
+    twq: (action: string, eventId: string, params?: any) => void;
+  }
+}
 import { useForm } from 'react-hook-form';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -314,6 +321,18 @@ function OrderFormContent({ onSuccess }: OrderFormProps) {
   console.log('フォームデータ:', formData);
 
   if (step === 'processing') {
+    // Twitter購入コンバージョンピクセルを発火
+    if (typeof window !== 'undefined' && window.twq && estimate && formData) {
+      const conversionValue = estimate.totalPrice;
+      const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      window.twq('event', 'tw-q7rvb-q7rvc', {
+        value: conversionValue.toString(),
+        currency: 'JPY',
+        conversion_id: orderId
+      });
+    }
+
     return (
       <div className="max-w-4xl mx-auto">
         <StepBar
