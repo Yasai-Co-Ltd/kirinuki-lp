@@ -3878,3 +3878,11 @@ section + section::before {
     order: 3;
   }
 }
+
+#legal section, #privacy section {
+	padding: 20px;
+}
+
+#legal section::before, #privacy section::before {
+	content: none;
+}

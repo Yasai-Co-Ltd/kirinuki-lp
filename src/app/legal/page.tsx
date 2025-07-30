@@ -7,31 +7,34 @@ export const metadata: Metadata = {
 
 export default function LegalPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div id='legal' className="container mx-auto px-4 py-8 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8 text-center">特定商取引法に基づく表記</h1>
       
-      <div className="space-y-8">
+      <div className="space-y-6">
         <section>
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-blue-500 pb-2">販売業者</h2>
-          <p className="text-gray-700">DOGA NO AIKATA</p>
+          <p className="text-gray-700">YASAI株式会社</p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-blue-500 pb-2">運営責任者</h2>
-          <p className="text-gray-700">代表者名</p>
+          <p className="text-gray-700">
+            代表取締役 久保田凌介<br />
+            取締役 赤崎大樹
+          </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-blue-500 pb-2">所在地</h2>
           <p className="text-gray-700">
-            〒000-0000<br />
-            東京都渋谷区XXX-X-X XXXXビル1F
+            〒550-0014<br />
+            大阪府大阪市西区北堀江1-19-1八光心斎橋AIRビル7F
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-blue-500 pb-2">電話番号</h2>
-          <p className="text-gray-700">03-0000-0000</p>
+          <p className="text-gray-700">06-7777-3669</p>
           <p className="text-sm text-gray-600 mt-2">
             ※お問い合わせは、原則として<a href="/contact" className="text-blue-600 hover:underline">お問い合わせフォーム</a>よりお願いいたします。
           </p>
@@ -39,7 +42,7 @@ export default function LegalPage() {
 
         <section>
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-blue-500 pb-2">メールアドレス</h2>
-          <p className="text-gray-700">info@example.com</p>
+          <p className="text-gray-700">お問い合わせフォームよりご連絡ください</p>
         </section>
 
         <section>
@@ -78,7 +81,7 @@ export default function LegalPage() {
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-blue-500 pb-2">商品の引渡し時期</h2>
           <p className="text-gray-700">
             動画制作完了後、メールにてダウンロードリンクをお送りいたします。<br />
-            制作期間：通常3-5営業日（内容により変動する場合があります）
+            制作期間：通常1-3営業日（内容により変動する場合があります）
           </p>
         </section>
 
@@ -125,7 +128,7 @@ export default function LegalPage() {
 
       <div className="mt-12 text-center">
         <p className="text-sm text-gray-600">
-          最終更新日：2024年1月1日
+          最終更新日：2025年7月25日
         </p>
       </div>
     </div>

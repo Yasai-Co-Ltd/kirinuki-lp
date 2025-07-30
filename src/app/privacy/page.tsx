@@ -7,13 +7,13 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div id='privacy' className="container mx-auto px-4 py-8 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8 text-center">プライバシーポリシー</h1>
       
-      <div className="space-y-8">
+      <div className="space-y-6">
         <section>
           <p className="text-gray-700 mb-6">
-            DOGA NO AIKATA（以下「当社」）は、お客様の個人情報の保護を重要な責務と考え、個人情報の保護に関する法律、その他の関係法令等を遵守し、お客様の個人情報を適切に取り扱います。
+            YASAI株式会社（以下「当社」）は、お客様の個人情報の保護を重要な責務と考え、個人情報の保護に関する法律、その他の関係法令等を遵守し、お客様の個人情報を適切に取り扱います。
           </p>
         </section>
 
@@ -172,8 +172,9 @@ export default function PrivacyPage() {
           <div className="text-gray-700">
             <p>個人情報の取扱いに関するお問い合わせは、以下までご連絡ください：</p>
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <p><strong>DOGA NO AIKATA</strong></p>
-              <p>メール：info@example.com</p>
+              <p><strong>YASAI株式会社</strong></p>
+              <p>〒550-0014<br />大阪府大阪市西区北堀江1-19-1八光心斎橋AIRビル7F</p>
+              <p>電話：06-7777-3669</p>
               <p>お問い合わせフォーム：<a href="/contact" className="text-blue-600 hover:underline">こちら</a></p>
             </div>
           </div>
@@ -182,8 +183,7 @@ export default function PrivacyPage() {
 
       <div className="mt-12 text-center">
         <p className="text-sm text-gray-600">
-          制定日：2024年1月1日<br />
-          最終更新日：2024年1月1日
+          制定日：2025年7月25日<br />
         </p>
       </div>
     </div>
