@@ -52,7 +52,7 @@ export default function Contact() {
 
   return (
     <Layout>
-      <section>
+      <section id='contact'>
         <h2 className="c">お問い合わせ<span>Contact</span></h2>
         
         {submitMessage && (

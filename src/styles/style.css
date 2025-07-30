@@ -795,7 +795,7 @@ footer div {
 /* フッターナビゲーション */
 .footer-nav nav {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 2rem;
 	justify-content: center;
 }
@@ -3879,6 +3879,10 @@ section + section::before {
   }
 }
 
+#legal, #privacy, #contact {
+ padding-top: 120px;
+ padding-bottom: 120px;
+}
 #legal section, #privacy section {
 	padding: 20px;
 }

@@ -57,12 +57,12 @@ export default function Footer() {
               {/* <li><Link href="/#koe">お客様の声</Link></li> */}
               <li><Link href="/#faq">よくある質問</Link></li>
               <li><Link href="/contact">お問い合わせ</Link></li>
-              <li><Link href="https://yas-ai.io" target='_blank'>運営会社</Link></li>
             </ul>
           </div>
           <div className="nav-section">
-            <h4>法的情報</h4>
+            <h4>企業</h4>
             <ul>
+              <li><Link href="https://yas-ai.io" target='_blank'>運営会社</Link></li>
               <li><Link href="/legal">特定商取引法に基づく表記</Link></li>
               <li><Link href="/privacy">プライバシーポリシー</Link></li>
             </ul>

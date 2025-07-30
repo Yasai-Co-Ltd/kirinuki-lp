@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Layout from '../../components/layout/Layout'
 
 export const metadata: Metadata = {
   title: '特定商取引法に基づく表記 | DOGA NO AIKATA',
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
 
 export default function LegalPage() {
   return (
-    <div id='legal' className="container mx-auto px-4 py-8 max-w-4xl">
+    <Layout>
+      <div id='legal' className="container mx-auto px-4 py-8 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8 text-center">特定商取引法に基づく表記</h1>
       
       <div className="space-y-6">
@@ -131,6 +133,7 @@ export default function LegalPage() {
           最終更新日：2025年7月25日
         </p>
       </div>
-    </div>
+      </div>
+    </Layout>
   )
 }
