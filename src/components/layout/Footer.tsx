@@ -60,6 +60,13 @@ export default function Footer() {
               <li><Link href="https://yas-ai.io" target='_blank'>運営会社</Link></li>
             </ul>
           </div>
+          <div className="nav-section">
+            <h4>法的情報</h4>
+            <ul>
+              <li><Link href="/legal">特定商取引法に基づく表記</Link></li>
+              <li><Link href="/privacy">プライバシーポリシー</Link></li>
+            </ul>
+          </div>
         </nav>
       </div>
     </footer>
