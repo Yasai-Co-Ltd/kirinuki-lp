@@ -21,7 +21,7 @@ export default function Home() {
         <div>
           <div className="hero-text">
             <p>切り抜きは<span className="highlight">AI</span>に丸投げ！<br />
-            <span className="highlight">格安・当日〜2営業日納品</span>の<br />
+            <span className="highlight">格安・最短当日</span>の<br />
             動画切り抜きサービス</p>
             <p className="hero-subtext">
               <FontAwesomeIcon icon={faCut} />
@@ -38,11 +38,10 @@ export default function Home() {
       </div>
 
       {/* 切り抜き動画マーケティングの重要性 */}
-      <section className="bg-primary-color marketing-importance">
+      {/* <section className="bg-primary-color marketing-importance">
         <div className="c">
           <h2 className="inline-block relative">
             切り抜き動画は<span className="highlight">これからのYoutube</span>には必須！
-            {/* <span className="subtitle">今がチャンス！2025年7月15日から収益化がストップ</span> */}
           </h2>
         </div>
 
@@ -75,11 +74,11 @@ export default function Home() {
           </div>
           <p className="action-btn"><Link href="/order">今すぐ切り抜き動画マーケティングを始める</Link></p>
         </div>
-      </section>
+      </section> */}
 
       {/* こんなお悩みありませんか？ */}
       <section className="bg1 bg-pattern1 arrow">
-        <h2 className="c">動画編集でこんなお悩みありませんか？<span>Do you have any of these problems?</span></h2>
+        <h2 className="c">切り抜き編集でこんなお悩みありませんか？<span>Do you have any of these problems?</span></h2>
 
         <div className="feature-cards">
           <div className="feature-card bg-dark up">
