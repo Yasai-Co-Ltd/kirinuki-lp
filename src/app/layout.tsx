@@ -72,6 +72,27 @@ export default function RootLayout({
           `}
         </Script>
         
+        {/* Google tag (gtag.js) event - delayed navigation helper */}
+        <Script id="gtag-purchase-helper" strategy="afterInteractive">
+          {`
+            // Helper function to delay opening a URL until a gtag event is sent.
+            // Call it in response to an action that should navigate to a URL.
+            function gtagSendEvent(url) {
+              var callback = function () {
+                if (typeof url === 'string') {
+                  window.location = url;
+                }
+              };
+              gtag('event', 'purchase', {
+                'event_callback': callback,
+                'event_timeout': 2000,
+                // <event_parameters>
+              });
+              return false;
+            }
+          `}
+        </Script>
+        
         {children}
       </body>
     </html>
